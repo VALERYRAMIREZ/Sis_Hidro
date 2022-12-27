@@ -3,12 +3,15 @@
 #include <ESPAsyncWebServer.h>
 //#include <WebServer.h>
 #include <WiFi.h>
+#include <WiFiMulti.h>
 
 //Declaración de usuario y clave de red WiFi.
-const char* ssid = "ABACANTVWIFI8440";
+WiFiMulti wifiMulti;
+
+/*const char* ssid = "ABACANTVWIFI8440";
 const char* password = "85047373038805";
 
-/*const char* ssid = "TP-LINK_D6BF4E";
+const char* ssid = "TP-LINK_D6BF4E";
 const char* password = "480Secur325";*/
 
 //Declaración de terminales de salida en el ESP-WROOM-32.
@@ -74,15 +77,19 @@ Serial.println("Entrando a mSistema.");
 
 void setup() {
 
+  //Adición de redes a las que se puede conectar el dispositivo.
+  wifiMulti.addAP("ABACANTVWIFI8440","85047373038805");
+  wifiMulti.addAP("TP-LINK_D6BF4E","480Secur325");
+
   //Configuración de velocidad del puerto serial.
   Serial.begin(115200);
   Serial.println("Entrando a configuración de aplicación");
 
   //Configuración de las salidas del sistema.
   pinMode(ledPinEstado,OUTPUT);
+  pinMode(ledModoSistema,OUTPUT);
   pinMode(bombaUnoEstado,OUTPUT);
   pinMode(bombaDosEstado,OUTPUT);
-  pinMode(ledModoSistema,OUTPUT);
 
   //Inicialización SPIFFS.
   if(!SPIFFS.begin(true)){
@@ -95,15 +102,13 @@ void setup() {
 
   //Configuración e inicialización del wifi.
   WiFi.mode(WIFI_STA);
-  WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED)
+  while (wifiMulti.run() != WL_CONNECTED)
   {
     delay(1000);
     Serial.println("Conectando al WiFi");
   }
-  Serial.printf("Conectado a la red %s \n",ssid);
-  Serial.print("Dirección IP: ");
-  Serial.println(WiFi.localIP());
+  Serial.print("Conectado a la red " + WiFi.SSID() + " \n");
+  Serial.print("Dirección IP asignada: " + (String) WiFi.localIP() + "\n");
 
   //Funciones para el manejo de la página web.
 
