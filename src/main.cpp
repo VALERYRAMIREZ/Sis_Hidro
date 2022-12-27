@@ -4,15 +4,14 @@
 //#include <WebServer.h>
 #include <WiFi.h>
 #include <WiFiMulti.h>
+#include <preferences.h>
 
 //Declaración de usuario y clave de red WiFi.
 WiFiMulti wifiMulti;
 
-/*const char* ssid = "ABACANTVWIFI8440";
-const char* password = "85047373038805";
+//Instanciación del objeto preferencias.
 
-const char* ssid = "TP-LINK_D6BF4E";
-const char* password = "480Secur325";*/
+Preferences memoriaEstado;
 
 //Declaración de terminales de salida en el ESP-WROOM-32.
 
@@ -22,6 +21,7 @@ const uint8_t bombaUnoEstado = 23;//Salida para controlar la bomba 1.
 bool bomba1LED = false;
 const uint8_t bombaDosEstado = 22;//Salida para controlar la bomba 2.
 bool bomba2LED = false;
+bool bombaActiva = false;         //Falso significa bomba 1, verdadero significa bomba 2.
 bool ledModoSistema = false;      //modoSistema = false significa sistema en modo manual, modoSistema = true
                                   //significa sistema en modo automático.
 bool marchaSistemaLOED = false;   //marchaSistema = false significa sistema parado, marchaSistema = true significa
@@ -33,45 +33,36 @@ AsyncWebServer server(80);
 
 //Funciones de procesamiento de datos.
 
-String processor(const String& var){//Función que chequea si el sistema está encendido y envía el estado.
-  Serial.println("Entrando a processor.");
+String Procesador(const String& var){//Función que chequea si el sistema está encendido y envía el estado.
+  Serial.println("Entrando a Procesador.");
   if(var == "ESTADO_SISTEMA"){
-    Serial.println(var);
     if(digitalRead(ledPinEstado)){
       ledEstado = "ENCENDIDO";
     }
     else{
       ledEstado = "APAGADO";
     }
-    Serial.println(ledEstado);
-    Serial.println("Saliendo de processor, estado modificado.");
+    Serial.print("Sistema " + ledEstado + "." + "\n");
+    Serial.println("Saliendo de Procesador");
     return ledEstado;
   }
-  if(var == "MODO_SISTEMA"){
+  if(var == "MODO_SISTEMA" && ledEstado == "APAGADO"){
+    Serial.print("Sistema " + modoEstado + "." + "\n");
+    Serial.println("Saliendo de Procesador");
     return modoEstado;
   }
-  Serial.println("Saliendo de processor, estado no modificado.");
-  return String();
-}
-
-String mSistema(const String& varModo){//Función que chequea si el sistema está modo manual y envía el estado.
-Serial.println("Entrando a mSistema.");
-  if(varModo == "MODO_SISTEMA" && ledEstado == "ENCENDIDO"){
-    Serial.println(varModo);
+  else if(var == "MODO_SISTEMA" && ledEstado == "ENCENDIDO"){
     if(digitalRead(ledModoSistema)){
       modoEstado = "AUTO";
     }
     else{
       modoEstado = "MANUAL";
     }
-    Serial.println(modoEstado);
-    Serial.println("Saliendo de mSistema, estado modificado.");
+    Serial.print("Sistema " + modoEstado + "." + "\n");
+    Serial.println("Saliendo de Procesador");
     return modoEstado;
   }
-  if(varModo == "ESTADO_SISTEMA"){
-    return ledEstado;
-  }
-  Serial.println("Saliendo de mSistema, estado no modificado.");
+  Serial.println("Saliendo de Procesador.");
   return String();
 }
 
@@ -84,6 +75,16 @@ void setup() {
   //Configuración de velocidad del puerto serial.
   Serial.begin(115200);
   Serial.println("Entrando a configuración de aplicación");
+
+  //Inicialización del sistema de preferencias NVS.
+
+  memoriaEstado.begin("estado_sistema", false);
+  memoriaEstado.clear();
+
+  //Lectura de los estados iniciales del sistema.
+  memoriaEstado.getBool("SisEncender",ledEstado);
+  memoriaEstado.getBool("bombaActiva",bombaActiva);
+
 
   //Configuración de las salidas del sistema.
   pinMode(ledPinEstado,OUTPUT);
@@ -107,14 +108,15 @@ void setup() {
     delay(1000);
     Serial.println("Conectando al WiFi");
   }
-  Serial.print("Conectado a la red " + WiFi.SSID() + " \n");
-  Serial.print("Dirección IP asignada: " + (String) WiFi.localIP() + "\n");
+  Serial.print("Conectado a la red " + WiFi.SSID() + "\n");
+  Serial.print("Dirección IP asignada: ");
+  Serial.println(WiFi.localIP());
 
   //Funciones para el manejo de la página web.
 
     //Manejo inicial de la página web.
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send(SPIFFS, "/index.html", String(), false, processor);
+    request->send(SPIFFS, "/index.html", String(), false, Procesador);
   });
 
   server.on("/style.css", HTTP_GET, [](AsyncWebServerRequest *request){
@@ -124,24 +126,24 @@ void setup() {
     //Manejo de botones de activación/desactivación del sistema.
   server.on("/apagar",HTTP_GET, [](AsyncWebServerRequest *request){
     digitalWrite(ledPinEstado,LOW);
-    request->send(SPIFFS,"/index.html",String(),false,processor);
+    request->send(SPIFFS,"/index.html",String(),false,Procesador);
   });
 
   server.on("/encender",HTTP_GET,[](AsyncWebServerRequest *request){
     digitalWrite(ledPinEstado,HIGH);
-    request->send(SPIFFS,"/index.html",String(),false,processor);
+    request->send(SPIFFS,"/index.html",String(),false,Procesador);
   });
 
     //Manejo de botones para selección del modo manual/automático
     //del sistema
   server.on("/auto",HTTP_GET,[](AsyncWebServerRequest *request){
     digitalWrite(ledModoSistema,HIGH);
-    request->send(SPIFFS,"/index.html",String(),false,mSistema);
+    request->send(SPIFFS,"/index.html",String(),false,Procesador);
   });
 
   server.on("/manual",HTTP_GET,[](AsyncWebServerRequest *request){
     digitalWrite(ledModoSistema,LOW);
-    request->send(SPIFFS,"/index.html",String(),false,mSistema);
+    request->send(SPIFFS,"/index.html",String(),false,Procesador);
   });
 
   //Inicio del servidor web.
