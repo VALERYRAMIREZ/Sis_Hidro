@@ -31,7 +31,11 @@ String modoEstado;
 //Instanciación del servidor web.
 AsyncWebServer server(80);
 
-//Funciones de procesamiento de datos.
+//Función de procesamiento de datos. Debido al
+//funcionamiento interno de la función send(), la función
+//procesador es llamada cada vez que encuentra un
+//placeholder en el código html, por esa razón el código
+//interno de esta función está hecho de esa manera.
 
 String Procesador(const String& var){//Función que chequea si el sistema está encendido y envía el estado.
   Serial.println("Entrando a Procesador.");
@@ -66,6 +70,10 @@ String Procesador(const String& var){//Función que chequea si el sistema está 
   return String();
 }
 
+void handle_NoEncontrado() {
+
+}
+
 void setup() {
 
   //Adición de redes a las que se puede conectar el dispositivo.
@@ -77,7 +85,6 @@ void setup() {
   Serial.println("Entrando a configuración de aplicación");
 
   //Inicialización del sistema de preferencias NVS.
-
   memoriaEstado.begin("estado_sistema", false);
   memoriaEstado.clear();
 
@@ -137,13 +144,26 @@ void setup() {
     //Manejo de botones para selección del modo manual/automático
     //del sistema
   server.on("/auto",HTTP_GET,[](AsyncWebServerRequest *request){
-    digitalWrite(ledModoSistema,HIGH);
+    if(ledEstado == "ENCENDIDO"){
+      digitalWrite(ledModoSistema,HIGH);
+    }
     request->send(SPIFFS,"/index.html",String(),false,Procesador);
   });
 
   server.on("/manual",HTTP_GET,[](AsyncWebServerRequest *request){
-    digitalWrite(ledModoSistema,LOW);
+    if(ledEstado == "ENCENDIDO"){
+      digitalWrite(ledModoSistema,LOW);
+    }
     request->send(SPIFFS,"/index.html",String(),false,Procesador);
+  });
+
+  server.on("/Pozo", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/Pozo.png", String());
+  });
+
+  server.onNotFound([](AsyncWebServerRequest *request){
+    Serial.println("Página no encontrada.");
+    request->send(SPIFFS, "/no_encontrado.html", String());
   });
 
   //Inicio del servidor web.
