@@ -26,3 +26,8 @@ html {
   .button2 {
     background-color: #f44336;
   }
+
+  .page-image img {
+    width: 100%;
+    height: auto;
+  }
