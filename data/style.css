@@ -27,7 +27,20 @@ html {
     background-color: #f44336;
   }
 
+  /* Formato para imagen de la página no encontrado. */
+
   .page-image img {
     width: 100%;
     height: auto;
+    border-radius: 5%;
+    box-shadow: 5px 5px 10px #999;
+  }
+
+  /* Comfiguración del menú del sistema. */
+
+  .menu ul {
+    list-style: none;
+    display: flex;
+    float: left;
+    justify-content: center;
   }

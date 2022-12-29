@@ -1,7 +1,6 @@
 #include <Arduino.h>
 #include "SPIFFS.h"
 #include <ESPAsyncWebServer.h>
-//#include <WebServer.h>
 #include <WiFi.h>
 #include <WiFiMulti.h>
 #include <preferences.h>
@@ -26,6 +25,14 @@ bool ledModoSistema = false;      //modoSistema = false significa sistema en mod
                                   //significa sistema en modo automático.
 bool marchaSistemaLOED = false;   //marchaSistema = false significa sistema parado, marchaSistema = true significa
                                   //sistema activo.
+
+//Declaración de terminales de entrada para el sistema.
+
+const uint8_t supervisorT = 1;    //Esta es la entrada para el supervisor mono/trifásico.
+bool superT = false;
+const uint8_t nivelAgua = 3;      //Nivel del agua será una medición analógica.
+uint8_t nivelA = 0;
+
 String modoEstado;
 
 //Instanciación del servidor web.
@@ -50,7 +57,7 @@ String Procesador(const String& var){//Función que chequea si el sistema está 
     Serial.println("Saliendo de Procesador");
     return ledEstado;
   }
-  if(var == "MODO_SISTEMA" && ledEstado == "APAGADO"){
+  else if(var == "MODO_SISTEMA" && ledEstado == "APAGADO"){
     Serial.print("Sistema " + modoEstado + "." + "\n");
     Serial.println("Saliendo de Procesador");
     return modoEstado;
@@ -68,6 +75,11 @@ String Procesador(const String& var){//Función que chequea si el sistema está 
   }
   Serial.println("Saliendo de Procesador.");
   return String();
+}
+
+// Función para controlar la bomba a encender
+void Bomba() {
+
 }
 
 void handle_NoEncontrado() {
@@ -147,16 +159,23 @@ void setup() {
     if(ledEstado == "ENCENDIDO"){
       digitalWrite(ledModoSistema,HIGH);
     }
-    request->send(SPIFFS,"/index.html",String(),false,Procesador);
+    request->send(SPIFFS, "/index.html", String(), false,Procesador);
   });
 
   server.on("/manual",HTTP_GET,[](AsyncWebServerRequest *request){
     if(ledEstado == "ENCENDIDO"){
       digitalWrite(ledModoSistema,LOW);
     }
-    request->send(SPIFFS,"/index.html",String(),false,Procesador);
+    request->send(SPIFFS,"/index.html", String(), false,Procesador);
   });
 
+  //Manejo de la página de configuración.
+  server.on("/config", HTTP_GET, [](AsyncWebServerRequest *request){
+    Serial.println("Entrando a configuración.");
+    request->send(SPIFFS, "/config.html", String());
+  });
+
+  //Manejo de la página "No encontrado".
   server.on("/Pozo", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(SPIFFS, "/Pozo.png", String());
   });
