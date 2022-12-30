@@ -143,26 +143,30 @@ void setup() {
   });
 
     //Manejo de botones de activación/desactivación del sistema.
-  server.on("/apagar",HTTP_GET, [](AsyncWebServerRequest *request){
+  server.on("/apagar", HTTP_GET, [](AsyncWebServerRequest *request){
     digitalWrite(ledPinEstado,LOW);
     request->send(SPIFFS,"/index.html",String(),false,Procesador);
   });
 
-  server.on("/encender",HTTP_GET,[](AsyncWebServerRequest *request){
+  server.on("/encender", HTTP_GET,[](AsyncWebServerRequest *request){
     digitalWrite(ledPinEstado,HIGH);
     request->send(SPIFFS,"/index.html",String(),false,Procesador);
   });
 
+  server.on("/logoE", HTTP_GET, [](AsyncWebServerRequest * request){
+    request->send(SPIFFS, "/Logo-empresa.png", String());
+  });
+
     //Manejo de botones para selección del modo manual/automático
     //del sistema
-  server.on("/auto",HTTP_GET,[](AsyncWebServerRequest *request){
+  server.on("/auto", HTTP_GET,[](AsyncWebServerRequest *request){
     if(ledEstado == "ENCENDIDO"){
       digitalWrite(ledModoSistema,HIGH);
     }
     request->send(SPIFFS, "/index.html", String(), false,Procesador);
   });
 
-  server.on("/manual",HTTP_GET,[](AsyncWebServerRequest *request){
+  server.on("/manual", HTTP_GET,[](AsyncWebServerRequest *request){
     if(ledEstado == "ENCENDIDO"){
       digitalWrite(ledModoSistema,LOW);
     }
