@@ -179,6 +179,12 @@ void setup() {
     request->send(SPIFFS, "/config.html", String());
   });
 
+  //Manejo de la página Sobre Nosotros
+    server.on("/sobre-nosotros", HTTP_GET, [](AsyncWebServerRequest *request){
+    Serial.println("Entrando a página Sobre Nosotros.");
+    request->send(SPIFFS, "/no_encontrado.html", String());
+  });
+
   //Manejo de la página "No encontrado".
   server.on("/Pozo", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(SPIFFS, "/Pozo.png", String());

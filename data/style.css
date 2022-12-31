@@ -9,7 +9,9 @@
 
   :root {
     /*-------Colores---------*/
-    --body-color: #e4e9f7;
+    --body-color: #161719;
+    --grad-uno-color: #28292c;
+    --grad-dos-color: #000101;
     --sidebar-color: #fff;
     --primary-color: #695cfe;
     --primary-color-light: #f6f5ff;
@@ -28,76 +30,55 @@
     background: var(--body-color);
   }
 
-  /*--------CSS reusable---------------*/
+   /*--------Menú, encabezado y título de--------*/
+  /*------------------sección.------------------*/
 
-  /*--------Menú y encabezado----------*/
+  .titulo_2 h1 {
+    color: var(--primary-color-light);
+    text-align: center;
+    margin-top: 5%;
+  }
+  
+  .encabezado .titulo {
+    display: flex;
+    justify-content: center;
+    width: 70%;
+    color: var(--primary-color-light);
+    width: 0 auto;
+  }
+
   .menu {
     background: var(--sidebar-color);
   }
 
   .encabezado header {
-    background-color: var(--body-color);
     display: flex;
     align-items: center;
+    background: linear-gradient(to left, var(--grad-uno-color), var(--grad-dos-color));
+    padding-top: 1%;
+    padding-bottom: 1%;
+  }
+
+  .encabezado .caja-logo-empresa .logo-empresa {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 5%;
   }
 
   .encabezado .caja-logo-empresa {
-    background-color: var(--primary-color);
-    width: 20%;
-    height: 8%;
-    margin: 5% 2%;
     display: flex;
     align-items: center;
-    border-radius: 5px;
+    width: 25%;
+    height: auto;
+    margin-left: 1%;
   }
 
-  .encabezado .logo-empresa {
-    width: 80%;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    border-radius: 2px;
-  }
-
-  .encabezado .titulo,
-  h2 {
-    display: flex;
-    align-items: center;
-    color: var(--text-color);
-    /*margin-left: 15%;*/
+  .encabezado .menu {
+    width: 100%;
   }
 
   /*----------Estilo página principal----------*/
-
-  .cuerpo_sistema {
-    display: flex;
-    justify-content: center;
-    border-color: #000;
-    border-radius: 5%;
-    background-color: red;
-  }
-
-  .estado_sistema {
-    width: 90%;
-    border-color: #000;
-    background-color: var(--primary-color);
-    border-radius: 5%;
-    box-shadow: 5px 5px 10px#999;
-    padding: 5%;
-    margin: 0 auto;
-    text-align: left;
-  }
-
-  .cuerpo_sistema .controles_sistema {
-    width: 40%;
-    border-color: #000;
-    background-color: var(--primary-color);
-    border-radius: 5%;
-    box-shadow: 5px 5px 10px#999;
-    padding: 5%;
-    margin: 5%;
-    margin-left: 0px;
-  }
 
   .cuerpo_sistema .monitor_sistema {
     width: 40%;
@@ -110,35 +91,141 @@
     margin-right: 0px;
   }
 
+  .menu {
+    background: linear-gradient(to left, var(--grad-uno-color), var(--grad-dos-color));
+    width: 100%;
+    border-top: 1px dotted var(--primary-color-light);
+  }
+
+  .menu nav {
+    display: flex;
+    justify-content: right;
+  }
   .menu nav a {
+    display: flex;
+    align-items: center;
     text-decoration: none;
     font-size: 20px;
-    color:  #000;
+    color: var(--primary-color-light);
     font-size: 14px;
   }
 
   .menu nav a:hover {
-    background-color: var(--primary-color);
-    color: var(--primary-color-light);
     transition: var(--tran-04);
   }
 
   .menu nav li {
     list-style: none;
     display: inline-block;
-    width: 20%;
+    width: 0 auto;
     padding: 5px 10px;
-    background-color: var(--primary-color-light);
     text-align: center;
     border-radius: 5%;
     cursor: pointer;
   }
 
-  .menu nav li:hover,
-  .button:hover {
-    background-color: var(--primary-color);
+  .menu nav li:hover {
+    border-bottom: 2px;
+    background-color: var(--body-color);
     transition: var(--tran-04);
     color: var(--text-color);
+  }
+
+  .cuerpo_sistema {
+    display: flex;
+    justify-content: center;
+  }
+
+  .cuerpo_sistema .estado_sistema {
+    width: 90%;
+    border-color: #000;
+    background-color: var(--primary-color);
+    border-radius: 5%;
+    box-shadow: 5px 5px 10px#999;
+    padding: 5%;
+    margin: 0 auto;
+    text-align: left;
+  }
+
+  .cuerpo_sistema .controles_sistema {
+    display: flex;
+    justify-content: center;
+    width: 90%;
+  }
+
+  /*------Estilo de bloques de dashboard----------*/
+
+  .cuerpo_sistema .controles_sistema .bloque_dash {
+    text-align: center;
+    width: 50%;
+    height: 100%;
+    background-color: var(--grad-uno-color);
+    border-radius: 1%;
+    padding: 1%;
+    margin: 5%;
+  }
+  .cuerpo_sistema .controles_sistema .bloque_dash .titulo_2 {
+    display: flex;
+    justify-content: center;
+    color: var(--primary-color-light);
+    height: 10%;
+    margin-bottom: 5%;
+  }
+
+  .bloque_dash .contenido {
+    display: inline-block;
+    text-align: center;
+    width: 95%;
+    height: 85%;
+    margin: 0 auto;
+  }
+  
+  .bloque_dash p {
+    display: inline-block;
+    text-align: center;
+    font-size: 70%;
+    width: 90%;
+    height: 20%;
+    background-color: var(--body-color);
+    margin: 2%;
+    border-radius: 2%;
+    cursor: pointer;
+  }
+
+  .bloque_dash p .button {
+    display: inline-block;
+    text-align: center;
+    background: none;
+    width: auto;
+    height: 100%;
+    color: var(--primary-color-light);
+    border: 0px;
+  }
+  
+
+  /*.cuerpo_sistema .controles_sistema .button {
+    display: inline-block;
+    width: 90%;
+    font-size: 70%;
+    padding: 5px 10px;
+    background-color: #000;
+    border: 1px solid #000;
+    text-align: center;
+    color: #fff;
+    border-radius: 5%;
+    cursor: pointer;
+  }*/
+
+  .page-image {
+    display: flex;
+    align-items: center;
+    margin-top: 5%;
+  }
+  .page-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 5%;
+    box-shadow: 5px 5px 10px #999;
   }
 
   /* Estilo original en blanco y negro.*/
