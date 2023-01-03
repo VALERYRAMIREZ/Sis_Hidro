@@ -10,7 +10,7 @@
   :root {
     /*-------Colores---------*/
     --body-color: #161719;
-    --grad-uno-color: #28292c;
+    --grad-uno-color: #4d4d51;
     --grad-dos-color: #000101;
     --sidebar-color: #fff;
     --primary-color: #695cfe;
@@ -30,40 +30,22 @@
     background: var(--body-color);
   }
 
-   /*--------Menú, encabezado y título de--------*/
+  /*--------Menú, encabezado y título de--------*/
   /*------------------sección.------------------*/
 
   .titulo_2 h1 {
     color: var(--primary-color-light);
     text-align: center;
-    margin-top: 5%;
+    margin-top: 1%;
   }
   
-  .encabezado .titulo {
-    display: flex;
-    justify-content: center;
-    width: 70%;
-    color: var(--primary-color-light);
-    width: 0 auto;
-  }
-
-  .menu {
-    background: var(--sidebar-color);
-  }
-
   .encabezado header {
     display: flex;
     align-items: center;
     background: linear-gradient(to left, var(--grad-uno-color), var(--grad-dos-color));
+    height: 10%;
     padding-top: 1%;
     padding-bottom: 1%;
-  }
-
-  .encabezado .caja-logo-empresa .logo-empresa {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-    border-radius: 5%;
   }
 
   .encabezado .caja-logo-empresa {
@@ -74,33 +56,40 @@
     margin-left: 1%;
   }
 
-  .encabezado .menu {
-    width: 100%;
+  .encabezado .caja-logo-empresa .logo-empresa {
+    max-width: 70%;
+    max-height: auto;
+    object-fit: contain;
+    border-radius: 5%;
   }
 
-  /*----------Estilo página principal----------*/
+  .encabezado .titulo {
+    display: flex;
+    justify-content: center;
+    width: 70%;
+    color: var(--primary-color-light);
+    width: 0 auto;
+  }
 
-  .cuerpo_sistema .monitor_sistema {
-    width: 40%;
-    border-color: #000;
-    background-color: var(--primary-color);
-    border-radius: 5%;
-    box-shadow: 5px 5px 10px#999;
-    padding: 5%;
-    margin: 5%;
-    margin-right: 0px;
+  /*----------Estilo página barra de menú---------*/
+
+  .pag_activa {
+    border-top: 2px solid orange;
+    border-image: linear-gradient(to right, #f7c766, #397606) 1;
+    background-color: var(--body-color);
   }
 
   .menu {
     background: linear-gradient(to left, var(--grad-uno-color), var(--grad-dos-color));
     width: 100%;
-    border-top: 1px dotted var(--primary-color-light);
+    /*border-top: 1px dotted var(--primary-color-light);*/
   }
 
   .menu nav {
     display: flex;
     justify-content: right;
   }
+
   .menu nav a {
     display: flex;
     align-items: center;
@@ -122,43 +111,56 @@
     text-align: center;
     border-radius: 5%;
     cursor: pointer;
+    border-top: 3px solid transparent;
   }
 
   .menu nav li:hover {
-    border-bottom: 2px;
     background-color: var(--body-color);
     transition: var(--tran-04);
     color: var(--text-color);
   }
+
+  /*---------Estilo del cuerpo de control---------*/
+  /*------------------del sistema-----------------*/
 
   .cuerpo_sistema {
     display: flex;
     justify-content: center;
   }
 
-  .cuerpo_sistema .estado_sistema {
+  .estado_sistema {
+    display: flex;
+    justify-content: space-around;
     width: 90%;
+    min-height: 5%;
     border-color: #000;
-    background-color: var(--primary-color);
+    background-color: var(--grad-uno-color);
     border-radius: 5%;
     box-shadow: 5px 5px 10px#999;
-    padding: 5%;
     margin: 0 auto;
-    text-align: left;
+    color: var(--primary-color-light);
   }
 
-  .cuerpo_sistema .controles_sistema {
+  .estado_sistema .estado {
     display: flex;
     justify-content: center;
-    width: 90%;
+    align-items: center;
   }
 
   /*------Estilo de bloques de dashboard----------*/
 
+  .cuerpo_sistema .controles_sistema {
+    display: flex;
+    justify-content: center;
+    width: 80%;
+    height: 50%;
+  }
+
+
   .cuerpo_sistema .controles_sistema .bloque_dash {
     text-align: center;
     width: 50%;
-    height: 100%;
+    height: 60vh;
     background-color: var(--grad-uno-color);
     border-radius: 1%;
     padding: 1%;
@@ -196,25 +198,49 @@
     display: inline-block;
     text-align: center;
     background: none;
-    width: auto;
+    width: 100%;
     height: 100%;
     color: var(--primary-color-light);
     border: 0px;
   }
   
 
-  /*.cuerpo_sistema .controles_sistema .button {
-    display: inline-block;
-    width: 90%;
-    font-size: 70%;
-    padding: 5px 10px;
-    background-color: #000;
-    border: 1px solid #000;
-    text-align: center;
-    color: #fff;
-    border-radius: 5%;
-    cursor: pointer;
-  }*/
+  /*-------Estilo del tanque de agua------------*/
+
+  #box{
+    margin: 0 auto;
+    width:200px; height:100%;
+    border-radius:20px;
+    border:5px solid #111111;
+    background-color: none;
+  }
+
+  #tile01
+{
+  margin: auto;
+  width:100%; height:100%; 
+  background-image:-webkit-radial-gradient(center 10px,400px 600px, #111111 10%, #0099ff 11%);
+  background-size:40px 100%; 
+  border-radius: 12px;
+  background-clip: border-box; 
+  animation-name: wave-animation; 
+  animation-duration: 3s;  
+  animation-iteration-count:infinite; 
+  animation-timing-function: linear ;
+}
+
+ @keyframes wave-animation
+ { 
+  0% {
+    background-position: position 10px 0px;
+  }
+  50% {
+    background-position: position 20px 0px;
+  }
+ 100% {
+  background-position: 40px 0px;
+  }
+ }
 
   .page-image {
     display: flex;

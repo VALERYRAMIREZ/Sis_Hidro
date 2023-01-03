@@ -21,7 +21,7 @@
         <div class="menu">
             <nav>
                 <ul>
-                    <li><a href="/">Controles</a></li>
+                    <li class="pag_activa"><a href="/">Controles</a></li>
                     <li><a href="config">Configuración</a></li>
                     <li><a href="sobre-nosotros">Sobre Nosotros</a></li>
                 </ul>
@@ -29,10 +29,14 @@
         </div>
         <div class="titulo_2">
             <h1>Monitoreo del Sistema</h1>
-        </div>
+          </div>
         <div class="estado_sistema">
-            <p>Estado Sistema: <strong>%ESTADO_SISTEMA%</strong></string></p>
-            <p>Modo Sistema: <strong>%MODO_SISTEMA%</strong></p>
+            <div class="estado">
+                <p>Estado Sistema: <strong>%ESTADO_SISTEMA%</strong></string></p>
+            </div>
+            <div class="estado">
+                <p>Modo Sistema: <strong>%MODO_SISTEMA%</strong></p>
+            </div>
         </div>
         <div class="cuerpo_sistema">
             <div class="controles_sistema">
@@ -52,7 +56,11 @@
                         <h2>Nivel tanque</h2>
                     </div>
                     <div class="contenido">
-                        
+                        <div id="box">
+                            <div id="tile01">
+                              <div id="mask">Water</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
