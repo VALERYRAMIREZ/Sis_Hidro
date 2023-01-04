@@ -133,11 +133,6 @@ void setup() {
 
   //Funciones para el manejo de la página web.
 
-    //Manejo inicial de la página web.
-  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send(SPIFFS, "/index.html", String(), false, Procesador);
-  });
-
   server.on("/style.css", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(SPIFFS, "/style.css", "text/css");
   });
@@ -153,8 +148,42 @@ void setup() {
     request->send(SPIFFS,"/index.html",String(),false,Procesador);
   });
 
+  //Manejo de las imágenes y logos.
+
   server.on("/logoE", HTTP_GET, [](AsyncWebServerRequest * request){
     request->send(SPIFFS, "/Logo-empresa.png", String());
+  });
+
+  server.on("/logo-venapp", HTTP_GET, [](AsyncWebServerRequest * request){
+    request->send(SPIFFS, "/logo-venapp.png", String());
+  });
+
+  server.on("/logo-whatsapp", HTTP_GET, [](AsyncWebServerRequest * request){
+    request->send(SPIFFS, "/logo-whatsapp.png", String());
+  });
+
+  server.on("/logo-facebook", HTTP_GET, [](AsyncWebServerRequest * request){
+    request->send(SPIFFS, "/logo-facebook.png", String());
+  });
+
+  server.on("/logo-youtube", HTTP_GET, [](AsyncWebServerRequest * request){
+    request->send(SPIFFS, "/logo-youtube.png", String());
+  });
+
+  server.on("/logo-instagram", HTTP_GET, [](AsyncWebServerRequest * request){
+    request->send(SPIFFS, "/logo-instagram.png", String());
+  });
+
+  server.on("/logo-linkedin", HTTP_GET, [](AsyncWebServerRequest * request){
+    request->send(SPIFFS, "/logo-linkedin.png", String());
+  });
+
+  server.on("/logo-correo", HTTP_GET, [](AsyncWebServerRequest * request){
+    request->send(SPIFFS, "/logo-correo.png", String());
+  });
+
+  server.on("/Pozo", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/Pozo.png", String());
   });
 
     //Manejo de botones para selección del modo manual/automático
@@ -173,22 +202,30 @@ void setup() {
     request->send(SPIFFS,"/index.html", String(), false,Procesador);
   });
 
+  //Manejo de la página principal del sistema
+  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/index.html", String(), false, Procesador);
+  });
+
   //Manejo de la página de configuración.
   server.on("/config", HTTP_GET, [](AsyncWebServerRequest *request){
-    Serial.println("Entrando a configuración.");
+    Serial.println("Entrando a página configuración.");
     request->send(SPIFFS, "/config.html", String());
   });
 
   //Manejo de la página Sobre Nosotros
-    server.on("/sobre-nosotros", HTTP_GET, [](AsyncWebServerRequest *request){
+  server.on("/sobre-nosotros", HTTP_GET, [](AsyncWebServerRequest *request){
     Serial.println("Entrando a página Sobre Nosotros.");
-    request->send(SPIFFS, "/no_encontrado.html", String());
+    request->send(SPIFFS, "/sobre-nosotros.html", String());
+  });
+
+  //Manejo de la página Contacto.
+  server.on("/contacto", HTTP_GET, [](AsyncWebServerRequest *request){
+    Serial.println("Entrando a página Contacto.");
+    request->send(SPIFFS, "/contacto.html", String());
   });
 
   //Manejo de la página "No encontrado".
-  server.on("/Pozo", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send(SPIFFS, "/Pozo.png", String());
-  });
 
   server.onNotFound([](AsyncWebServerRequest *request){
     Serial.println("Página no encontrada.");
