@@ -135,64 +135,87 @@ void setup() {
 
   server.on("/style.css", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(SPIFFS, "/style.css", "text/css");
+    
   });
 
     //Manejo de botones de activación/desactivación del sistema.
   server.on("/apagar", HTTP_GET, [](AsyncWebServerRequest *request){
     digitalWrite(ledPinEstado,LOW);
     request->send(SPIFFS,"/index.html",String(),false,Procesador);
+    
   });
 
   server.on("/encender", HTTP_GET,[](AsyncWebServerRequest *request){
     digitalWrite(ledPinEstado,HIGH);
     request->send(SPIFFS,"/index.html",String(),false,Procesador);
+        
   });
 
   //Manejo de las imágenes y logos.
 
   server.on("/logoE", HTTP_GET, [](AsyncWebServerRequest * request){
+    Serial.println("Cargando logo-empresa");
     request->send(SPIFFS, "/Logo-empresa.png", String());
+        
   });
 
   server.on("/logo-venapp", HTTP_GET, [](AsyncWebServerRequest * request){
+    Serial.println("Cargando logo-venapp");
     request->send(SPIFFS, "/logo-venapp.png", String());
+        
   });
 
   server.on("/logo-whatsapp", HTTP_GET, [](AsyncWebServerRequest * request){
+    Serial.println("Cargando logo-whatsapp");
     request->send(SPIFFS, "/logo-whatsapp.png", String());
+        
   });
 
   server.on("/logo-facebook", HTTP_GET, [](AsyncWebServerRequest * request){
+    Serial.println("Cargando logo-facebook");
     request->send(SPIFFS, "/logo-facebook.png", String());
+        
   });
 
   server.on("/logo-youtube", HTTP_GET, [](AsyncWebServerRequest * request){
+    Serial.println("Cargando logo-youtube");
     request->send(SPIFFS, "/logo-youtube.png", String());
+        
   });
 
   server.on("/logo-instagram", HTTP_GET, [](AsyncWebServerRequest * request){
+    Serial.println("Cargando logo-instagram");
     request->send(SPIFFS, "/logo-instagram.png", String());
+        
   });
 
   server.on("/logo-linkedin", HTTP_GET, [](AsyncWebServerRequest * request){
+    Serial.println("Cargando logo-linkedin");
     request->send(SPIFFS, "/logo-linkedin.png", String());
+        
   });
 
   server.on("/logo-correo", HTTP_GET, [](AsyncWebServerRequest * request){
+    Serial.println("Cargando logo-correo");
     request->send(SPIFFS, "/logo-correo.png", String());
+        
   });
 
   server.on("/Pozo", HTTP_GET, [](AsyncWebServerRequest *request){
+    Serial.println("Cargando imagen página no encontrada");
     request->send(SPIFFS, "/Pozo.png", String());
+        
   });
 
     //Manejo de botones para selección del modo manual/automático
     //del sistema
+
   server.on("/auto", HTTP_GET,[](AsyncWebServerRequest *request){
     if(ledEstado == "ENCENDIDO"){
       digitalWrite(ledModoSistema,HIGH);
     }
     request->send(SPIFFS, "/index.html", String(), false,Procesador);
+        
   });
 
   server.on("/manual", HTTP_GET,[](AsyncWebServerRequest *request){
@@ -200,36 +223,42 @@ void setup() {
       digitalWrite(ledModoSistema,LOW);
     }
     request->send(SPIFFS,"/index.html", String(), false,Procesador);
+        
   });
 
   //Manejo de la página principal del sistema
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(SPIFFS, "/index.html", String(), false, Procesador);
+        
   });
 
   //Manejo de la página de configuración.
   server.on("/config", HTTP_GET, [](AsyncWebServerRequest *request){
     Serial.println("Entrando a página configuración.");
     request->send(SPIFFS, "/config.html", String());
+        
   });
 
   //Manejo de la página Sobre Nosotros
   server.on("/sobre-nosotros", HTTP_GET, [](AsyncWebServerRequest *request){
     Serial.println("Entrando a página Sobre Nosotros.");
     request->send(SPIFFS, "/sobre-nosotros.html", String());
+        
   });
 
   //Manejo de la página Contacto.
   server.on("/contacto", HTTP_GET, [](AsyncWebServerRequest *request){
     Serial.println("Entrando a página Contacto.");
     request->send(SPIFFS, "/contacto.html", String());
+        
   });
 
   //Manejo de la página "No encontrado".
 
   server.onNotFound([](AsyncWebServerRequest *request){
-    Serial.println("Página no encontrada.");
+    Serial.println("Cargando página no encontrada.");
     request->send(SPIFFS, "/no_encontrado.html", String());
+        
   });
 
   //Inicio del servidor web.
@@ -239,5 +268,4 @@ void setup() {
 }
  
 void loop() {
-
 }
