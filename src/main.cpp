@@ -8,6 +8,12 @@
 //Declaración de usuario y clave de red WiFi.
 WiFiMulti wifiMulti;
 
+//Definición del usuario, clave y estado de acceso.
+
+String usuarioHTTP = "admin";
+String claveHTTP = "admin";
+bool eHTTP = false;
+
 //Instanciación del objeto preferencias.
 
 Preferences memoriaEstado;
@@ -135,7 +141,10 @@ void setup() {
 
   server.on("/style.css", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(SPIFFS, "/style.css", "text/css");
-    
+  });
+
+  server.on("/app", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/app.js", "text/javascript");
   });
 
     //Manejo de botones de activación/desactivación del sistema.
@@ -251,6 +260,18 @@ void setup() {
     Serial.println("Entrando a página Contacto.");
     request->send(SPIFFS, "/contacto.html", String());
         
+  });
+
+//Manejo de la página de sistema bloqueado.
+
+  server.on("/no-permitido", HTTP_GET, [](AsyncWebServerRequest *request){
+    Serial.println("Bloqueando el sistema.");
+    request->send(401);
+  });
+
+  server.on("/autenticar", HTTP_GET, [](AsyncWebServerRequest *request){
+    Serial.println("Entrando a página bloqueado");
+    request->send(SPIFFS, "/autenticar.html", String());
   });
 
   //Manejo de la página "No encontrado".

@@ -363,6 +363,55 @@
   text-decoration: underline;
 }
 
+/*-------------Estilos de la página--------------*/
+/*-------------Autenticarse y botón--------------*/
+/*-------------------de salida-------------------*/
+
+.enviar_data_acceso {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.enviar_data_acceso button {
+  text-align: center;
+  font-size: 20px;
+  width: 20vw;
+  line-height: 2;
+  border: none;
+  border-radius: 2%;
+  cursor: pointer;
+  background-color: var(--body-color);
+  color: var(--primary-color-light);
+}
+
+.salir {
+  display: flex;
+  justify-content:flex-end;
+  align-items: center;
+  width: 100%;
+  margin-top: 5%;
+  padding-right: 15%;
+}
+
+.salir button {
+  text-align: center;
+  font-size: 20px;
+  width: 20vw;
+  line-height: 2;
+  border: none;
+  border-radius: 2%;
+  cursor: pointer;
+  background-color: var(--grad-uno-color);
+  color: var(--primary-color-light);
+}
+
+.salir button:active {
+  background-color: var(--body-color);
+  border: 2px solid #ddd;
+}
+
   /* Estilo original en blanco y negro.*/
   /*html {
     font-family: Helvetica;

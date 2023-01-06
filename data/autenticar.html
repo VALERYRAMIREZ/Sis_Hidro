@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Control 2 Bombas</title>
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" href="data;,">
+        <link rel="stylesheet" type="text/css" href="style.css">
+    </head>
+    <body>
+        <div class="encabezado">
+            <header>
+                <div class="caja-logo-empresa">
+                    <img class="logo-empresa" src="logoE">
+                </div>
+                <div class="titulo">
+                    <h1>Control Hidroneumático</h1>
+                </div>
+            </header>
+        </div>
+        <div class="titulo_2">
+            <h1>Autentíquese</h1>
+        </div>
+        <div class="cuerpo_sistema">
+            <div class="bloque_dash">
+                <form action="data_acceso" method="post">
+                    <ul>
+                        <li>
+                            <label for="usuario">Nombre de Usuario: </label>
+                            <input type="text" inputmode="verbatim" id="usuario-sistema" minlength="8" maxlength="16" name="uSistema" value="admin" required>
+                        </li>                
+                        <li>
+                            <label for="claveAcceso">Clave de acceso: </label>
+                            <input type="password" inputmode="verbatim" id="clave-acceso" name="cAcceso" value="admin">
+                        </li>
+                        <div class="enviar_data_acceso">
+                            <li>
+                                <button type="submit">Ingresar</button>
+                            </li>
+                        </div>
+                    </ul>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>
