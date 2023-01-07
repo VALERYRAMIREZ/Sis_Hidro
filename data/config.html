@@ -24,7 +24,7 @@
                     <li><a href="/">Controles</a></li>
                     <li class="pag_activa"><a href="config">Configuración</a></li>
                     <li><a href="sobre-nosotros">Sobre Nosotros</a></li>
-                    <li><a href="contacto">Contacto</a></li>
+                    <li><a href="contacto.html">Contacto</a></li>
                 </ul>
             </nav>
         </div>
@@ -38,6 +38,14 @@
                         <h2>Parámetros de configuración</h2>
                     </div>
                     <ul>
+                        <li>
+                            <label for="forma">Forma del tanque <b></b></label>
+                            <select class="forma-tanque">
+                                <option value="caja">Caja</option>
+                                <option value="cilindro">Cilindro</option>
+                                <option value="semi-cono">Semi cono</option>
+                            </select>
+                        </li> 
                         <li>
                             <label for="altura">Altura del tanque <b>[ m ]</b></label>
                             <input type="number" id="altura" name="altura-tanque" value="2.5">
@@ -62,6 +70,6 @@
         <div class="salir">
             <button onclick="botonSalir()">Salir</button>
         </div>
-        <script src="app" type="text/javascript"></script>
+        <script src="app"></script>
     </body>
 </html>
