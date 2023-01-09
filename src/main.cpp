@@ -270,8 +270,13 @@ void setup() {
   });
 
   server.on("/autenticar", HTTP_GET, [](AsyncWebServerRequest *request){
-    Serial.println("Entrando a página bloqueado");
+    Serial.println("Entrando a página de autenticación");
     request->send(SPIFFS, "/autenticar.html", String());
+  });
+
+  server.on("/bloqueado", HTTP_GET, [](AsyncWebServerRequest *request){
+    Serial.println("Entrando a página de Bloqueado-minutos");
+    request->send(SPIFFS, "/bloqueado.html", String());
   });
 
   //Manejo de la página "No encontrado".

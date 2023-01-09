@@ -6,9 +6,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="icon" href="data;,">
         <link rel="stylesheet" type="text/css" href="style.css">
-        <script src="app"></script>
+        <noscript>Debe habilitar Javascript para ver el sitio completo</noscript>
     </head>
-    <body>
+    <body class="tema-claro">
         <div class="encabezado">
             <header>
                 <div class="caja-logo-empresa">
@@ -17,12 +17,8 @@
                 <div class="titulo">
                     <h1>Control Hidroneumático</h1>
                 </div>
-                <div>
-                    <p>
-                        <script>
-                            document.write(resPantalla())
-                        </script>
-                    </p>
+                <div class="cambia-tema">
+                    <button class="tema-visual" id="temVis">Claro</button>
                 </div>
             </header>
         </div>
@@ -77,6 +73,6 @@
         <div class="salir">
             <button onclick="botonSalir()">Salir</button>
         </div>
-        <script src="app"></script>
     </body>
+    <script src="app"></script>
 </html>

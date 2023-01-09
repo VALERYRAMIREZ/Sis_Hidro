@@ -1,11 +1,10 @@
-<!DOCTYPE HTML>
-<html>
+<!DOCTYPE HTML><html>
 <head>
   <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" type="text/css" href="style.css">
 </head>
-<body>
+<body class="tema-claro">
   <div class="encabezado">
     <header>
         <div class="caja-logo-empresa">
@@ -14,6 +13,9 @@
         <div class="titulo">
             <h1>Control Hidroneumático</h1>
         </div>
+        <div class="cambia-tema">
+          <button class="tema-visual" id="temVis">Claro</button>
+      </div>
     </header>
 </div>
 <div class="menu">
@@ -21,7 +23,7 @@
       <ul>
           <li><a href="/">Controles</a></li>
           <li><a href="config">Configuración</a></li>
-          <li><a href="no_encontrado">Sobre Nosotros</a></li>
+          <li class="pag_activa" ><a href="no_encontrado">Sobre Nosotros</a></li>
           <li><a href="contacto">Contacto</a></li>
       </ul>
   </nav>
@@ -32,5 +34,9 @@
   <div class="page-image">
     <img src="Pozo">
   </div>
-</body>  
+  <div class="salir">
+    <button onclick="botonSalir()">Salir</button>
+</div>
+</body>
+<script src="app"></script> 
 </html>
