@@ -13,7 +13,6 @@
     --tran-04: all 0.4s ease;
     --tran-05: all 0.5s ease;
 }
-
   .tema-claro {
     --body-color: #e6e6d9;
     --grad-uno-color: #bbbbbb;
@@ -21,6 +20,9 @@
     --primary-color-light: #1e2027; 
   }
 
+  .tema-claro:active {
+    transition: var(--tran-05);
+  }
   
   .tema-oscuro {
     --body-color: #161719;
@@ -28,8 +30,10 @@
     --grad-dos-color: #000101;
     --primary-color: #695cfe;
     --primary-color-light: #f6f5ff;
-    --text-color: #707070;    
+    --text-color: #707070;
   }
+
+  
 
   body {
     height: 100vh;
@@ -84,12 +88,11 @@
     margin: 0 auto;
   }
 
-  .encabezado .cambia-tema .tema-visual {
+  .encabezado .cambia-tema #temVis {
     border-radius: 30%;
-    width: 100%;
+    width: 10vw;
     height: 4vh;
-    /*border: 2px solid black;*/
-    box-shadow: 5px 5px 10px#999;
+    border: 2px solid black;
     color: var(--primary-color-light);
     background-color: var(--body-color);
   }
@@ -264,9 +267,6 @@
     margin-bottom: 5%;
   }
 
-  .bloque_dash {
-    box-shadow: 5px 5px 10px#999;
-  }
   .bloque_dash .contenido {
     display: inline-block;
     text-align: center;
@@ -527,21 +527,19 @@
 @media (max-width: 360px) {
 
   .encabezado .caja-logo-empresa {
-    width: 25%;
+    width: 35%;
+  }
+  .encabezado .titulo {
+    text-align: center;
+    font-size: 1em;
+  }
+
+  .titulo_2 {
+    font-size: 0.8em;
   }
 
   .encabezado .caja-logo-empresa .logo-empresa {
     max-width: 100%;
-  }
-
-  .encabezado .titulo {
-    text-align: center;
-    font-size: 0.8em;
-  }
-
-
-  .titulo_2 {
-    font-size: 0.8em;
   }
   
   .menu nav a {
@@ -641,10 +639,6 @@
 
   #tile01 {
   background-size:40px 250%;
-  }
-
-  .encabezado .cambia-tema .tema-visual {
-    height: 10vh;
   }
 
   /*---------Ajuste para la página de--------------*/
