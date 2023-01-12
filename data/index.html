@@ -6,9 +6,13 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="icon" href="data;,">
         <link rel="stylesheet" type="text/css" href="style.css">
-        <noscript>Debe habilitar Javascript para ver el sitio completo</noscript>
     </head>
-    <body class="tema-oscuro">
+    <body class="tema-claro">
+        <script>
+            if(!(localStorage.getItem("tema") == null)) {
+                document.body.classList = localStorage.getItem("tema");
+            }
+        </script>
         <div class="encabezado">
             <header>
                 <div class="caja-logo-empresa">
@@ -18,7 +22,13 @@
                     <h1>Control Hidroneumático</h1>
                 </div>
                 <div class="cambia-tema">
-                    <button class="tema-visual" id="temVis" onclick="Cambia_Tema()">Claro</button>
+                    <button class="tema-visual" id="temVis">Oscuro</button>
+                    <script>
+                        console.log("textoTema: " + localStorage.getItem("textoTema"));
+                        if(!(localStorage.getItem("textoTema") == null)) {
+                        document.getElementById("temVis").innerHTML = localStorage.getItem("textoTema");
+                    }
+                    </script>
                 </div>
             </header>
         </div>
@@ -71,8 +81,9 @@
             </div>
         </div>
         <div class="salir">
-            <button onclick="botonSalir()">Salir</button>
+            <button id="bloquearSistema">Salir</button>
         </div>
     </body>
-    <script src="app"></script>
+    <script src="app" type="text/javascript"></script>
+    <noscript>Debe habilitar Javascript para ver el sitio completo</noscript>
 </html>

@@ -95,6 +95,7 @@
     border: 2px solid black;
     color: var(--primary-color-light);
     background-color: var(--body-color);
+    box-shadow: 5px 5px 10px#999;
   }
 
   /*----------Estilo página barra de menú---------*/
@@ -116,24 +117,9 @@
     justify-content: right;
   }
 
-  .menu nav a {
-    display: flex;
-    align-items: center;
-    text-decoration: none;
-    font-size: 20px;
-    color: var(--primary-color-light);
-    font-size: 1em;
-  }
-
-  .menu nav a:hover {
-    transition: var(--tran-04);
-  }
-
   .menu nav li {
     list-style: none;
     display: inline-block;
-    width: 0 auto;
-    padding: 5px 10px;
     text-align: center;
     border-radius: 5%;
     cursor: pointer;
@@ -144,6 +130,19 @@
     background-color: var(--body-color);
     transition: var(--tran-04);
     color: var(--text-color);
+  }
+  .menu nav a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    font-size: 20px;
+    padding: 5px 10px;
+    color: var(--primary-color-light);
+    font-size: 1em;
+  }
+
+  .menu nav a:hover {
+    transition: var(--tran-04);
   }
 
   /*---------Estilo del cuerpo de control---------*/
@@ -527,24 +526,38 @@
 @media (max-width: 360px) {
 
   .encabezado .caja-logo-empresa {
-    width: 35%;
-  }
-  .encabezado .titulo {
-    text-align: center;
-    font-size: 1em;
-  }
-
-  .titulo_2 {
-    font-size: 0.8em;
+    width: 20%;
   }
 
   .encabezado .caja-logo-empresa .logo-empresa {
     max-width: 100%;
   }
+
+  .encabezado .titulo {
+    text-align: center;
+    font-size: 0.8em;
+    width: 60%;
+  }
+
+  .titulo_2 {
+    font-size: 0.8em;
+  }
   
   .menu nav a {
     font-size: 0.7em;
   }
+
+/*-----------Ajuste para el botón---------------*/
+/*--------------cambiar tema--------------------*/
+
+.encabezado .cambia-tema {
+  width: 20vw;
+}
+
+.encabezado .cambia-tema #temVis {
+  width: 20vw;
+  font-size: 0.7em;
+}
 
 /*-----------Ajuste para la los-----------------*/
 /*-----------botones de control-----------------*/
@@ -598,6 +611,13 @@
 
   .salir {
     margin-top: 5%;
+  }
+
+  /*--------Ajuste de la página Sobre----------*/
+  /*----------------nosotros-------------------*/
+
+  .texto article {
+    max-height: 60vh;
   }
 
   /*------Ajuste de la página contacto---------*/
@@ -659,6 +679,13 @@
   line-height: 4vh;
 }
 
+/*-----------Ajuste para el botón---------------*/
+/*--------------cambiar tema--------------------*/
+
+.encabezado .cambia-tema #temVis {
+  width: 15vw;
+  height: 8vh;
+}
 
   /*----------Ajuste de la página--------------*/
   /*--------------autenticar-------------------*/
