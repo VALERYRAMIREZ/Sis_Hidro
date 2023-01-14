@@ -24,7 +24,6 @@
                 <div class="cambia-tema">
                     <button class="tema-visual" id="temVis">Oscuro</button>
                     <script>
-                        console.log("textoTema: " + localStorage.getItem("textoTema"));
                         if(!(localStorage.getItem("textoTema") == null)) {
                         document.getElementById("temVis").innerHTML = localStorage.getItem("textoTema");
                     }
@@ -60,10 +59,10 @@
                         <h2>Controles</h2>
                     </div>
                     <div class="contenido">
-                        <p><a href="/apagar"><button class="button">APAGAR</button></a></p>
-                        <p><a href="/encender"><button class="button">ENCENDER</button></a></p>
-                        <p><a href="/auto"><button class="button">AUTO</button></a></p>
-                        <p><a href="/manual"><button class="button">MANUAL</button></a></p>
+                        <p><a href="/apagar">APAGAR</a></p>
+                        <p><a href="/encender">ENCENDER</a></p>
+                        <p><a href="/auto">AUTO</a></p>
+                        <p><a href="/manual">MANUAL</a></p>
                     </div>
                 </div>
                 <div class="bloque_dash">

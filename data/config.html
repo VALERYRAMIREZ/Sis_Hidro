@@ -24,7 +24,6 @@
                 <div class="cambia-tema">
                     <button class="tema-visual" id="temVis">Oscuro</button>
                     <script>
-                        console.log("textoTema: " + localStorage.getItem("textoTema"));
                         if(!(localStorage.getItem("textoTema") == null)) {
                         document.getElementById("temVis").innerHTML = localStorage.getItem("textoTema");
                     }

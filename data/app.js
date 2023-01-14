@@ -2,9 +2,11 @@
 //localStorage.clear();
 //Aplica_Estado_Inicial();
 
+/*------------Funcionamiento del cambio de temas------------------------*/
+/*-------------------de la aplicación-----------------------------------*/
+
 var estados = document.getElementById("temVis");
 estados.addEventListener("click", function() {
-    console.log("Entrando a acción de cambiador de tema.");
     let tTema;
     const cambiador = document.querySelector('.tema-visual');
     document.body.classList.toggle('tema-claro');
@@ -35,7 +37,52 @@ function resPantalla() {
     return window.innerWidth;
 }
 
-function Aplica_Estado_Inicial() {
+/*----------------Funcionamiento de los cambios de estilo-------------------*/
+/*------------------en los botones de control del sistema-------------------*/
+/*--------------------------------de bombeo---------------------------------*/
+
+var botonControl = document.querySelectorAll("a");
+botonControl.forEach(enlace => {
+    enlace.addEventListener("click", function(e) {
+        console.log("Evento e: ");
+        console.log(e);
+        let solHref = e.target.href;
+        //console.log("href del botón: " + solHref);
+        let regex = /\/(\w+)$/;
+        let funcSistema = solHref.match(regex)[0];
+        //console.log(typeof(funcSistema));
+        //console.log("Dirección parcial: " + funcSistema);
+        switch(funcSistema) {
+            case '/apagar':
+            {
+                console.log("APAGAR");
+            }
+            break;
+            case "/encender":
+            {
+                console.log("ENCENDER");
+            }
+            break;
+            case "/auto":
+            {
+                console.log("AUTO");
+            }
+            break;
+            case "/manual":
+            {
+                console.log("MANUAL");
+            }
+            break;
+            default:
+            {
+                console.log("Sin opción para funcSistema = " + funcSistema);
+            }
+            break;
+        }
+    });
+    return;   
+});
+/*function Aplica_Estado_Inicial() {
     if(localStorage.getItem("primeraCarga") === null) {
         console.log("Clases del body: " + document.body.classList);
         let claseBody = document.body.classList= "tema-claro";
@@ -56,6 +103,6 @@ function Aplica_Estado_Inicial() {
     /*if(!(localStorage.tema === undefined)) {
         document.body.className = localStorage.getItem("tema");
         document.getElementById("temVis").innerHTML = localStorage.getItem("textoTema");
-    }*/
+    }
     return;
-}
+}*/

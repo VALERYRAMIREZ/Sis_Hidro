@@ -157,7 +157,6 @@ void setup() {
   server.on("/encender", HTTP_GET,[](AsyncWebServerRequest *request){
     digitalWrite(ledPinEstado,HIGH);
     request->send(SPIFFS,"/index.html",String(),false,Procesador);
-        
   });
 
   //Manejo de las imágenes y logos.
