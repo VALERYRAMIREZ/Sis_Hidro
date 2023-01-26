@@ -4,15 +4,20 @@
 #include <WiFi.h>
 #include <WiFiMulti.h>
 #include <preferences.h>
+#include <arduinojson.h>
 
 //Declaración de usuario y clave de red WiFi.
 WiFiMulti wifiMulti;
 
 //Definición del usuario, clave y estado de acceso.
 
-String usuarioHTTP = "admin";
-String claveHTTP = "admin";
+char* usuarioHTTP = "admin";
+char* claveHTTP = "admin";
 bool eHTTP = false;
+
+//Variable que almacenará la última página cargada.
+
+String ultimaPaginaCargada = "";
 
 //Instanciación del objeto preferencias.
 
@@ -222,8 +227,7 @@ void setup() {
     if(ledEstado == "ENCENDIDO"){
       digitalWrite(ledModoSistema,HIGH);
     }
-    request->send(SPIFFS, "/index.html", String(), false,Procesador);
-        
+    request->send(SPIFFS, "/index.html", String(), false,Procesador); 
   });
 
   server.on("/manual", HTTP_GET,[](AsyncWebServerRequest *request){
@@ -236,46 +240,82 @@ void setup() {
 
   //Manejo de la página principal del sistema
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send(SPIFFS, "/index.html", String(), false, Procesador);
+    if(!request->authenticate(usuarioHTTP, claveHTTP)) {
+      return request->requestAuthentication("Ingreso al Sistema");
+    };
+    ultimaPaginaCargada = "/index.html";
+    Serial.println("Entrando a página principal");
+    request->send(SPIFFS, ultimaPaginaCargada, String(), false, Procesador);
         
   });
 
   //Manejo de la página de configuración.
   server.on("/config", HTTP_GET, [](AsyncWebServerRequest *request){
+    if(!request->authenticate(usuarioHTTP, claveHTTP)) {
+      return request->requestAuthentication();
+    };
+    ultimaPaginaCargada = "/config.html";
     Serial.println("Entrando a página configuración.");
-    request->send(SPIFFS, "/config.html", String());
+    request->send(SPIFFS, ultimaPaginaCargada, String());
         
   });
 
   //Manejo de la página Sobre Nosotros
   server.on("/sobre-nosotros", HTTP_GET, [](AsyncWebServerRequest *request){
+    if(!request->authenticate(usuarioHTTP, claveHTTP)) {
+      return request->requestAuthentication();
+    };
+    ultimaPaginaCargada = "/sobre-nosotros.html";
     Serial.println("Entrando a página Sobre Nosotros.");
-    request->send(SPIFFS, "/sobre-nosotros.html", String());
+    request->send(SPIFFS, ultimaPaginaCargada, String());
         
   });
 
   //Manejo de la página Contacto.
   server.on("/contacto", HTTP_GET, [](AsyncWebServerRequest *request){
+    if(!request->authenticate(usuarioHTTP, claveHTTP)) {
+      return request->requestAuthentication();
+    };
+    ultimaPaginaCargada = "/contacto.html";
     Serial.println("Entrando a página Contacto.");
-    request->send(SPIFFS, "/contacto.html", String());
+    request->send(SPIFFS, ultimaPaginaCargada, String());
         
   });
 
 //Manejo de la página de sistema bloqueado.
 
   server.on("/no-permitido", HTTP_GET, [](AsyncWebServerRequest *request){
-    Serial.println("Bloqueando el sistema.");
+    Serial.println("Enviando no permitido.");
     request->send(401);
   });
 
   server.on("/autenticar", HTTP_GET, [](AsyncWebServerRequest *request){
-    Serial.println("Entrando a página de autenticación");
-    request->send(SPIFFS, "/autenticar.html", String());
+    if(!request->authenticate(usuarioHTTP, claveHTTP)) {
+      return request->requestAuthentication();
+    };
+    Serial.println("Bloqueando el sistema");
+    ultimaPaginaCargada = "/autenticar.html";
+    request->send(SPIFFS, ultimaPaginaCargada, String());
   });
 
   server.on("/bloqueado", HTTP_GET, [](AsyncWebServerRequest *request){
-    Serial.println("Entrando a página de Bloqueado-minutos");
-    request->send(SPIFFS, "/bloqueado.html", String());
+    Serial.println("Bloqueando el sistema.");
+    AsyncWebServerResponse *respuesta = request->beginResponse(SPIFFS, "/bloqueado.html", String());
+    respuesta->addHeader("Clear-Site-Data", "cache");
+    respuesta->addHeader("Clear-Site-Data", "cookies");
+    request->send(respuesta);
+    Serial.println("Página 'bloqueado' cargada.");
+    Serial.println("Solicitando autenticación.");
+    if(!request->authenticate("salir", "sistema")) {
+      Serial.println("Autenticación incorrecta, intente nuevamente");
+      request->requestAuthentication();
+      Serial.println("Autenticación por datos incorrectos solicitada");
+    }
+    else {
+      Serial.println("Solicitanto última página cargada al retornar de bloqueo del sistema.");
+      request->send(SPIFFS, ultimaPaginaCargada, String(), false, Procesador);
+      Serial.println("Última página cargada solicitada");
+    };
   });
 
   //Manejo de la página "No encontrado".

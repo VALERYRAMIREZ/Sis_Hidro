@@ -7,7 +7,12 @@
         <link rel="icon" href="data;,">
         <link rel="stylesheet" type="text/css" href="style.css">
     </head>
-    <body class="tema-oscuro">
+    <body class="tema-claro">
+        <script>
+            if(!(localStorage.getItem("tema") == null)) {
+                document.body.classList = localStorage.getItem("tema");
+            }
+        </script>
         <div class="encabezado">
             <header>
                 <div class="caja-logo-empresa">
@@ -17,7 +22,12 @@
                     <h1>Control Hidroneumático</h1>
                 </div>
                 <div class="cambia-tema">
-                    <button class="tema-visual" id="temVis" onclick="Cambia_Tema()">Claro</button>
+                    <button class="tema-visual" id="temVis">Oscuro</button>
+                    <script>
+                        if(!(localStorage.getItem("textoTema") == null)) {
+                        document.getElementById("temVis").innerHTML = localStorage.getItem("textoTema");
+                    }
+                    </script>
                 </div>
             </header>
         </div>
@@ -25,14 +35,14 @@
             <nav>
                 <ul>
                     <li><a href="/">Controles</a></li>
-                    <li class="pag_activa"><a href="config">Configuración</a></li>
+                    <li><a href="config">Configuración</a></li>
                     <li><a href="sobre-nosotros">Sobre Nosotros</a></li>
                     <li><a href="contacto">Contacto</a></li>
                 </ul>
             </nav>
         </div>
-        <div class="bloqueado">
-            <h1>El sistema se encuentra bloqueado, por favor espere 3 minutos</h1>
+        <div class="titulo_2">
+            <h1>El sistema se encuentra bloqueado, para ingresar nuevamente presione una de las pestañas en el menú superior e ingrese sus credenciales</h1>
         </div>
     </body>
     <script src="app"></script>

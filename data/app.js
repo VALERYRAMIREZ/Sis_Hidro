@@ -26,12 +26,19 @@ estados.addEventListener("click", function() {
 });
 
 var bloqueado = document.getElementById("bloquearSistema");
-bloqueado.addEventListener("click", function() {
-    var sHTTP = new XMLHttpRequest();
-    sHTTP.open("GET", "no-permitido", true);
-    sHTTP.send();
-    setTimeout(function(){window.open("autenticar.html", "_self");}, 1000);    
-});
+if(bloqueado != null) {
+    bloqueado.addEventListener("click", function() {
+        console.log("Dueño del documento: " + bloqueado.ownerDocument[0]);
+        var sHTTP = new XMLHttpRequest();
+        sHTTP.open("GET", "/no-permitido", true);
+        sHTTP.send();
+        console.log("Solicitando página de bloqueo al salir del sistema.");
+        setTimeout(function() {
+            window.open("/bloqueado", "_self");
+        }, 1000);
+        console.log("Página de bloqueo solicitada.");
+    });
+}
 
 function resPantalla() {
     return window.innerWidth;
