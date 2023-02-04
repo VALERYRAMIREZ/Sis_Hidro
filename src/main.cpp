@@ -4,7 +4,8 @@
 #include <WiFi.h>
 #include <WiFiMulti.h>
 #include <preferences.h>
-#include <arduinojson.h>
+#include "AsyncJson.h"
+#include "ArduinoJson.h"
 
 //Declaración de usuario y clave de red WiFi.
 WiFiMulti wifiMulti;
@@ -49,6 +50,11 @@ String modoEstado;
 //Instanciación del servidor web.
 AsyncWebServer server(80);
 
+//Instanciación del documento JSON para recibir la configurcación
+//del sistema.
+
+DynamicJsonDocument docJson(512);
+
 //Función de procesamiento de datos. Debido al
 //funcionamiento interno de la función send(), la función
 //procesador es llamada cada vez que encuentra un
@@ -86,6 +92,31 @@ String Procesador(const String& var){//Función que chequea si el sistema está 
   }
   Serial.println("Saliendo de Procesador.");
   return String();
+}
+
+// Función para analizar la data enviada por la página web.
+
+void manejaJson(AsyncWebServerRequest *request, String filename, size_t index, uint8_t *data, size_t len, bool final) {
+  Serial.println("Recibiendo configuración de la dirección IP ." + request->client()->remoteIP().toString() + " " + request->url());
+  if(!filename) {
+    Serial.println("No hay archivo.");
+  }
+  if(!index) {
+    request->_tempFile = SPIFFS.open("/" + filename, "w");
+    Serial.println("Carga Iniciada" + String(filename));
+  }
+  if(len) {
+    request->_tempFile.close();
+    Serial.println("Escribiendo archivo: " + String(filename) + ", tamaño: " + String(len));
+  }
+  if(final) {
+    request->_tempFile.close();
+    Serial.println("Carga completa: " + String(filename) + ", tamaño: " + String(index + filename));
+    request->redirect("/");
+  }
+  else {
+    Serial.println("No se cumplieron las condiciones para manejar la data recibida");
+  }
 }
 
 // Función para controlar la bomba a encender
@@ -317,6 +348,19 @@ void setup() {
       Serial.println("Última página cargada solicitada");
     };
   });
+
+  //Manejo de la data de programación recibida.
+
+  AsyncCallbackJsonWebHandler* manejadorJson = new AsyncCallbackJsonWebHandler("/forma-dato", [](AsyncWebServerRequest *request, JsonVariant &docJson) {
+    auto&& jsonObj = docJson.as<JsonObject>();
+    Serial.print("La fecha actual es :");
+    Serial.println((const char *) jsonObj["fecha"]);
+    Serial.print("El horario del domingo en la tarde es: ");
+    Serial.println((const char *) jsonObj["domingo-tarde-fin"]);
+    request->send(200);
+    Serial.println("Configuración recibida.");
+  });
+  server.addHandler(manejadorJson);
 
   //Manejo de la página "No encontrado".
 

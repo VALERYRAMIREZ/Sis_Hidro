@@ -10,7 +10,7 @@
     <body class="tema-claro">
         <script>
             if(!(localStorage.getItem("tema") == null)) {
-                document.body.classList = localStorage.tema;
+                document.body.classList = localStorage.getItem("tema");
             }
         </script>
         <div class="encabezado">
@@ -24,6 +24,7 @@
                 <div class="cambia-tema">
                     <button class="tema-visual" id="temVis">Oscuro</button>
                     <script>
+                        console.log("textoTema: " + localStorage.getItem("textoTema"));
                         if(!(localStorage.getItem("textoTema") == null)) {
                         document.getElementById("temVis").innerHTML = localStorage.getItem("textoTema");
                     }
@@ -45,15 +46,15 @@
             <h1>Configuración del Sistema</h1>
         </div>
         <div class="cuerpo_sistema">
-            <div class="bloque_dash">
-                <form action="config_data" method="post">
-                    <div class="titulo_2">
-                        <h2>Parámetros de configuración</h2>
-                    </div>
+            <div class="configurar">
+                <form action="" id="forma">
                     <ul>
+                        <div class="titulo_2">
+                            <h2>Configuración de parámetros del tanque</h2>
+                        </div>
                         <li>
                             <label for="forma">Forma del tanque <b></b></label>
-                            <select class="forma-tanque">
+                            <select class="forma-tanque" name="selec-tanque">
                                 <option value="caja">Caja</option>
                                 <option value="cilindro">Cilindro</option>
                                 <option value="semi-cono">Semi cono</option>
@@ -61,15 +62,150 @@
                         </li> 
                         <li>
                             <label for="altura">Altura del tanque <b>[ m ]</b></label>
-                            <input type="number" id="altura" name="altura-tanque" value="2.5">
+                            <input type="number" id="altura-tanque" name="altura-tanque" value="2.5" required>
                         </li>                
                         <li>
                             <label for="volumen">Volumen máximo <b>[ l ]</b></label>
-                            <input type="number" id="volumen" name="volumen-tanque" value="1000">
+                            <input type="number" id="volumen-volumen" name="volumen-tanque" value="1000" required>
                         </li>
                         <li>
                             <label for="minVol">Volumen Mínimo <b>[ l ]</b></label>
-                            <input id="number" name="volumen-minimo" value="50">
+                            <input id="number" id="volumen-minimo" name="volumen-minimo" value="50" required>
+                        </li>
+                        <div class="titulo_2">
+                            <h2>Configuración de fecha y horarios de funcionamiento</h2>
+                        </div>
+                        <li>
+                            <div class="fecha-prog">
+                                <label for="Fecha">Fecha <b>[ dd/mm/aaaa ]</b></label>
+                                <input type="date" id="fecha" name="fecha" value="2023-01-01" required>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="lunes-div-hab">
+                                <h3>Lunes</h3>
+                                <input type="checkbox" name="habilitar-lunes" id="habilitar-lunes">
+                            </div>
+                            <div class="hora-prog">
+                                <div class="lunes-manana">
+                                    <h3>Mañana</h3>
+                                    <input type="time" id="lunes-manana-inicio" name="lunes-manana-inicio" value="06:00" min="00:00" max="12:00" required>
+                                    <input type="time" id="lunes-manana-fin" name="lunes-manana-fin" value="06:30" min="00:00" max="12:00" required>
+                                </div>
+                                <div class="lunes-tarde">
+                                    <h3>Tarde</h3>
+                                    <input type="time" id="lunes-tarde-inicio" name="lunes-tarde-inicio" value="20:00" min="12:01" max="23:59">
+                                    <input type="time" id="lunes-tarde-fin" name="lunes-tarde-fin" value="20:30" min="12:01" max="23:59">
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="martes-div-hab">
+                                <h3>Martes</h3>
+                                <input type="checkbox" name="habilitar-martes" id="habilitar-martes">
+                            </div>
+                            <div class="hora-prog">
+                                <div class="martes-manana">
+                                    <h3>Mañana</h3>
+                                    <input type="time" id="martes-manana-inicio" name="martes-manana-inicio" value="06:00" min="00:00" max="12:00">
+                                    <input type="time" id="martes-manana-fin" name="martes-manana-fin" value="06:30" min="00:00" max="12:00">
+                                </div>
+                                <div class="martes-tarde">
+                                    <h3>Tarde</h3>
+                                    <input type="time" id="martes-tarde-inicio" value="20:00" min="12:01" max="23:59">
+                                    <input type="time" id="martes-tarde-fin" value="20:30" min="12:01" max="23:59">
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="miercoles-div-hab">
+                                <h3>Miércoles</h3>
+                                <input type="checkbox" name="habilitar-miercoles" id="habilitar-miercoles">
+                            </div>
+                            <div class="hora-prog">
+                                <div class="miercoles-manana">
+                                    <h3>Mañana</h3>
+                                    <input type="time" id="miercoles-manana-inicio" name="miercoles-manana-inicio" value="06:00" min="00:00" max="12:00">
+                                    <input type="time" id="mirecoles-manana-fin" name="mirecoles-manana-fin" value="06:30" min="00:00" max="12:00">
+                                </div>
+                                <div class="miercoles-tarde">
+                                    <h3>Tarde</h3>
+                                    <input type="time" id="miercoles-tarde-inicio" name="miercoles-tarde-inicio" value="20:00" min="12:01" max="23:59">
+                                    <input type="time" id="miercoles-tarde-fin" name="miercoles-tarde-fin" value="20:30" min="12:01" max="23:59">
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="jueves-div-hab">
+                                <h3>Jueves</h3>
+                                <input type="checkbox" name="habilitar-jueves" id="habilitar-jueves">
+                            </div>
+                            <div class="hora-prog">
+                                <div class="jueves-manana">
+                                    <h3>Mañana</h3>
+                                    <input type="time" id="jueves-manana-inicio" name="jueves-manana-inicio" value="06:00" min="00:00" max="12:00">
+                                    <input type="time" id="jueves-manana-fin" name="jueves-manana-fin" value="06:30" min="00:00" max="12:00">
+                                </div>
+                                <div class="jueves-tarde">
+                                    <h3>Tarde</h3>
+                                    <input type="time" id="jueves-tarde-inicio" name="jueves-tarde-inicio" value="20:00" min="12:01" max="23:59">
+                                    <input type="time" id="jueves-tarde-fin" name="jueves-tarde-fin" value="20:30" min="12:01" max="23:59">
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="viernes-div-hab">
+                                <h3>Viernes</h3>
+                                <input type="checkbox" name="habilitar-viernes" id="habilitar-viernes">
+                            </div>
+                            <div class="hora-prog">
+                                <div class="viernes-manana">
+                                    <h3>Mañana</h3>
+                                    <input type="time" id="viernes-manana-inicio" name="viernes-manana-inicio" value="06:00" min="00:00" max="12:00">
+                                    <input type="time" id="viernes-manana-fin" name="viernes-manana-fin" value="06:30" min="00:00" max="12:00">
+                                </div>
+                                <div class="viernes-tarde">
+                                    <h3>Tarde</h3>
+                                    <input type="time" id="viernes-tarde-inicio" name="viernes-tarde-inicio" value="20:00" min="12:01" max="23:59">
+                                    <input type="time" id="viernes-tarde-fin" name="viernes-tarde-fin" value="20:30" min="12:01" max="23:59">
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="sabado-div-hab">
+                                <h3>Sábado</h3>
+                                <input type="checkbox" name="habilitar-sabado" id="habilitar-sabado">
+                            </div>
+                            <div class="hora-prog">
+                                <div class="sabado-manana">
+                                    <h3>Mañana</h3>
+                                    <input type="time" id="sabado-manana-inicio" value="06:00" min="00:00" max="12:00">
+                                    <input type="time" id="sabado-manana-fin" value="06:30" min="00:00" max="12:00">
+                                </div>
+                                <div class="sabado-tarde">
+                                    <h3>Tarde</h3>
+                                    <input type="time" id="sabado-tarde-inicio" name="sabado-tarde-inicio" value="20:00" min="12:01" max="23:59">
+                                    <input type="time" id="sabado-tarde-fin" name="sabado-tarde-fin" value="20:30" min="12:01" max="23:59">
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="domingo-div-hab">
+                                <h3>Domingo</h3>
+                                <input type="checkbox" name="habilitar-domingo" id="habilitar-domingo">
+                            </div>
+                            <div class="hora-prog">
+                                <div class="domingo-manana">
+                                    <h3>Mañana</h3>
+                                    <input type="time" id="domingo-manana-inicio" name="domingo-manana-inicio" value="06:00" min="00:00" max="12:00">
+                                    <input type="time" id="domingo-manana-fin" name="domingo-manana-fin" value="06:30" min="00:00" max="12:00">
+                                </div>
+                                <div class="domingo-tarde">
+                                    <h3>Tarde</h3>
+                                    <input type="time" id="domingo-tarde-inicio" name="domingo-tarde-inicio" value="20:00" min="12:01" max="23:59">
+                                    <input type="time" id="domingo-tarde-fin" name="domingo-tarde-fin" value="20:30" min="12:01" max="23:59">
+                                </div>
+                            </div>
                         </li>
                         <div class="guarda-conf">
                             <li>

@@ -1,6 +1,11 @@
 "use strict";
+//import fs from 'fs';
 //localStorage.clear();
 //Aplica_Estado_Inicial();
+
+if(document.getElementById("btnC1") != null) {
+    var inicialBotonBg = window.getComputedStyle(document.getElementById("btnC1")).backgroundColor;
+};
 
 /*------------Funcionamiento del cambio de temas------------------------*/
 /*-------------------de la aplicación-----------------------------------*/
@@ -12,6 +17,9 @@ estados.addEventListener("click", function() {
     document.body.classList.toggle('tema-claro');
     document.body.classList.toggle('tema-oscuro');
     document.body.style.transition = "1s ease"; //indicado por openAi
+    if(document.getElementById("btnC1") != null) {
+        inicialBotonBg = window.getComputedStyle(document.getElementById("btnC1")).backgroundColor;
+    };
     localStorage.setItem("tema", document.getElementsByTagName("body")[0].className);
     const className = document.body.className;
     if(className == 'tema-claro') {
@@ -26,19 +34,12 @@ estados.addEventListener("click", function() {
 });
 
 var bloqueado = document.getElementById("bloquearSistema");
-if(bloqueado != null) {
-    bloqueado.addEventListener("click", function() {
-        console.log("Dueño del documento: " + bloqueado.ownerDocument[0]);
-        var sHTTP = new XMLHttpRequest();
-        sHTTP.open("GET", "/no-permitido", true);
-        sHTTP.send();
-        console.log("Solicitando página de bloqueo al salir del sistema.");
-        setTimeout(function() {
-            window.open("/bloqueado", "_self");
-        }, 1000);
-        console.log("Página de bloqueo solicitada.");
-    });
-}
+bloqueado.addEventListener("click", function() {
+    var sHTTP = new XMLHttpRequest();
+    sHTTP.open("GET", "no-permitido", true);
+    sHTTP.send();
+    setTimeout(function(){window.open("autenticar.html", "_self");}, 1000);    
+});
 
 function resPantalla() {
     return window.innerWidth;
@@ -54,28 +55,29 @@ botonControl.forEach(enlace => {
         console.log("Evento e: ");
         console.log(e);
         let solHref = e.target.href;
-        //console.log("href del botón: " + solHref);
-        let regex = /\/(\w+)$/;
-        let funcSistema = solHref.match(regex)[0];
-        //console.log(typeof(funcSistema));
-        //console.log("Dirección parcial: " + funcSistema);
-        switch(funcSistema) {
-            case '/apagar':
+        console.log("href del botón: " + solHref);
+        let regex = /\#\d$/;
+        let funcSistema = solHref.match(regex);
+        console.log(typeof(funcSistema));
+        console.log("Dirección parcial: " + funcSistema);
+        (e.target.style.backgroundColor !== 'red') ? e.target.style.backgroundColor = 'red' : e.target.style.backgroundColor = inicialBotonBg;
+        switch(funcSistema[0]) {
+            case '#1':
             {
                 console.log("APAGAR");
             }
             break;
-            case "/encender":
+            case "#2":
             {
                 console.log("ENCENDER");
             }
             break;
-            case "/auto":
+            case "#3":
             {
                 console.log("AUTO");
             }
             break;
-            case "/manual":
+            case "#4":
             {
                 console.log("MANUAL");
             }
@@ -87,8 +89,41 @@ botonControl.forEach(enlace => {
             break;
         }
     });
-    return;   
 });
+
+if(document.getElementById("forma") != null) {              // Si encuentra la forma con la id igual a "forma",
+    var elementoForma = document.getElementById("forma");   // extrae los valores completos.
+    elementoForma.addEventListener("submit", function(e) {
+        e.preventDefault();
+        var datosForma = {};
+        var formaDatos = new FormData(elementoForma);
+        for(var [k,v] of formaDatos) {
+            datosForma[k] = v;
+        }
+        console.log(datosForma);
+        var datosJson = JSON.stringify(datosForma)
+        console.log(datosJson);
+        var config = new Blob([datosJson], {type: 'application/json'});
+        fetch("forma-dato", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: datosJson
+        });
+        /*fs.writeFile('config.json', datosJson, 'utf-8', (err) => {
+            if(err) {
+                throw err;
+            }
+            console.log("Archivo guardado correctamente");
+        });*/
+        console.log(config);
+        /*var envioForma = new XMLHttpRequest();
+        envioForma.open("POST", "forma-dato", true);
+        envioForma.send(config);*/
+    });
+}
+
 /*function Aplica_Estado_Inicial() {
     if(localStorage.getItem("primeraCarga") === null) {
         console.log("Clases del body: " + document.body.classList);

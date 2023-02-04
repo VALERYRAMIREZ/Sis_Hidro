@@ -17,6 +17,7 @@
     --body-color: #e6e6d9;
     --grad-uno-color: #bbbbbb;
     --grad-dos-color: #4d4d51;
+    --primary-color: #695cfe;
     --primary-color-light: #1e2027; 
   }
 
@@ -43,7 +44,8 @@
   /*--------Menú, encabezado y título de--------*/
   /*------------------sección.------------------*/
 
-  .titulo_2 h1 {
+  .titulo_2 h1,
+  h3 {
     color: var(--primary-color-light);
     text-align: center;
     margin-top: 1%;
@@ -135,7 +137,7 @@
     display: flex;
     align-items: center;
     text-decoration: none;
-    font-size: 20px;
+    font-size: 0.8em;
     padding: 5px 10px;
     color: var(--primary-color-light);
     font-size: 1em;
@@ -169,7 +171,8 @@
 
   /*------Estilo de bloques de dashboard----------*/
 
-  .cuerpo_sistema {
+  .cuerpo_sistema,
+  .configurar {
     display: flex;
     justify-content: center;
   }
@@ -177,34 +180,33 @@
   .cuerpo_sistema .controles_sistema {
     display: flex;
     justify-content: center;
-    width: 80%;
-    height: 50%;
+    width: 100vw;
   }
 
-  .cuerpo_sistema form {
+  .cuerpo_sistema .configurar form {
     display: inline-block;
     text-align: center;
     width: 70vw;
-    height: 50vh;
+    height: auto;
     background-color: var(--grad-uno-color);
     border-radius: 1%;
     padding: 0;
     margin-top: 5%;
   }
 
-  .cuerpo_sistema form .titulo_2,
-  .cuerpo_sistema form li label {
+  .cuerpo_sistema .configurar form .titulo_2,
+  .cuerpo_sistema .configurar form li label {
     color: var(--primary-color-light);
   }
 
-  .cuerpo_sistema form ul {
+  .cuerpo_sistema .configurar form ul {
     list-style: none;
     display: flex;
     flex-direction: column;
     max-height: 100%;
   }
 
-  .cuerpo_sistema .bloque_dash form ul li {
+  .cuerpo_sistema .configurar form ul li {
     display: flex;
     justify-content: space-between;
     line-height: 8vh;
@@ -212,32 +214,70 @@
     margin: none;
   }
 
-  .cuerpo_sistema .bloque_dash form ul li input,
-  .cuerpo_sistema .bloque_dash form ul li select {
+  .cuerpo_sistema .configurar form ul li {
+    display: inline-block;
+  }
+
+  .cuerpo_sistema .configurar form ul li input,
+  .cuerpo_sistema .configurar form ul li select {
     background-color: var(--grad-uno-color);
     color: var(--primary-color-light);
     border: none;
     text-align: center;
-    border-bottom: 2px solid #111111;
+    border-bottom: 2px solid var(--primary-color-light);
     width: 24.5vw;
   }
 
+  .cuerpo_sistema .configurar form ul li .lunes-div-hab,
+  .cuerpo_sistema .configurar form ul li .martes-div-hab,
+  .cuerpo_sistema .configurar form ul li .miercoles-div-hab,
+  .cuerpo_sistema .configurar form ul li .jueves-div-hab,
+  .cuerpo_sistema .configurar form ul li .viernes-div-hab,
+  .cuerpo_sistema .configurar form ul li .sabado-div-hab,
+  .cuerpo_sistema .configurar form ul li .domingo-div-hab,
+  .cuerpo_sistema .configurar form ul li .fecha-prog {
+    display: flex;
+    justify-content: space-around;
+    border-top: 3px solid var(--primary-color-light);
+    margin-top: 2vh;
+  }
 
-  .cuerpo_sistema .bloque_dash form ul .guarda-conf {
+  .cuerpo_sistema .configurar form ul li .lunes-div-hab #habilitar-lunes,
+  .cuerpo_sistema .configurar form ul li .martes-div-hab #habilitar-martes,
+  .cuerpo_sistema .configurar form ul li .miercoles-div-hab #habilitar-miercoles,
+  .cuerpo_sistema .configurar form ul li .jueves-div-hab #habilitar-jueves,
+  .cuerpo_sistema .configurar form ul li .viernes-div-hab #habilitar-viernes,
+  .cuerpo_sistema .configurar form ul li .sabado-div-hab #habilitar-sabado,
+  .cuerpo_sistema .configurar form ul li .domingo-div-hab #habilitar-domingo {
+    width: 3vw;
+  }
+
+  .cuerpo_sistema .configurar form ul li .fecha-prog,
+  .cuerpo_sistema .configurar form ul li .hora-prog {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .cuerpo_sistema .configurar form ul li .fecha-prog input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+  }
+
+  .cuerpo_sistema .configurar form ul .guarda-conf {
     display: flex;
     justify-content: center;
     height: auto;
     margin-top: 4vh;
+    margin-bottom: 4vh;
   }
 
-  .cuerpo_sistema .bloque_dash form ul .guarda-conf li {
+  .cuerpo_sistema .configurar form ul .guarda-conf li {
     display: flex;
     justify-content: center;
     align-items: center;
     width: 50%;
   }
 
-  .cuerpo_sistema .bloque_dash form ul .guarda-conf button {
+  .cuerpo_sistema .configurar form ul .guarda-conf button {
     text-align: center;
     font-size: 20px;
     width: 100%;
@@ -251,13 +291,14 @@
 
   .cuerpo_sistema .controles_sistema .bloque_dash {
     text-align: center;
-    width: 50%;
-    height: 30vh;
+    width: 250px;
+    height: 250px;
     background-color: var(--grad-uno-color);
     border-radius: 1%;
     padding: 1%;
-    margin: 5%;
+    margin: 20px auto;
   }
+  
   .cuerpo_sistema .controles_sistema .bloque_dash .titulo_2 {
     display: flex;
     justify-content: center;
@@ -265,6 +306,8 @@
     height: 10%;
     margin-bottom: 5%;
   }
+
+  .cuerpo_sistema .controles_sistema .bloque_dash 
 
   .bloque_dash .contenido {
     display: inline-block;
@@ -281,7 +324,7 @@
     font-size: 70%;
     width: 90%;
     height: 15%;
-    background-color: var(--body-color);
+
     margin: 2%;
     border-radius: 2%;
     cursor: pointer;
@@ -291,7 +334,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background: none;
+    background-color: var(--body-color);
     width: 100%;
     height: 100%;
     text-decoration: none;
@@ -309,24 +352,24 @@
   
   /*-------Estilo del tanque de agua------------*/
 
-  #box{
+  .cuerpo_sistema .controles_sistema .bloque_dash .contenido .box {
     margin: 0 auto;
     width:100%;
     height:95%;
     border-radius:20px;
     border:5px solid #111111;
-    background-color: none;
+    position: relative;
   }
 
-  #tile01
-{
-  margin: auto;
+  .cuerpo_sistema .controles_sistema .bloque_dash .contenido .box .tile01 {
+  
   width:100%;
   height:100%; 
-  background-image:-webkit-radial-gradient(center 0px,800px 1500px, #111111 10%, #0099ff 10.4%);
-  background-size:40px 200%; 
+  background: -webkit-radial-gradient(center 0px,800px 1700px, #111111 10%, #0099ff 10.4%);
+  background-size:40px 200%;
   border-radius: 12px;
   background-clip: border-box; 
+  background-position:0px 100%;
   animation-name: wave-animation; 
   animation-duration: 3s;  
   animation-iteration-count:infinite; 
@@ -336,8 +379,9 @@
  @keyframes wave-animation
  { 
   0% {
-    background-position: 10px 0%;
+    background-position: 0px 0%;
   }
+
   50% {
     background-position: 40px 50%;
   }
@@ -554,8 +598,8 @@
     font-size: 0.8em;
   }
   
-  .menu nav a {
-    font-size: 0.7em;
+  .menu nav ul li a {
+    font-size: 0.75em;
   }
 
 /*-----------Ajuste para el botón---------------*/
@@ -573,18 +617,36 @@
 /*-----------Ajuste para la los-----------------*/
 /*-----------botones de control-----------------*/
 
+.cuerpo_sistema .controles_sistema {
+  display: inline-block;
+  justify-content: center;
+}
+
   .bloque_dash .contenido {
-    display: inline-block;
+    display: block;
     text-align: center;
     width: 95%;
     height: 85%;
     margin: 0 auto;
+    padding-top: 15%;
+  }
+
+  .bloque_dash .control {
+    padding-top: 10%;
   }
   
+  .bloque_dash .tanque {
+    padding-top: 10%;
+  }
+
   .bloque_dash p {
     height: 20%;
     margin: 5%;
   }
+
+/*-----------Ajuste para la el -----------------*/
+/*----------- visualidador del------------------*/
+/*-------------nivel del tanque-----------------*/
 
 /*---------Ajuste para la página de--------------*/
 /*---------------configuración-------------------*/
@@ -600,7 +662,7 @@
     font-size: 0.7em;
   }
 
-  .cuerpo_sistema .bloque_dash form ul li {
+  /*.cuerpo_sistema .bloque_dash form ul li {
     display: flex;
     justify-content: space-between;
     line-height: 6vh;
@@ -616,7 +678,7 @@
     border-bottom: 2px solid #111111;
     color: var(--primary-color-light);
     width: 35vw;
-  }
+  }*/
 
   /*---------Ajuste del botón salir------------*/
 
@@ -650,10 +712,10 @@
 /*-----------Ajuste para la los-----------------*/
 /*-----------botones de control-----------------*/
 
-  .cuerpo_sistema .controles_sistema .bloque_dash {
+/*  .cuerpo_sistema .controles_sistema .bloque_dash {
     height: 50vh;
     border-radius: 2vh;
-  }
+  }*/
 
   .bloque_dash .contenido {
     display: inline-block;
@@ -668,11 +730,8 @@
     margin: 3%;
   }
 
-  #tile01 {
-  background-size:40px 250%;
-  }
 
-  /*---------Ajuste para la página de--------------*/
+/*---------Ajuste para la página de--------------*/
 /*---------------configuración-------------------*/
 
 .cuerpo_sistema form {
@@ -705,109 +764,3 @@
     margin: 2%;
   }
 }
-  /* Estilo original en blanco y negro.*/
-  /*html {
-    font-family: Helvetica;
-    display: inline-block;
-    margin: 0px auto;
-    text-align: center;
-  }
-  h1, h2 {
-    color: #0F3376;
-    padding: 2vh;
-  }
-  p{
-    font-size: 1.5rem;
-  }
-  .button {
-    display: inline-block;
-    width: 90%;
-    font-size: 70%;
-    padding: 5px 10px;
-    background-color: #000;
-    border: 1px solid #000;
-    text-align: center;
-    color: #fff;
-    border-radius: 5%;
-    cursor: pointer;
-  }
-  
-  .button2 {
-    background-color: #f44336;
-  }
-
- Formato de la caja de control del sistema.
-
-  .cuerpo_sistema {
-    display: flex;
-    justify-content: center;
-    border-color: #000;
-    border-radius: 5%;
-  }
-
-  .estado_sistema {
-    width: 80%;
-    border-color: #000;
-    background-color: #999;
-    border-radius: 5%;
-    box-shadow: 5px 5px 10px#999;
-    margin: 0 auto;
-    text-align: left;
-  }
-
-  .controles_sistema {
-    width: 40%;
-    border-color: #000;
-    background-color: #999;
-    border-radius: 5%;
-    box-shadow: 5px 5px 10px#999;
-    margin-left: 0px;
-  }
-
-  .monitor_sistema {
-    width: 40%;
-    border-color: #000;
-    background-color: #999;
-    border-radius: 5%;
-    box-shadow: 5px 5px 10px#999;
-    margin-right: 0px ;
-  }
-
-   Formato para imagen de la página no encontrado.
-
-  .page-image img {
-    width: 100%;
-    height: auto;
-    border-radius: 5%;
-    box-shadow: 5px 5px 10px #999;
-  }
-
-   Comfiguración del menú del sistema.
-
-  .menu nav a {
-    text-decoration: none;
-    font-size: 20px;
-    color: inherit;
-    font-size: 14px;
-  }
-
-  .menu nav li {
-    list-style: none;
-    display: inline-block;
-    width: 20%;
-    padding: 5px 10px;
-    background-color: #000;
-    border: 1px solid #000;
-    text-align: center;
-    color: #fff;
-    border-radius: 5%;
-    cursor: pointer;
-  }
-
-  .menu nav li:hover,
-  .button:hover {
-    background-color: #fff;
-    color: #000;
-    transition: 0.4s;
-  }
-  */
