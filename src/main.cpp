@@ -6,6 +6,10 @@
 #include <preferences.h>
 #include "AsyncJson.h"
 #include "ArduinoJson.h"
+#include "ESP32Time.h"
+//#include <iostream>
+#include <sstream>
+using namespace std;
 
 //Declaración de usuario y clave de red WiFi.
 WiFiMulti wifiMulti;
@@ -47,6 +51,9 @@ uint8_t nivelA = 0;
 
 String modoEstado;
 
+//Instanciaci
+ESP32Time rtc(-14400);            //GMT-4.
+
 //Instanciación del servidor web.
 AsyncWebServer server(80);
 
@@ -54,6 +61,32 @@ AsyncWebServer server(80);
 //del sistema.
 
 DynamicJsonDocument docJson(512);
+
+/*********Estructuras para el almacenamiento de***********/
+/**********la programación horaria del sistema************/
+
+// Estructura para almacenar el día y programa respectivo.
+struct diaSemana{
+  const char* inicioManana;
+  const char* finManana;
+  const char* inicioTarde;
+  const char* finTarde;
+};
+
+// Estructura para almacenar los programas de todos los 
+// dias de la semana.
+struct Semana {
+  diaSemana lunes;
+  diaSemana martes;
+  diaSemana miercoles;
+  diaSemana jueves;
+  diaSemana viernes;
+  diaSemana sabado;
+  diaSemana domingo;
+};
+
+// Instanciación de la estructura semana.
+Semana semana;
 
 //Función de procesamiento de datos. Debido al
 //funcionamiento interno de la función send(), la función
@@ -117,6 +150,18 @@ void manejaJson(AsyncWebServerRequest *request, String filename, size_t index, u
   else {
     Serial.println("No se cumplieron las condiciones para manejar la data recibida");
   }
+}
+
+uint8_t Extrae_Fecha(string trama) {
+  uint8_t contador = 0;
+  string lectura;
+  stringstream cadena_leida(trama);
+  while(getline(cadena_leida, lectura, '-'))
+  {
+    Serial.println(lectura.c_str());
+    contador++;
+  }
+  return contador;
 }
 
 // Función para controlar la bomba a encender
@@ -355,8 +400,42 @@ void setup() {
     auto&& jsonObj = docJson.as<JsonObject>();
     Serial.print("La fecha actual es :");
     Serial.println((const char *) jsonObj["fecha"]);
+    Extrae_Fecha(jsonObj["fecha"]);
+    Serial.print("La hora actual es: ");
+    Serial.println((const char *) jsonObj["hora-actual"]);
+    semana.lunes.inicioManana = jsonObj["lunes-manana-inicio"];
+    semana.lunes.finManana = jsonObj["lunes-manana-fin"];
+    semana.lunes.inicioTarde = jsonObj["lunes-tarde-inicio"];
+    semana.lunes.finTarde = jsonObj["lunes-tarde-fin"];
+    semana.martes.inicioManana = jsonObj["martes-manana-inicio"];
+    semana.martes.finManana = jsonObj["martes-manana-fin"];
+    semana.martes.inicioTarde = jsonObj["martes-tarde-inicio"];
+    semana.martes.finTarde = jsonObj["martes-tarde-fin"];
+    semana.miercoles.inicioManana = jsonObj["miercoles-manana-inicio"];
+    semana.miercoles.finManana = jsonObj["miercoles-manana-fin"];
+    semana.miercoles.inicioTarde = jsonObj["miercoles-tarde-inicio"];
+    semana.miercoles.finTarde = jsonObj["miercoles-tarde-fin"];
+    semana.jueves.inicioManana = jsonObj["jueves-manana-inicio"];
+    semana.jueves.finManana = jsonObj["jueves-manana-fin"];
+    semana.jueves.inicioTarde = jsonObj["jueves-tarde-inicio"];
+    semana.jueves.finTarde = jsonObj["jueves-tarde-fin"];
+    semana.viernes.inicioManana = jsonObj["viernes-manana-inicio"];
+    semana.viernes.finManana = jsonObj["viernes-manana-fin"];
+    semana.viernes.inicioTarde = jsonObj["viernes-tarde-inicio"];
+    semana.viernes.finTarde = jsonObj["viernes-tarde-fin"];
+    semana.sabado.inicioManana = jsonObj["sabado-manana-inicio"];
+    semana.sabado.finManana = jsonObj["sabado-manana-fin"];
+    semana.sabado.inicioTarde = jsonObj["sabado-tarde-inicio"];
+    semana.sabado.finTarde = jsonObj["sabado-tarde-fin"];
+    semana.domingo.inicioManana = jsonObj["domingo-manana-inicio"];
+    semana.domingo.finManana = jsonObj["domingo-manana-fin"];
+    semana.domingo.inicioTarde = jsonObj["domingo-tarde-inicio"];
+    semana.domingo.finTarde = jsonObj["domingo-tarde-fin"];
+
+    Serial.print("El horario del lunes en la mañana es: ");
+    Serial.println(semana.lunes.inicioManana);
     Serial.print("El horario del domingo en la tarde es: ");
-    Serial.println((const char *) jsonObj["domingo-tarde-fin"]);
+    Serial.println(semana.domingo.finTarde);
     request->send(200);
     Serial.println("Configuración recibida.");
   });
