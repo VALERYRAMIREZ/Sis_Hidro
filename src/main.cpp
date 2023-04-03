@@ -65,6 +65,17 @@ DynamicJsonDocument docJson(512);
 /*********Estructuras para el almacenamiento de***********/
 /**********la programación horaria del sistema************/
 
+//Estructura para almacenar la fecha a programar al sistema.
+
+struct FechaProg {
+  char dia[3];
+  char mes[3];
+  char ano[5];
+  char hora[3];
+  char minuto[3];
+  char segundo[3];
+};
+
 // Estructura para almacenar el día y programa respectivo.
 struct diaSemana{
   const char* inicioManana;
@@ -85,8 +96,10 @@ struct Semana {
   diaSemana domingo;
 };
 
-// Instanciación de la estructura semana.
-Semana semana;
+// Instanciación de las estructuras de tiempo y programación de
+// trabajo.
+FechaProg tiempo = {};
+Semana semana = {"0"};
 
 //Función de procesamiento de datos. Debido al
 //funcionamiento interno de la función send(), la función
@@ -152,13 +165,53 @@ void manejaJson(AsyncWebServerRequest *request, String filename, size_t index, u
   }
 }
 
-uint8_t Extrae_Fecha(string trama) {
-  uint8_t contador = 0;
+uint8_t Extrae_Data(string trama, FechaProg* destino,char sep) {
+  uint8_t contador = 1;
   string lectura;
   stringstream cadena_leida(trama);
-  while(getline(cadena_leida, lectura, '-'))
+  Serial.print("La trama es: ");
+  Serial.println(trama.c_str());
+  Serial.print("El stringstream es: ");
+  Serial.println(cadena_leida.str().c_str());
+  while(getline(cadena_leida, lectura, sep))
   {
-    Serial.println(lectura.c_str());
+    if(sep == '-')
+    {
+      switch(contador)
+      {
+        case 1:
+        {
+          strncpy(destino->ano,  lectura.c_str(), sizeof(destino->ano));
+        }
+        break;
+        case 2:
+        {
+          strncpy(destino->mes, lectura.c_str(), sizeof(destino->mes));
+        }
+        break;
+        case 3:
+        {
+          strncpy(destino->dia, lectura.c_str(), sizeof(destino->dia));
+        }
+        break;
+      }
+    }
+    else if(sep == ':')
+    {
+      switch(contador)
+      {
+        case 1:
+        {
+          strncpy(destino->hora, lectura.c_str(), sizeof(destino->hora));
+        }
+        break;
+        case 2:
+        {
+          strncpy(destino->minuto, lectura.c_str(), sizeof(destino->minuto));
+        }
+        break;
+      }
+    }
     contador++;
   }
   return contador;
@@ -400,7 +453,35 @@ void setup() {
     auto&& jsonObj = docJson.as<JsonObject>();
     Serial.print("La fecha actual es :");
     Serial.println((const char *) jsonObj["fecha"]);
-    Extrae_Fecha(jsonObj["fecha"]);
+    if(Extrae_Data(jsonObj["fecha"], &tiempo, '-') != 3)
+    {
+      Serial.println("Fecha con formato incorrecto, no se puede activar el reloj, el contador");
+    }
+    else
+    {
+      Serial.println("Fecha con formato correcto, el reloj se puede configurar.");
+      Serial.print("El día es: ");
+      Serial.println(tiempo.dia);
+      Serial.print("El mes es: ");
+      Serial.println(tiempo.mes);
+      Serial.print("El ano es: ");
+      Serial.println(tiempo.ano);
+    }
+    if(Extrae_Data(jsonObj["hora-actual"], &tiempo, ':') != 2)
+    {
+      Serial.println("Hora con formato incorrecto, no se puede activar el reloj, el contador");
+    }
+    else
+    {
+      Serial.println("Fecha con formato correcto, el reloj se puede configurar.");
+      Serial.print("La hora es: ");
+      Serial.println(tiempo.hora);
+      Serial.print("Los minutos son: ");
+      Serial.println(tiempo.minuto);
+      Serial.print("Los segundos son: ");
+      Serial.println(tiempo.segundo);
+    }
+
     Serial.print("La hora actual es: ");
     Serial.println((const char *) jsonObj["hora-actual"]);
     semana.lunes.inicioManana = jsonObj["lunes-manana-inicio"];
