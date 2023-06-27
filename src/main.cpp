@@ -7,8 +7,10 @@
 #include "AsyncJson.h"
 #include "ArduinoJson.h"
 #include "ESP32Time.h"
-//#include <iostream>
+#include <string.h>
+#include <iostream>
 #include <sstream>
+#include <Stream.h>
 using namespace std;
 
 //Declaración de usuario y clave de red WiFi.
@@ -51,8 +53,8 @@ uint8_t nivelA = 0;
 
 String modoEstado;
 
-//Instanciaci
-ESP32Time rtc(-14400);            //GMT-4.
+//Instanciación del RTC
+ESP32Time rtc(0);            //GMT-0.
 
 //Instanciación del servidor web.
 AsyncWebServer server(80);
@@ -68,12 +70,12 @@ DynamicJsonDocument docJson(512);
 //Estructura para almacenar la fecha a programar al sistema.
 
 struct FechaProg {
-  char dia[3];
-  char mes[3];
-  char ano[5];
-  char hora[3];
-  char minuto[3];
-  char segundo[3];
+  int dia;
+  int mes;
+  int ano;
+  int hora;
+  int minuto;
+  int segundo;
 };
 
 // Estructura para almacenar el día y programa respectivo.
@@ -96,10 +98,17 @@ struct Semana {
   diaSemana domingo;
 };
 
+// Campo de bits para almacenar el estado del sistema
+
+struct estadoSistema {
+  bool bateria  : 1;
+  bool reloj    : 1;
+};
 // Instanciación de las estructuras de tiempo y programación de
 // trabajo.
 FechaProg tiempo = {};
 Semana semana = {"0"};
+estadoSistema sistema;
 
 //Función de procesamiento de datos. Debido al
 //funcionamiento interno de la función send(), la función
@@ -166,8 +175,8 @@ void manejaJson(AsyncWebServerRequest *request, String filename, size_t index, u
 }
 
 uint8_t Extrae_Data(string trama, FechaProg* destino,char sep) {
-  uint8_t contador = 1;
-  string lectura;
+  uint8_t contador = 0;
+  string lectura = "";
   stringstream cadena_leida(trama);
   Serial.print("La trama es: ");
   Serial.println(trama.c_str());
@@ -179,19 +188,19 @@ uint8_t Extrae_Data(string trama, FechaProg* destino,char sep) {
     {
       switch(contador)
       {
+        case 0:
+        {
+          destino->ano = stoi(lectura);
+        }
+        break;
         case 1:
         {
-          strncpy(destino->ano,  lectura.c_str(), sizeof(destino->ano));
+          destino->mes = stoi(lectura);
         }
         break;
         case 2:
         {
-          strncpy(destino->mes, lectura.c_str(), sizeof(destino->mes));
-        }
-        break;
-        case 3:
-        {
-          strncpy(destino->dia, lectura.c_str(), sizeof(destino->dia));
+          destino->dia = stoi(lectura);
         }
         break;
       }
@@ -200,20 +209,22 @@ uint8_t Extrae_Data(string trama, FechaProg* destino,char sep) {
     {
       switch(contador)
       {
-        case 1:
+        case 0:
         {
-          strncpy(destino->hora, lectura.c_str(), sizeof(destino->hora));
+          destino->hora = stoi(lectura);
         }
         break;
-        case 2:
+        case 1:
         {
-          strncpy(destino->minuto, lectura.c_str(), sizeof(destino->minuto));
+          destino->minuto = stoi(lectura);
         }
         break;
       }
     }
     contador++;
   }
+  Serial.print("El contador es: ");
+  Serial.println(contador);
   return contador;
 }
 
@@ -231,6 +242,7 @@ void setup() {
   //Adición de redes a las que se puede conectar el dispositivo.
   wifiMulti.addAP("ABACANTVWIFI8440","85047373038805");
   wifiMulti.addAP("TP-LINK_D6BF4E","480Secur325");
+  wifiMulti.addAP("Delfos", "Joseph#29");
 
   //Configuración de velocidad del puerto serial.
   Serial.begin(115200);
@@ -455,7 +467,7 @@ void setup() {
     Serial.println((const char *) jsonObj["fecha"]);
     if(Extrae_Data(jsonObj["fecha"], &tiempo, '-') != 3)
     {
-      Serial.println("Fecha con formato incorrecto, no se puede activar el reloj, el contador");
+      Serial.println("Fecha con formato incorrecto, no se puede activar el reloj, el contador");      
     }
     else
     {
@@ -519,6 +531,9 @@ void setup() {
     Serial.println(semana.domingo.finTarde);
     request->send(200);
     Serial.println("Configuración recibida.");
+    
+    rtc.setTime(0, tiempo.minuto, tiempo.hora, tiempo.dia, tiempo.mes, tiempo.ano);
+    sistema.reloj = true;
   });
   server.addHandler(manejadorJson);
 
@@ -537,4 +552,9 @@ void setup() {
 }
  
 void loop() {
+  if(sistema.reloj)
+  {
+    Serial.println(rtc.getTimeDate(true));
+    delay(1000);
+  }
 }
