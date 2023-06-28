@@ -76,6 +76,8 @@ struct FechaProg {
   int hora;
   int minuto;
   int segundo;
+  string diaSemana;
+  string mesAnio;
 };
 
 // Estructura para almacenar el día y programa respectivo.
@@ -98,6 +100,10 @@ struct Semana {
   diaSemana domingo;
 };
 
+//Variable para almacenar la data leída del rtc.
+
+const char * dataM;
+
 // Campo de bits para almacenar el estado del sistema
 
 struct estadoSistema {
@@ -106,7 +112,7 @@ struct estadoSistema {
 };
 // Instanciación de las estructuras de tiempo y programación de
 // trabajo.
-FechaProg tiempo = {};
+FechaProg tiempo = {}, tiempoLeido = {};
 Semana semana = {"0"};
 estadoSistema sistema;
 
@@ -554,7 +560,17 @@ void setup() {
 void loop() {
   if(sistema.reloj)
   {
-    Serial.println(rtc.getTimeDate(true));
+    dataM = rtc.getTimeDate(true).c_str();
+    Serial.print("Fecha completa: ");
+    Serial.println(dataM);
+    /*sscanf(dataM, "%d:%d:%d %s, %s %d %d", tiempoLeido.hora, tiempoLeido.minuto, tiempoLeido.segundo, tiempoLeido.diaSemana, tiempoLeido.mesAnio, tiempoLeido.dia, tiempoLeido.ano);
+    Serial.print("Día leído: ");
+    Serial.println(tiempoLeido.diaSemana.c_str());
+    Serial.print("Hora Leída: ");
+    Serial.println(tiempoLeido.hora);
+    Serial.print("Minuto leído: ");
+    Serial.println(tiempoLeido.minuto);*/
+    //  Serial.println(rtc.getTimeDate(true));  //  (String) 15:24:38 Sunday, January 17 2021
     delay(1000);
   }
 }
