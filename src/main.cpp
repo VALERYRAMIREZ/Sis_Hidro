@@ -76,8 +76,8 @@ struct FechaProg {
   int hora;
   int minuto;
   int segundo;
-  string diaSemana;
-  string mesAnio;
+  char diaSemana[20];
+  char mesAnio[20];
 };
 
 // Estructura para almacenar el día y programa respectivo.
@@ -563,13 +563,17 @@ void loop() {
     dataM = rtc.getTimeDate(true).c_str();
     Serial.print("Fecha completa: ");
     Serial.println(dataM);
-    /*sscanf(dataM, "%d:%d:%d %s, %s %d %d", tiempoLeido.hora, tiempoLeido.minuto, tiempoLeido.segundo, tiempoLeido.diaSemana, tiempoLeido.mesAnio, tiempoLeido.dia, tiempoLeido.ano);
+    sscanf(dataM, "%2d:%2d:%2d %9[^,], %s %2d %4d", &tiempoLeido.hora, &tiempoLeido.minuto, &tiempoLeido.segundo, tiempoLeido.diaSemana, tiempoLeido.mesAnio, &tiempoLeido.dia, &tiempoLeido.ano);
+    Serial.print("Año leído: ");
+    Serial.println(tiempoLeido.ano);
+    Serial.print("Mes leído: ");
+    Serial.println(tiempoLeido.mesAnio);
     Serial.print("Día leído: ");
-    Serial.println(tiempoLeido.diaSemana.c_str());
+    Serial.println(tiempoLeido.diaSemana);
     Serial.print("Hora Leída: ");
     Serial.println(tiempoLeido.hora);
     Serial.print("Minuto leído: ");
-    Serial.println(tiempoLeido.minuto);*/
+    Serial.println(tiempoLeido.minuto);
     //  Serial.println(rtc.getTimeDate(true));  //  (String) 15:24:38 Sunday, January 17 2021
     delay(1000);
   }
