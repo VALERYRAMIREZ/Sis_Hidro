@@ -34,14 +34,14 @@ Preferences memoriaEstado;
 
 const uint8_t ledPinEstado = 2;   //Led que indica si el sistema está encendido o en parada.
 String ledEstado;
-const uint8_t bombaUnoEstado = 23;//Salida para controlar la bomba 1.
+const uint8_t bombaUno = 23;//Salida para controlar la bomba 1.
 bool bomba1LED = false;
-const uint8_t bombaDosEstado = 22;//Salida para controlar la bomba 2.
+const uint8_t bombaDos = 22;//Salida para controlar la bomba 2.
 bool bomba2LED = false;
 bool bombaActiva = false;         //Falso significa bomba 1, verdadero significa bomba 2.
 bool ledModoSistema = false;      //modoSistema = false significa sistema en modo manual, modoSistema = true
                                   //significa sistema en modo automático.
-bool marchaSistemaLOED = false;   //marchaSistema = false significa sistema parado, marchaSistema = true significa
+bool marchaSistemaLED = false;    //marchaSistema = false significa sistema parado, marchaSistema = true significa
                                   //sistema activo.
 
 //Declaración de terminales de entrada para el sistema.
@@ -72,7 +72,7 @@ DynamicJsonDocument docJson(512);
 struct FechaProg {
   int dia;
   int mes;
-  int ano;
+  int anio;
   int hora;
   int minuto;
   int segundo;
@@ -180,6 +180,8 @@ void manejaJson(AsyncWebServerRequest *request, String filename, size_t index, u
   }
 }
 
+//Función para extraer la data enviada desde la página web.
+
 uint8_t Extrae_Data(string trama, FechaProg* destino,char sep) {
   uint8_t contador = 0;
   string lectura = "";
@@ -196,7 +198,7 @@ uint8_t Extrae_Data(string trama, FechaProg* destino,char sep) {
       {
         case 0:
         {
-          destino->ano = stoi(lectura);
+          destino->anio = stoi(lectura);
         }
         break;
         case 1:
@@ -234,8 +236,86 @@ uint8_t Extrae_Data(string trama, FechaProg* destino,char sep) {
   return contador;
 }
 
+// Función para extraer la data de fecha del RTC.
+
+bool Compara_RTC(const char * data, Semana tPrograma) {
+  bool comparado = false;
+  uint8_t manHoraIniProg = 0, manMinIniProg = 0, manHoraFinProg = 0, manMinFinProg = 0, tarHoraIniProg = 0, tarMinIniProg = 0, tarHoraFinProg = 0, tarMinFinProg = 0;
+  Serial.print("Fecha completa: ");
+  Serial.println(data);
+  if(sscanf(data, "%2d:%2d:%2d %9[^,], %s %2d %4d", &tiempoLeido.hora, &tiempoLeido.minuto, &tiempoLeido.segundo, tiempoLeido.diaSemana, tiempoLeido.mesAnio, &tiempoLeido.dia, &tiempoLeido.anio) == 7);
+  {
+    Serial.print("Año leído: ");
+    Serial.println(tiempoLeido.anio);
+    Serial.print("Mes leído: ");
+    Serial.println(tiempoLeido.mesAnio);
+    Serial.print("Día leído: ");
+    Serial.println(tiempoLeido.diaSemana);
+    Serial.print("Hora Leída: ");
+    Serial.println(tiempoLeido.hora);
+    Serial.print("Minuto leído: ");
+    Serial.println(tiempoLeido.minuto);
+    Serial.print("Tamaño de palabra: ");
+    Serial.println(sizeof(tiempoLeido.diaSemana));
+
+    if((string) tiempoLeido.diaSemana == "Monday")
+    {
+      sscanf(semana.lunes.inicioManana, "%2d:%2d", &manHoraIniProg, &manMinIniProg);
+      sscanf(semana.lunes.finManana, "%2d:%2d", &manHoraFinProg, &manMinFinProg);
+      sscanf(semana.lunes.inicioTarde, "%2d:%2d", &tarHoraIniProg, &tarMinIniProg);
+      sscanf(semana.lunes.finTarde, "%2d:%2d", &tarHoraFinProg, &tarMinFinProg);
+      Serial.println(manHoraIniProg);
+      Serial.println(manMinIniProg);
+      Serial.println(manHoraFinProg);
+      Serial.println(manMinFinProg);
+      Serial.println(tarHoraIniProg);
+      Serial.println(tarMinIniProg);
+      Serial.println(tarHoraFinProg);
+      Serial.println(tarMinFinProg);
+      
+      if((((tiempoLeido.hora >= manHoraIniProg) && (tiempoLeido.hora <= manHoraFinProg)) && ((tiempoLeido.minuto >= manMinIniProg) && (tiempoLeido.minuto < manMinFinProg)))
+        || (((tiempoLeido.hora >= tarHoraIniProg) && (tiempoLeido.hora <= tarHoraFinProg)) && ((tiempoLeido.minuto >= tarMinIniProg) && (tiempoLeido.minuto < tarMinFinProg))))
+      {
+        comparado = true;
+      }
+    }
+    else if((string) tiempoLeido.diaSemana == "Tuesday")
+    {
+
+    }
+    else if((string) tiempoLeido.diaSemana == "Wednesday")
+    {
+
+    }
+    else if((string) tiempoLeido.diaSemana == "Thursday")
+    {
+
+    }
+    else if((string) tiempoLeido.diaSemana == "Friday")
+    {
+
+    }
+    else if((string) tiempoLeido.diaSemana == "Saturday")
+    {
+
+    }
+    else if((string) tiempoLeido.diaSemana == "Sunday")
+    {
+
+    }
+    else
+    {
+      Serial.println("No se encontró el día de programación");
+      comparado = false;
+    }
+  }
+  Serial.print("Comparado: ");
+  Serial.println(comparado);
+  return comparado;
+}
+
 // Función para controlar la bomba a encender
-void Bomba() {
+void Bomba(bool encendido) {
 
 }
 
@@ -266,8 +346,8 @@ void setup() {
   //Configuración de las salidas del sistema.
   pinMode(ledPinEstado,OUTPUT);
   pinMode(ledModoSistema,OUTPUT);
-  pinMode(bombaUnoEstado,OUTPUT);
-  pinMode(bombaDosEstado,OUTPUT);
+  pinMode(bombaUno,OUTPUT);
+  pinMode(bombaDos,OUTPUT);
 
   //Inicialización SPIFFS.
   if(!SPIFFS.begin(true)){
@@ -482,8 +562,8 @@ void setup() {
       Serial.println(tiempo.dia);
       Serial.print("El mes es: ");
       Serial.println(tiempo.mes);
-      Serial.print("El ano es: ");
-      Serial.println(tiempo.ano);
+      Serial.print("El anio es: ");
+      Serial.println(tiempo.anio);
     }
     if(Extrae_Data(jsonObj["hora-actual"], &tiempo, ':') != 2)
     {
@@ -538,7 +618,7 @@ void setup() {
     request->send(200);
     Serial.println("Configuración recibida.");
     
-    rtc.setTime(0, tiempo.minuto, tiempo.hora, tiempo.dia, tiempo.mes, tiempo.ano);
+    rtc.setTime(0, tiempo.minuto, tiempo.hora, tiempo.dia, tiempo.mes, tiempo.anio);
     sistema.reloj = true;
   });
   server.addHandler(manejadorJson);
@@ -560,21 +640,7 @@ void setup() {
 void loop() {
   if(sistema.reloj)
   {
-    dataM = rtc.getTimeDate(true).c_str();
-    Serial.print("Fecha completa: ");
-    Serial.println(dataM);
-    sscanf(dataM, "%2d:%2d:%2d %9[^,], %s %2d %4d", &tiempoLeido.hora, &tiempoLeido.minuto, &tiempoLeido.segundo, tiempoLeido.diaSemana, tiempoLeido.mesAnio, &tiempoLeido.dia, &tiempoLeido.ano);
-    Serial.print("Año leído: ");
-    Serial.println(tiempoLeido.ano);
-    Serial.print("Mes leído: ");
-    Serial.println(tiempoLeido.mesAnio);
-    Serial.print("Día leído: ");
-    Serial.println(tiempoLeido.diaSemana);
-    Serial.print("Hora Leída: ");
-    Serial.println(tiempoLeido.hora);
-    Serial.print("Minuto leído: ");
-    Serial.println(tiempoLeido.minuto);
-    //  Serial.println(rtc.getTimeDate(true));  //  (String) 15:24:38 Sunday, January 17 2021
+    Compara_RTC(rtc.getTimeDate(true).c_str(), semana);
     delay(1000);
   }
 }
