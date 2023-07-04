@@ -255,11 +255,10 @@ bool Compara_RTC(const char * data, Semana tPrograma) {
     Serial.println(tiempoLeido.hora);
     Serial.print("Minuto leído: ");
     Serial.println(tiempoLeido.minuto);
-    Serial.print("Tamaño de palabra: ");
-    Serial.println(sizeof(tiempoLeido.diaSemana));
 
     if((string) tiempoLeido.diaSemana == "Monday")
     {
+      Serial.println("Leyendo programación de lunes almacenada.");
       sscanf(semana.lunes.inicioManana, "%2d:%2d", &manHoraIniProg, &manMinIniProg);
       sscanf(semana.lunes.finManana, "%2d:%2d", &manHoraFinProg, &manMinFinProg);
       sscanf(semana.lunes.inicioTarde, "%2d:%2d", &tarHoraIniProg, &tarMinIniProg);
@@ -281,27 +280,137 @@ bool Compara_RTC(const char * data, Semana tPrograma) {
     }
     else if((string) tiempoLeido.diaSemana == "Tuesday")
     {
-
+      Serial.println("Leyendo programación de martes almacenada.");
+      sscanf(semana.martes.inicioManana, "%2d:%2d", &manHoraIniProg, &manMinIniProg);
+      sscanf(semana.martes.finManana, "%2d:%2d", &manHoraFinProg, &manMinFinProg);
+      sscanf(semana.martes.inicioTarde, "%2d:%2d", &tarHoraIniProg, &tarMinIniProg);
+      sscanf(semana.martes.finTarde, "%2d:%2d", &tarHoraFinProg, &tarMinFinProg);
+      Serial.println(manHoraIniProg);
+      Serial.println(manMinIniProg);
+      Serial.println(manHoraFinProg);
+      Serial.println(manMinFinProg);
+      Serial.println(tarHoraIniProg);
+      Serial.println(tarMinIniProg);
+      Serial.println(tarHoraFinProg);
+      Serial.println(tarMinFinProg);
+      
+      if((((tiempoLeido.hora >= manHoraIniProg) && (tiempoLeido.hora <= manHoraFinProg)) && ((tiempoLeido.minuto >= manMinIniProg) && (tiempoLeido.minuto < manMinFinProg)))
+        || (((tiempoLeido.hora >= tarHoraIniProg) && (tiempoLeido.hora <= tarHoraFinProg)) && ((tiempoLeido.minuto >= tarMinIniProg) && (tiempoLeido.minuto < tarMinFinProg))))
+      {
+        comparado = true;
+      }
     }
     else if((string) tiempoLeido.diaSemana == "Wednesday")
     {
-
+      Serial.println("Leyendo programación de miércoles almacenada.");
+      sscanf(semana.miercoles.inicioManana, "%2d:%2d", &manHoraIniProg, &manMinIniProg);
+      sscanf(semana.miercoles.finManana, "%2d:%2d", &manHoraFinProg, &manMinFinProg);
+      sscanf(semana.miercoles.inicioTarde, "%2d:%2d", &tarHoraIniProg, &tarMinIniProg);
+      sscanf(semana.miercoles.finTarde, "%2d:%2d", &tarHoraFinProg, &tarMinFinProg);
+      Serial.println("Leída programación de miércoles almacenada");
+      Serial.println(manHoraIniProg);
+      Serial.println(manMinIniProg);
+      Serial.println(manHoraFinProg);
+      Serial.println(manMinFinProg);
+      Serial.println(tarHoraIniProg);
+      Serial.println(tarMinIniProg);
+      Serial.println(tarHoraFinProg);
+      Serial.println(tarMinFinProg);
+      
+      if((((tiempoLeido.hora >= manHoraIniProg) && (tiempoLeido.hora <= manHoraFinProg)) && ((tiempoLeido.minuto >= manMinIniProg) && (tiempoLeido.minuto < manMinFinProg)))
+        || (((tiempoLeido.hora >= tarHoraIniProg) && (tiempoLeido.hora <= tarHoraFinProg)) && ((tiempoLeido.minuto >= tarMinIniProg) && (tiempoLeido.minuto < tarMinFinProg))))
+      {
+        comparado = true;
+      }
     }
     else if((string) tiempoLeido.diaSemana == "Thursday")
     {
-
+      Serial.println("Leyendo programación de jueves almacenada.");
+      sscanf(semana.jueves.inicioManana, "%2d:%2d", &manHoraIniProg, &manMinIniProg);
+      sscanf(semana.jueves.finManana, "%2d:%2d", &manHoraFinProg, &manMinFinProg);
+      sscanf(semana.jueves.inicioTarde, "%2d:%2d", &tarHoraIniProg, &tarMinIniProg);
+      sscanf(semana.lunes.finTarde, "%2d:%2d", &tarHoraFinProg, &tarMinFinProg);
+      Serial.println(manHoraIniProg);
+      Serial.println(manMinIniProg);
+      Serial.println(manHoraFinProg);
+      Serial.println(manMinFinProg);
+      Serial.println(tarHoraIniProg);
+      Serial.println(tarMinIniProg);
+      Serial.println(tarHoraFinProg);
+      Serial.println(tarMinFinProg);
+      
+      if((((tiempoLeido.hora >= manHoraIniProg) && (tiempoLeido.hora <= manHoraFinProg)) && ((tiempoLeido.minuto >= manMinIniProg) && (tiempoLeido.minuto < manMinFinProg)))
+        || (((tiempoLeido.hora >= tarHoraIniProg) && (tiempoLeido.hora <= tarHoraFinProg)) && ((tiempoLeido.minuto >= tarMinIniProg) && (tiempoLeido.minuto < tarMinFinProg))))
+      {
+        comparado = true;
+      }
     }
     else if((string) tiempoLeido.diaSemana == "Friday")
     {
-
+      sscanf(semana.viernes.inicioManana, "%2d:%2d", &manHoraIniProg, &manMinIniProg);
+      sscanf(semana.viernes.finManana, "%2d:%2d", &manHoraFinProg, &manMinFinProg);
+      sscanf(semana.viernes.inicioTarde, "%2d:%2d", &tarHoraIniProg, &tarMinIniProg);
+      sscanf(semana.lunes.finTarde, "%2d:%2d", &tarHoraFinProg, &tarMinFinProg);
+      Serial.println("Leída programación de viernes almacenada.");
+      Serial.println(manHoraIniProg);
+      Serial.println(manMinIniProg);
+      Serial.println(manHoraFinProg);
+      Serial.println(manMinFinProg);
+      Serial.println(tarHoraIniProg);
+      Serial.println(tarMinIniProg);
+      Serial.println(tarHoraFinProg);
+      Serial.println(tarMinFinProg);
+      
+      if((((tiempoLeido.hora >= manHoraIniProg) && (tiempoLeido.hora <= manHoraFinProg)) && ((tiempoLeido.minuto >= manMinIniProg) && (tiempoLeido.minuto < manMinFinProg)))
+        || (((tiempoLeido.hora >= tarHoraIniProg) && (tiempoLeido.hora <= tarHoraFinProg)) && ((tiempoLeido.minuto >= tarMinIniProg) && (tiempoLeido.minuto < tarMinFinProg))))
+      {
+        comparado = true;
+      }
     }
     else if((string) tiempoLeido.diaSemana == "Saturday")
     {
-
+      sscanf(semana.sabado.inicioManana, "%2d:%2d", &manHoraIniProg, &manMinIniProg);
+      sscanf(semana.sabado.finManana, "%2d:%2d", &manHoraFinProg, &manMinFinProg);
+      sscanf(semana.sabado.inicioTarde, "%2d:%2d", &tarHoraIniProg, &tarMinIniProg);
+      sscanf(semana.sabado.finTarde, "%2d:%2d", &tarHoraFinProg, &tarMinFinProg);
+      Serial.println(manHoraIniProg);
+      Serial.println(manMinIniProg);
+      Serial.println(manHoraFinProg);
+      Serial.println(manMinFinProg);
+      Serial.println(tarHoraIniProg);
+      Serial.println(tarMinIniProg);
+      Serial.println(tarHoraFinProg);
+      Serial.println(tarMinFinProg);
+      
+      if((((tiempoLeido.hora >= manHoraIniProg) && (tiempoLeido.hora <= manHoraFinProg)) && ((tiempoLeido.minuto >= manMinIniProg) && (tiempoLeido.minuto < manMinFinProg)))
+        || (((tiempoLeido.hora >= tarHoraIniProg) && (tiempoLeido.hora <= tarHoraFinProg)) && ((tiempoLeido.minuto >= tarMinIniProg) && (tiempoLeido.minuto < tarMinFinProg))))
+      {
+        comparado = true;
+      }
     }
     else if((string) tiempoLeido.diaSemana == "Sunday")
     {
-
+      Serial.println("Leyendo programación de domingo almacenada.");
+      sscanf(semana.domingo.inicioManana, "%2d:%2d", &manHoraIniProg, &manMinIniProg);
+      sscanf(semana.domingo.finManana, "%2d:%2d", &manHoraFinProg, &manMinFinProg);
+      sscanf(semana.domingo.inicioTarde, "%2d:%2d", &tarHoraIniProg, &tarMinIniProg);
+      sscanf(semana.domingo.finTarde, "%2d:%2d", &tarHoraFinProg, &tarMinFinProg);
+      Serial.println(semana.domingo.finTarde);
+      Serial.println("Leída programación de domingo almacenada.");
+      Serial.println(manHoraIniProg);
+      Serial.println(manMinIniProg);
+      Serial.println(manHoraFinProg);
+      Serial.println(manMinFinProg);
+      Serial.println(tarHoraIniProg);
+      Serial.println(tarMinIniProg);
+      Serial.println(tarHoraFinProg);
+      Serial.println(tarMinFinProg);
+      
+      if((((tiempoLeido.hora >= manHoraIniProg) && (tiempoLeido.hora <= manHoraFinProg)) && ((tiempoLeido.minuto >= manMinIniProg) && (tiempoLeido.minuto < manMinFinProg)))
+        || (((tiempoLeido.hora >= tarHoraIniProg) && (tiempoLeido.hora <= tarHoraFinProg)) && ((tiempoLeido.minuto >= tarMinIniProg) && (tiempoLeido.minuto < tarMinFinProg))))
+      {
+        comparado = true;
+      }
     }
     else
     {
@@ -594,6 +703,14 @@ void setup() {
     semana.miercoles.finManana = jsonObj["miercoles-manana-fin"];
     semana.miercoles.inicioTarde = jsonObj["miercoles-tarde-inicio"];
     semana.miercoles.finTarde = jsonObj["miercoles-tarde-fin"];
+    Serial.println((const char *) jsonObj["miercoles-manana-inicio"]);
+    Serial.println((const char *) jsonObj["miercoles-manana-fin"]);
+    Serial.println((const char *) jsonObj["miercoles-tarde-inicio"]);
+    Serial.println((const char *) jsonObj["miercoles-manana-fin"]);
+    Serial.println(semana.miercoles.inicioManana);
+    Serial.println(semana.miercoles.finManana);
+    Serial.println(semana.miercoles.inicioTarde);
+    Serial.println(semana.miercoles.finTarde);
     semana.jueves.inicioManana = jsonObj["jueves-manana-inicio"];
     semana.jueves.finManana = jsonObj["jueves-manana-fin"];
     semana.jueves.inicioTarde = jsonObj["jueves-tarde-inicio"];
