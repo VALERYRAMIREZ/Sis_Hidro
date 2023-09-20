@@ -1,16 +1,17 @@
 #include <Arduino.h>
 #include "SPIFFS.h"
+#include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
+#include <AsyncElegantOTA.h>
 #include <WiFi.h>
 #include <WiFiMulti.h>
 #include <preferences.h>
-#include "AsyncJson.h"
-#include "ArduinoJson.h"
-#include "ESP32Time.h"
 #include <string.h>
 #include <iostream>
 #include <sstream>
 #include <Stream.h>
+#include "reloj.h"
+#include "backend.h"
 using namespace std;
 
 //Declaración de usuario y clave de red WiFi.
@@ -32,15 +33,16 @@ Preferences memoriaEstado;
 
 //Declaración de terminales de salida en el ESP-WROOM-32.
 
-const uint8_t ledPinEstado = 2;   //Led que indica si el sistema está encendido o en parada.
+const uint8_t ledPinSistemaApagado = 2;   //Led que indica si el sistema está apagado.
+const uint8_t ledPinSistemaEncendido = 4; //Led que indica si el sistema está encendido.
 String ledEstado;
 const uint8_t bombaUno = 23;//Salida para controlar la bomba 1.
 bool bomba1LED = false;
 const uint8_t bombaDos = 22;//Salida para controlar la bomba 2.
 bool bomba2LED = false;
 bool bombaActiva = false;         //Falso significa bomba 1, verdadero significa bomba 2.
-bool ledModoSistema = false;      //modoSistema = false significa sistema en modo manual, modoSistema = true
-                                  //significa sistema en modo automático.
+bool modoSistema = false;         //modoSistema = false significa sistema en modo manual, modoSistema = true
+bool ledModoSistema = false;      //Significa sistema en modo automático cuando ledModoSistema es true. Cuando
 bool marchaSistemaLED = false;    //marchaSistema = false significa sistema parado, marchaSistema = true significa
                                   //sistema activo.
 
@@ -53,11 +55,18 @@ uint8_t nivelA = 0;
 
 String modoEstado;
 
-//Instanciación del RTC
-ESP32Time rtc(0);            //GMT-0.
+//Declaración de las variables para el tipo de tanque y volumen mínimo.
+
+uint8_t tipoTanque = 0;
+uint8_t volMax = 0;
+uint8_t volMin = 0;
+
+/*/Instanciación del RTC
+ESP32Time rtc(0);            //GMT-0.*/
+extern ESP32Time rtc;
 
 //Instanciación del servidor web.
-AsyncWebServer server(80);
+//AsyncWebServer server(80);
 
 //Instanciación del documento JSON para recibir la configurcación
 //del sistema.
@@ -67,7 +76,7 @@ DynamicJsonDocument docJson(512);
 /*********Estructuras para el almacenamiento de***********/
 /**********la programación horaria del sistema************/
 
-//Estructura para almacenar la fecha a programar al sistema.
+/*/Estructura para almacenar la fecha a programar al sistema.
 
 struct FechaProg {
   int dia;
@@ -78,17 +87,17 @@ struct FechaProg {
   int segundo;
   char diaSemana[20];
   char mesAnio[20];
-};
+};*/
 
-// Estructura para almacenar el día y programa respectivo.
+/*/ Estructura para almacenar el día y programa respectivo.
 struct diaSemana{
   const char* inicioManana;
   const char* finManana;
   const char* inicioTarde;
   const char* finTarde;
-};
+};*/
 
-// Estructura para almacenar los programas de todos los 
+/*/ Estructura para almacenar los programas de todos los 
 // dias de la semana.
 struct Semana {
   diaSemana lunes;
@@ -98,13 +107,13 @@ struct Semana {
   diaSemana viernes;
   diaSemana sabado;
   diaSemana domingo;
-};
+};*/
 
 //Variable para almacenar la data leída del rtc.
 
-const char * dataM;
+//const char * dataM;
 
-// Campo de bits para almacenar el estado del sistema
+/*/ Campo de bits para almacenar el estado del sistema
 
 struct estadoSistema {
   bool bateria  : 1;
@@ -112,11 +121,11 @@ struct estadoSistema {
 };
 // Instanciación de las estructuras de tiempo y programación de
 // trabajo.
-FechaProg tiempo = {}, tiempoLeido = {};
-Semana semana = {"0"};
-estadoSistema sistema;
+//FechaProg tiempo = {}, tiempoLeido = {};
+//Semana semana = {"0"};
+estadoSistema sistema;*/
 
-//Función de procesamiento de datos. Debido al
+/*/Función de procesamiento de datos. Debido al
 //funcionamiento interno de la función send(), la función
 //procesador es llamada cada vez que encuentra un
 //placeholder en el código html, por esa razón el código
@@ -125,10 +134,10 @@ estadoSistema sistema;
 String Procesador(const String& var){//Función que chequea si el sistema está encendido y envía el estado.
   Serial.println("Entrando a Procesador.");
   if(var == "ESTADO_SISTEMA"){
-    if(digitalRead(ledPinEstado)){
+    if(!digitalRead(ledPinSistemaApagado) && digitalRead(ledPinSistemaEncendido)){
       ledEstado = "ENCENDIDO";
     }
-    else{
+    else if(digitalRead(ledPinSistemaApagado) && !digitalRead(ledPinSistemaEncendido)){
       ledEstado = "APAGADO";
     }
     Serial.print("Sistema " + ledEstado + "." + "\n");
@@ -153,7 +162,7 @@ String Procesador(const String& var){//Función que chequea si el sistema está 
   }
   Serial.println("Saliendo de Procesador.");
   return String();
-}
+}*/
 
 // Función para analizar la data enviada por la página web.
 
@@ -180,7 +189,7 @@ void manejaJson(AsyncWebServerRequest *request, String filename, size_t index, u
   }
 }
 
-//Función para extraer la data enviada desde la página web.
+/*/Función para extraer la data enviada desde la página web.
 
 uint8_t Extrae_Data(string trama, FechaProg* destino,char sep) {
   uint8_t contador = 0;
@@ -234,9 +243,9 @@ uint8_t Extrae_Data(string trama, FechaProg* destino,char sep) {
   Serial.print("El contador es: ");
   Serial.println(contador);
   return contador;
-}
+}*/
 
-// Función para extraer la data de fecha del RTC.
+/*/ Función para extraer la data de fecha del RTC.
 
 bool Compara_RTC(const char * data, Semana tPrograma) {
   bool comparado = false;
@@ -264,7 +273,7 @@ bool Compara_RTC(const char * data, Semana tPrograma) {
       Serial.println(tarHoraIniProg);
       Serial.println(tarMinIniProg);
       Serial.println(tarHoraFinProg);
-      Serial.println(tarMinFinProg);*/
+      Serial.println(tarMinFinProg);
       if((((tiempoLeido.hora >= manHoraIniProg) && (tiempoLeido.hora <= manHoraFinProg)) && ((tiempoLeido.minuto >= manMinIniProg) && (tiempoLeido.minuto < manMinFinProg)))
         || (((tiempoLeido.hora >= tarHoraIniProg) && (tiempoLeido.hora <= tarHoraFinProg)) && ((tiempoLeido.minuto >= tarMinIniProg) && (tiempoLeido.minuto < tarMinFinProg))))
       {
@@ -284,7 +293,7 @@ bool Compara_RTC(const char * data, Semana tPrograma) {
       Serial.println(tarHoraIniProg);
       Serial.println(tarMinIniProg);
       Serial.println(tarHoraFinProg);
-      Serial.println(tarMinFinProg);*/
+      Serial.println(tarMinFinProg);
       if((((tiempoLeido.hora >= manHoraIniProg) && (tiempoLeido.hora <= manHoraFinProg)) && ((tiempoLeido.minuto >= manMinIniProg) && (tiempoLeido.minuto < manMinFinProg)))
         || (((tiempoLeido.hora >= tarHoraIniProg) && (tiempoLeido.hora <= tarHoraFinProg)) && ((tiempoLeido.minuto >= tarMinIniProg) && (tiempoLeido.minuto < tarMinFinProg))))
       {
@@ -304,7 +313,7 @@ bool Compara_RTC(const char * data, Semana tPrograma) {
       Serial.println(tarHoraIniProg);
       Serial.println(tarMinIniProg);
       Serial.println(tarHoraFinProg);
-      Serial.println(tarMinFinProg);*/
+      Serial.println(tarMinFinProg);
       
       if((((tiempoLeido.hora >= manHoraIniProg) && (tiempoLeido.hora <= manHoraFinProg)) && ((tiempoLeido.minuto >= manMinIniProg) && (tiempoLeido.minuto < manMinFinProg)))
         || (((tiempoLeido.hora >= tarHoraIniProg) && (tiempoLeido.hora <= tarHoraFinProg)) && ((tiempoLeido.minuto >= tarMinIniProg) && (tiempoLeido.minuto < tarMinFinProg))))
@@ -325,7 +334,7 @@ bool Compara_RTC(const char * data, Semana tPrograma) {
       Serial.println(tarHoraIniProg);
       Serial.println(tarMinIniProg);
       Serial.println(tarHoraFinProg);
-      Serial.println(tarMinFinProg);*/
+      Serial.println(tarMinFinProg);
       if((((tiempoLeido.hora >= manHoraIniProg) && (tiempoLeido.hora <= manHoraFinProg)) && ((tiempoLeido.minuto >= manMinIniProg) && (tiempoLeido.minuto < manMinFinProg)))
         || (((tiempoLeido.hora >= tarHoraIniProg) && (tiempoLeido.hora <= tarHoraFinProg)) && ((tiempoLeido.minuto >= tarMinIniProg) && (tiempoLeido.minuto < tarMinFinProg))))
       {
@@ -345,7 +354,7 @@ bool Compara_RTC(const char * data, Semana tPrograma) {
       Serial.println(tarHoraIniProg);
       Serial.println(tarMinIniProg);
       Serial.println(tarHoraFinProg);
-      Serial.println(tarMinFinProg);*/
+      Serial.println(tarMinFinProg);
       if((((tiempoLeido.hora >= manHoraIniProg) && (tiempoLeido.hora <= manHoraFinProg)) && ((tiempoLeido.minuto >= manMinIniProg) && (tiempoLeido.minuto < manMinFinProg)))
         || (((tiempoLeido.hora >= tarHoraIniProg) && (tiempoLeido.hora <= tarHoraFinProg)) && ((tiempoLeido.minuto >= tarMinIniProg) && (tiempoLeido.minuto < tarMinFinProg))))
       {
@@ -365,7 +374,7 @@ bool Compara_RTC(const char * data, Semana tPrograma) {
       Serial.println(tarHoraIniProg);
       Serial.println(tarMinIniProg);
       Serial.println(tarHoraFinProg);
-      Serial.println(tarMinFinProg);*/
+      Serial.println(tarMinFinProg);
       if((((tiempoLeido.hora >= manHoraIniProg) && (tiempoLeido.hora <= manHoraFinProg)) && ((tiempoLeido.minuto >= manMinIniProg) && (tiempoLeido.minuto < manMinFinProg)))
         || (((tiempoLeido.hora >= tarHoraIniProg) && (tiempoLeido.hora <= tarHoraFinProg)) && ((tiempoLeido.minuto >= tarMinIniProg) && (tiempoLeido.minuto < tarMinFinProg))))
       {
@@ -378,7 +387,7 @@ bool Compara_RTC(const char * data, Semana tPrograma) {
       sscanf(semana.domingo.finManana, "%2d:%2d", &manHoraFinProg, &manMinFinProg);
       sscanf(semana.domingo.inicioTarde, "%2d:%2d", &tarHoraIniProg, &tarMinIniProg);
       sscanf(semana.domingo.finTarde, "%2d:%2d", &tarHoraFinProg, &tarMinFinProg);
-      /*Serial.println(semana.domingo.finTarde);
+      Serial.println(semana.domingo.finTarde);
       Serial.println(manHoraIniProg);
       Serial.println(manMinIniProg);
       Serial.println(manHoraFinProg);
@@ -386,7 +395,7 @@ bool Compara_RTC(const char * data, Semana tPrograma) {
       Serial.println(tarHoraIniProg);
       Serial.println(tarMinIniProg);
       Serial.println(tarHoraFinProg);
-      Serial.println(tarMinFinProg);*/
+      Serial.println(tarMinFinProg);
       if((((tiempoLeido.hora >= manHoraIniProg) && (tiempoLeido.hora <= manHoraFinProg)) && ((tiempoLeido.minuto >= manMinIniProg) && (tiempoLeido.minuto < manMinFinProg)))
         || (((tiempoLeido.hora >= tarHoraIniProg) && (tiempoLeido.hora <= tarHoraFinProg)) && ((tiempoLeido.minuto >= tarMinIniProg) && (tiempoLeido.minuto < tarMinFinProg))))
       {
@@ -402,7 +411,7 @@ bool Compara_RTC(const char * data, Semana tPrograma) {
   Serial.print("Comparado: ");
   Serial.println(comparado);
   return comparado;
-}
+}*/
 
 // Función para controlar la bomba a encender
 void Bomba(bool encendido) {
@@ -418,7 +427,7 @@ void setup() {
   //Adición de redes a las que se puede conectar el dispositivo.
   wifiMulti.addAP("ABACANTVWIFI8440","85047373038805");
   wifiMulti.addAP("TP-LINK_D6BF4E","480Secur325");
-  wifiMulti.addAP("Delfos", "Joseph#29");
+  //wifiMulti.addAP("Delfos", "Joseph#29");
 
   //Configuración de velocidad del puerto serial.
   Serial.begin(115200);
@@ -434,7 +443,8 @@ void setup() {
 
 
   //Configuración de las salidas del sistema.
-  pinMode(ledPinEstado,OUTPUT);
+  pinMode(ledPinSistemaApagado,OUTPUT);
+  pinMode(ledPinSistemaEncendido,OUTPUT);
   pinMode(ledModoSistema,OUTPUT);
   pinMode(bombaUno,OUTPUT);
   pinMode(bombaDos,OUTPUT);
@@ -459,7 +469,7 @@ void setup() {
   Serial.print("Dirección IP asignada: ");
   Serial.println(WiFi.localIP());
 
-  //Funciones para el manejo de la página web.
+  /*/Funciones para el manejo de la página web.
 
   server.on("/style.css", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(SPIFFS, "/style.css", "text/css");
@@ -471,13 +481,15 @@ void setup() {
 
     //Manejo de botones de activación/desactivación del sistema.
   server.on("/apagar", HTTP_GET, [](AsyncWebServerRequest *request){
-    digitalWrite(ledPinEstado,LOW);
+    digitalWrite(ledPinSistemaEncendido,LOW);
+    digitalWrite(ledPinSistemaApagado,HIGH);
     request->send(SPIFFS,"/index.html",String(),false,Procesador);
     
   });
 
   server.on("/encender", HTTP_GET,[](AsyncWebServerRequest *request){
-    digitalWrite(ledPinEstado,HIGH);
+    digitalWrite(ledPinSistemaApagado,LOW);
+    digitalWrite(ledPinSistemaEncendido,HIGH);
     request->send(SPIFFS,"/index.html",String(),false,Procesador);
   });
 
@@ -543,6 +555,7 @@ void setup() {
   server.on("/auto", HTTP_GET,[](AsyncWebServerRequest *request){
     if(ledEstado == "ENCENDIDO"){
       digitalWrite(ledModoSistema,HIGH);
+      modoSistema = true;
     }
     request->send(SPIFFS, "/index.html", String(), false,Procesador); 
   });
@@ -550,13 +563,14 @@ void setup() {
   server.on("/manual", HTTP_GET,[](AsyncWebServerRequest *request){
     if(ledEstado == "ENCENDIDO"){
       digitalWrite(ledModoSistema,LOW);
+      modoSistema = false;
     }
     request->send(SPIFFS,"/index.html", String(), false,Procesador);
         
   });
 
   //Manejo de la página principal del sistema
-  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
+  server.on("/index", HTTP_GET, [](AsyncWebServerRequest *request){
     if(!request->authenticate(usuarioHTTP, claveHTTP)) {
       return request->requestAuthentication("Ingreso al Sistema");
     };
@@ -633,11 +647,11 @@ void setup() {
       request->send(SPIFFS, ultimaPaginaCargada, String(), false, Procesador);
       Serial.println("Última página cargada solicitada");
     };
-  });
+  });*/
 
   //Manejo de la data de programación recibida.
 
-  AsyncCallbackJsonWebHandler* manejadorJson = new AsyncCallbackJsonWebHandler("/forma-dato", [](AsyncWebServerRequest *request, JsonVariant &docJson) {
+  /*AsyncCallbackJsonWebHandler* manejadorJson = new AsyncCallbackJsonWebHandler("/forma-dato", [](AsyncWebServerRequest *request, JsonVariant &docJson) {
     auto&& jsonObj = docJson.as<JsonObject>();
     Serial.print("La fecha actual es :");
     Serial.println((const char *) jsonObj["fecha"]);
@@ -684,14 +698,6 @@ void setup() {
     semana.miercoles.finManana = jsonObj["miercoles-manana-fin"];
     semana.miercoles.inicioTarde = jsonObj["miercoles-tarde-inicio"];
     semana.miercoles.finTarde = jsonObj["miercoles-tarde-fin"];
-    Serial.println((const char *) jsonObj["miercoles-manana-inicio"]);
-    Serial.println((const char *) jsonObj["miercoles-manana-fin"]);
-    Serial.println((const char *) jsonObj["miercoles-tarde-inicio"]);
-    Serial.println((const char *) jsonObj["miercoles-manana-fin"]);
-    Serial.println(semana.miercoles.inicioManana);
-    Serial.println(semana.miercoles.finManana);
-    Serial.println(semana.miercoles.inicioTarde);
-    Serial.println(semana.miercoles.finTarde);
     semana.jueves.inicioManana = jsonObj["jueves-manana-inicio"];
     semana.jueves.finManana = jsonObj["jueves-manana-fin"];
     semana.jueves.inicioTarde = jsonObj["jueves-tarde-inicio"];
@@ -719,7 +725,7 @@ void setup() {
     rtc.setTime(0, tiempo.minuto, tiempo.hora, tiempo.dia, tiempo.mes, tiempo.anio);
     sistema.reloj = true;
   });
-  server.addHandler(manejadorJson);
+  server.addHandler(manejadorJson);*/
 
   //Manejo de la página "No encontrado".
 
@@ -730,15 +736,40 @@ void setup() {
   });
 
   //Inicio del servidor web.
+  AsyncElegantOTA.begin(&server);    // Start AsyncElegantOTA
   server.begin();
 
   Serial.println("Saliendo de configuración de aplicación");
 }
  
 void loop() {
-  if(sistema.reloj)
+  
+  if(sistema.reloj && modoSistema)
   {
-    Compara_RTC(rtc.getTimeDate(true).c_str(), semana);
-    delay(1000);
+    //superT && (nivelA >= 255/(volMax/volMin)) &&
+    if(!bombaActiva && Compara_RTC(rtc.getTimeDate(true).c_str(), semana))
+    {
+      Bomba(true);
+      bombaActiva = true;
+      digitalWrite(ledPinSistemaApagado, true);
+    }
+    else
+    {
+      Bomba(false);
+      bombaActiva = false;
+      digitalWrite(ledPinSistemaApagado, false);
+    }
   }
+  else if(!modoSistema)
+  {
+    /*switch(modoEstado)
+    {
+      case 0:
+      {
+
+      }
+      break;
+    }*/
+  }
+  delay(1000);
 }
