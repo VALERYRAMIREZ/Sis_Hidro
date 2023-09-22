@@ -1,5 +1,5 @@
-#ifndef RELOJ_H
-#define RELOJ_H
+#ifndef _ESTADO_H_
+#define _ESTADO_H_
     // Campo de bits para almacenar el estado del sistema
 
 typedef struct {

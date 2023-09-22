@@ -1,10 +1,8 @@
-#pragma once
-#include "ESP32Time.h"
-#include "backend.h"
-
 #ifndef RELOJ_H
 #define RELOJ_H
 
+#include "ESP32Time.h"
+#include "backend.h"
 
 extern ESP32Time rtc;
 extern const char* dataM;

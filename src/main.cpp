@@ -19,8 +19,8 @@ WiFiMulti wifiMulti;
 
 //Definición del usuario, clave y estado de acceso.
 
-char* usuarioHTTP = "admin";
-char* claveHTTP = "admin";
+const char* usuarioHTTP = "admin";
+const char* claveHTTP = "admin";
 bool eHTTP = false;
 
 //Variable que almacenará la última página cargada.
@@ -72,6 +72,8 @@ extern ESP32Time rtc;
 //del sistema.
 
 DynamicJsonDocument docJson(512);
+
+estadoSistema sistema;
 
 /*********Estructuras para el almacenamiento de***********/
 /**********la programación horaria del sistema************/

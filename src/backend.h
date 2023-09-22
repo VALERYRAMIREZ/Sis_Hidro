@@ -1,4 +1,6 @@
-#pragma once
+#ifndef BACKEND_H
+#define BACKEND_H
+
 #include <ESPAsyncWebServer.h>
 #include <SPIFFS.h>
 #include <string.h>
@@ -6,25 +8,8 @@
 #include <sstream>
 #include <Stream.h>
 #include <AsyncJson.h>
-#include "estado.h"
-#include "reloj.h"
 
-#ifndef BACKEND_H
-#define BACKEND_H
-
-    extern const uint8_t ledPinSistemaEncendido;
-    extern const uint8_t ledPinSistemaApagado;
-    extern String ledEstado;
-    extern String modoEstado;
-    extern bool modoSistema;
-    extern bool ledModoSistema;
-    extern char* usuarioHTTP;
-    extern char* claveHTTP;
-    extern String ultimaPaginaCargada;
-    extern estadoSistema sistema;
-    extern AsyncWebServer server;
-    
-    //Estructura para almacenar la fecha a programar al sistema.
+//Estructura para almacenar la fecha a programar al sistema.
 
 typedef struct {
   int dia;
@@ -57,15 +42,30 @@ typedef struct {
   diaSemana domingo;
 }  Semana;
 
+#include "estado.h"
+#include "reloj.h"
+
+extern const uint8_t ledPinSistemaEncendido;
+extern const uint8_t ledPinSistemaApagado;
+extern String ledEstado;
+extern String modoEstado;
+extern bool modoSistema;
+extern bool ledModoSistema;
+extern char* usuarioHTTP;
+extern char* claveHTTP;
+extern String ultimaPaginaCargada;
+extern estadoSistema sistema;
+extern AsyncWebServer server;
+
 extern FechaProg tiempo;
 extern FechaProg tiempoLeido;
 
 extern Semana semana;
 
-    uint8_t Extrae_Data(String trama, FechaProg* destino,char sep);
+uint8_t Extrae_Data(String trama, FechaProg* destino,char sep);
 
-    void Func_Backend(void);
+void Func_Backend(void);
 
-    String Procesador(const String& var);
+String Procesador(const String& var);
 
 #endif

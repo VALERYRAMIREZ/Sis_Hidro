@@ -3,12 +3,12 @@
 using namespace std;
 
 //Instanciación del servidor web.
-  AsyncWebServer server(80);
-  Semana semana = {};
+AsyncWebServer server(80);
+Semana semana = {};
 
-  extern ESP32Time rtc;
+extern ESP32Time rtc;
 
-  FechaProg tiempo = {}, tiempoLeido = {};
+FechaProg tiempo = {}, tiempoLeido = {};
 
 //Función de procesamiento de datos. Debido al
 //funcionamiento interno de la función send(), la función
