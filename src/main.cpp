@@ -5,7 +5,7 @@
 #include <AsyncElegantOTA.h>
 #include <WiFi.h>
 #include <WiFiMulti.h>
-#include <preferences.h>
+#include <Preferences.h>
 #include <string.h>
 #include <iostream>
 #include <sstream>
