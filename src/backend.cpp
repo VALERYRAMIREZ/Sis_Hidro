@@ -52,7 +52,7 @@ String Procesador(const String& var){//Función que chequea si el sistema está 
 uint8_t Extrae_Data(String trama, FechaProg* destino,char sep) {
   uint8_t contador = 0;
   string lectura = "";
-  stringstream cadena_leida(&trama[0]);
+  std::stringstream cadena_leida(&trama[0]);
   Serial.print("La trama es: ");
   Serial.println(trama.c_str());
   Serial.print("El stringstream es: ");

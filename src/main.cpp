@@ -1,27 +1,20 @@
 #include <Arduino.h>
-#include "SPIFFS.h"
-#include <AsyncTCP.h>
-#include <ESPAsyncWebServer.h>
+//#include <ESPAsyncWebServer.h>
 #include <AsyncElegantOTA.h>
 #include <WiFi.h>
 #include <WiFiMulti.h>
 #include <preferences.h>
 #include <string.h>
 #include <iostream>
-#include <sstream>
+//#include <sstream>
 #include <Stream.h>
+#include "variables_sistema.h"
 #include "reloj.h"
 #include "backend.h"
-using namespace std;
+//using namespace std;
 
 //Declaración de usuario y clave de red WiFi.
 WiFiMulti wifiMulti;
-
-//Definición del usuario, clave y estado de acceso.
-
-char* usuarioHTTP = "admin";
-char* claveHTTP = "admin";
-bool eHTTP = false;
 
 //Variable que almacenará la última página cargada.
 
