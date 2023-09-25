@@ -4,36 +4,38 @@
 #include <ESPAsyncWebServer.h>
 #include <AsyncElegantOTA.h>
 #include <WiFi.h>
-#include <WiFiMulti.h>
-#include <preferences.h>
+//#include <WiFiMulti.h>
+//#include <preferences.h>
 #include <string.h>
 #include <iostream>
 #include <sstream>
 #include <Stream.h>
-#include "reloj.h"
-#include "backend.h"
+#include <ESP32Time.h>
+#include <AsyncJson.h>
+#include "varSistema.h"
 using namespace std;
 
 //Declaración de usuario y clave de red WiFi.
-WiFiMulti wifiMulti;
+//WiFiMulti wifiMulti;
 
 //Definición del usuario, clave y estado de acceso.
 
-char* usuarioHTTP = "admin";
-char* claveHTTP = "admin";
-bool eHTTP = false;
+/*String usu = "admin", clav = "admin";
+char* usuarioHTTP = &usu[0];
+char* claveHTTP = &clav[0];
+bool eHTTP = false;*/
 
 //Variable que almacenará la última página cargada.
 
-String ultimaPaginaCargada = "";
+//String ultimaPaginaCargada = "";
 
 //Instanciación del objeto preferencias.
 
-Preferences memoriaEstado;
+//Preferences memoriaEstado;
 
 //Declaración de terminales de salida en el ESP-WROOM-32.
 
-const uint8_t ledPinSistemaApagado = 2;   //Led que indica si el sistema está apagado.
+/*const uint8_t ledPinSistemaApagado = 2;   //Led que indica si el sistema está apagado.
 const uint8_t ledPinSistemaEncendido = 4; //Led que indica si el sistema está encendido.
 String ledEstado;
 const uint8_t bombaUno = 23;//Salida para controlar la bomba 1.
@@ -44,29 +46,29 @@ bool bombaActiva = false;         //Falso significa bomba 1, verdadero significa
 bool modoSistema = false;         //modoSistema = false significa sistema en modo manual, modoSistema = true
 bool ledModoSistema = false;      //Significa sistema en modo automático cuando ledModoSistema es true. Cuando
 bool marchaSistemaLED = false;    //marchaSistema = false significa sistema parado, marchaSistema = true significa
-                                  //sistema activo.
+                                  //sistema activo.*/
 
-//Declaración de terminales de entrada para el sistema.
+/*/Declaración de terminales de entrada para el sistema.
 
 const uint8_t supervisorT = 1;    //Esta es la entrada para el supervisor mono/trifásico.
 bool superT = false;
 const uint8_t nivelAgua = 3;      //Nivel del agua será una medición analógica.
 uint8_t nivelA = 0;
 
-String modoEstado;
+String modoEstado;*/
 
-//Declaración de las variables para el tipo de tanque y volumen mínimo.
+/*/Declaración de las variables para el tipo de tanque y volumen mínimo.
 
 uint8_t tipoTanque = 0;
 uint8_t volMax = 0;
-uint8_t volMin = 0;
+uint8_t volMin = 0;*/
 
-/*/Instanciación del RTC
-ESP32Time rtc(0);            //GMT-0.*/
-extern ESP32Time rtc;
+//Instanciación del RTC
+
+ESP32Time rtc(0);            //GMT-0.
 
 //Instanciación del servidor web.
-//AsyncWebServer server(80);
+AsyncWebServer server(80);
 
 //Instanciación del documento JSON para recibir la configurcación
 //del sistema.
@@ -76,9 +78,9 @@ DynamicJsonDocument docJson(512);
 /*********Estructuras para el almacenamiento de***********/
 /**********la programación horaria del sistema************/
 
-/*/Estructura para almacenar la fecha a programar al sistema.
+//Estructura para almacenar la fecha a programar al sistema.
 
-struct FechaProg {
+/*struct FechaProg {
   int dia;
   int mes;
   int anio;
@@ -87,17 +89,17 @@ struct FechaProg {
   int segundo;
   char diaSemana[20];
   char mesAnio[20];
-};*/
+};
 
-/*/ Estructura para almacenar el día y programa respectivo.
+// Estructura para almacenar el día y programa respectivo.
 struct diaSemana{
   const char* inicioManana;
   const char* finManana;
   const char* inicioTarde;
   const char* finTarde;
-};*/
+};
 
-/*/ Estructura para almacenar los programas de todos los 
+// Estructura para almacenar los programas de todos los 
 // dias de la semana.
 struct Semana {
   diaSemana lunes;
@@ -107,25 +109,26 @@ struct Semana {
   diaSemana viernes;
   diaSemana sabado;
   diaSemana domingo;
-};*/
+};
 
 //Variable para almacenar la data leída del rtc.
 
 //const char * dataM;
 
-/*/ Campo de bits para almacenar el estado del sistema
+// Campo de bits para almacenar el estado del sistema
 
 struct estadoSistema {
   bool bateria  : 1;
   bool reloj    : 1;
-};
+};*/
+
 // Instanciación de las estructuras de tiempo y programación de
 // trabajo.
-//FechaProg tiempo = {}, tiempoLeido = {};
-//Semana semana = {"0"};
-estadoSistema sistema;*/
+FechaProg tiempo = {}, tiempoLeido = {};
+Semana semana = {};
+estadoSistema sistema;
 
-/*/Función de procesamiento de datos. Debido al
+//Función de procesamiento de datos. Debido al
 //funcionamiento interno de la función send(), la función
 //procesador es llamada cada vez que encuentra un
 //placeholder en el código html, por esa razón el código
@@ -162,7 +165,7 @@ String Procesador(const String& var){//Función que chequea si el sistema está 
   }
   Serial.println("Saliendo de Procesador.");
   return String();
-}*/
+}
 
 // Función para analizar la data enviada por la página web.
 
@@ -189,7 +192,7 @@ void manejaJson(AsyncWebServerRequest *request, String filename, size_t index, u
   }
 }
 
-/*/Función para extraer la data enviada desde la página web.
+// Función para extraer la data enviada desde la página web.
 
 uint8_t Extrae_Data(string trama, FechaProg* destino,char sep) {
   uint8_t contador = 0;
@@ -243,9 +246,9 @@ uint8_t Extrae_Data(string trama, FechaProg* destino,char sep) {
   Serial.print("El contador es: ");
   Serial.println(contador);
   return contador;
-}*/
+}
 
-/*/ Función para extraer la data de fecha del RTC.
+// Función para extraer la data de fecha del RTC.
 
 bool Compara_RTC(const char * data, Semana tPrograma) {
   bool comparado = false;
@@ -266,7 +269,7 @@ bool Compara_RTC(const char * data, Semana tPrograma) {
       sscanf(semana.lunes.finManana, "%2d:%2d", &manHoraFinProg, &manMinFinProg);
       sscanf(semana.lunes.inicioTarde, "%2d:%2d", &tarHoraIniProg, &tarMinIniProg);
       sscanf(semana.lunes.finTarde, "%2d:%2d", &tarHoraFinProg, &tarMinFinProg);
-      /*Serial.println(manHoraIniProg);
+      Serial.println(manHoraIniProg);
       Serial.println(manMinIniProg);
       Serial.println(manHoraFinProg);
       Serial.println(manMinFinProg);
@@ -286,7 +289,7 @@ bool Compara_RTC(const char * data, Semana tPrograma) {
       sscanf(semana.martes.finManana, "%2d:%2d", &manHoraFinProg, &manMinFinProg);
       sscanf(semana.martes.inicioTarde, "%2d:%2d", &tarHoraIniProg, &tarMinIniProg);
       sscanf(semana.martes.finTarde, "%2d:%2d", &tarHoraFinProg, &tarMinFinProg);
-      /*Serial.println(manHoraIniProg);
+      Serial.println(manHoraIniProg);
       Serial.println(manMinIniProg);
       Serial.println(manHoraFinProg);
       Serial.println(manMinFinProg);
@@ -306,7 +309,7 @@ bool Compara_RTC(const char * data, Semana tPrograma) {
       sscanf(semana.miercoles.finManana, "%2d:%2d", &manHoraFinProg, &manMinFinProg);
       sscanf(semana.miercoles.inicioTarde, "%2d:%2d", &tarHoraIniProg, &tarMinIniProg);
       sscanf(semana.miercoles.finTarde, "%2d:%2d", &tarHoraFinProg, &tarMinFinProg);
-      /*Serial.println(manHoraIniProg);
+      Serial.println(manHoraIniProg);
       Serial.println(manMinIniProg);
       Serial.println(manHoraFinProg);
       Serial.println(manMinFinProg);
@@ -327,7 +330,7 @@ bool Compara_RTC(const char * data, Semana tPrograma) {
       sscanf(semana.jueves.finManana, "%2d:%2d", &manHoraFinProg, &manMinFinProg);
       sscanf(semana.jueves.inicioTarde, "%2d:%2d", &tarHoraIniProg, &tarMinIniProg);
       sscanf(semana.lunes.finTarde, "%2d:%2d", &tarHoraFinProg, &tarMinFinProg);
-      /*Serial.println(manHoraIniProg);
+      Serial.println(manHoraIniProg);
       Serial.println(manMinIniProg);
       Serial.println(manHoraFinProg);
       Serial.println(manMinFinProg);
@@ -347,7 +350,7 @@ bool Compara_RTC(const char * data, Semana tPrograma) {
       sscanf(semana.viernes.finManana, "%2d:%2d", &manHoraFinProg, &manMinFinProg);
       sscanf(semana.viernes.inicioTarde, "%2d:%2d", &tarHoraIniProg, &tarMinIniProg);
       sscanf(semana.lunes.finTarde, "%2d:%2d", &tarHoraFinProg, &tarMinFinProg);
-      /*Serial.println(manHoraIniProg);
+      Serial.println(manHoraIniProg);
       Serial.println(manMinIniProg);
       Serial.println(manHoraFinProg);
       Serial.println(manMinFinProg);
@@ -367,7 +370,7 @@ bool Compara_RTC(const char * data, Semana tPrograma) {
       sscanf(semana.sabado.finManana, "%2d:%2d", &manHoraFinProg, &manMinFinProg);
       sscanf(semana.sabado.inicioTarde, "%2d:%2d", &tarHoraIniProg, &tarMinIniProg);
       sscanf(semana.sabado.finTarde, "%2d:%2d", &tarHoraFinProg, &tarMinFinProg);
-      /*Serial.println(manHoraIniProg);
+      Serial.println(manHoraIniProg);
       Serial.println(manMinIniProg);
       Serial.println(manHoraFinProg);
       Serial.println(manMinFinProg);
@@ -411,7 +414,7 @@ bool Compara_RTC(const char * data, Semana tPrograma) {
   Serial.print("Comparado: ");
   Serial.println(comparado);
   return comparado;
-}*/
+}
 
 // Función para controlar la bomba a encender
 void Bomba(bool encendido) {
@@ -469,7 +472,7 @@ void setup() {
   Serial.print("Dirección IP asignada: ");
   Serial.println(WiFi.localIP());
 
-  /*/Funciones para el manejo de la página web.
+  //Funciones para el manejo de la página web.
 
   server.on("/style.css", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(SPIFFS, "/style.css", "text/css");
@@ -647,11 +650,11 @@ void setup() {
       request->send(SPIFFS, ultimaPaginaCargada, String(), false, Procesador);
       Serial.println("Última página cargada solicitada");
     };
-  });*/
+  });
 
   //Manejo de la data de programación recibida.
 
-  /*AsyncCallbackJsonWebHandler* manejadorJson = new AsyncCallbackJsonWebHandler("/forma-dato", [](AsyncWebServerRequest *request, JsonVariant &docJson) {
+  AsyncCallbackJsonWebHandler* manejadorJson = new AsyncCallbackJsonWebHandler("/forma-dato", [](AsyncWebServerRequest *request, JsonVariant &docJson) {
     auto&& jsonObj = docJson.as<JsonObject>();
     Serial.print("La fecha actual es :");
     Serial.println((const char *) jsonObj["fecha"]);
@@ -725,7 +728,7 @@ void setup() {
     rtc.setTime(0, tiempo.minuto, tiempo.hora, tiempo.dia, tiempo.mes, tiempo.anio);
     sistema.reloj = true;
   });
-  server.addHandler(manejadorJson);*/
+  server.addHandler(manejadorJson);
 
   //Manejo de la página "No encontrado".
 
