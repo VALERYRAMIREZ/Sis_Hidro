@@ -4,53 +4,56 @@
     #include <preferences.h>
 
     //Declaración de usuario y clave de red WiFi.
-    WiFiMulti wifiMulti;
+    extern WiFiMulti wifiMulti;
 
     //Definición del usuario, clave y estado de acceso.
 
-    String usu = "admin", clav = "admin";
-    char* usuarioHTTP = &usu[0];
-    char* claveHTTP = &clav[0];
-    bool eHTTP = false;
+    extern String usu;
+    extern String clav;
+    extern char* usuarioHTTP;
+    extern char* claveHTTP;
+    extern bool eHTTP;
 
     //Variable que almacenará la última página cargada.
 
-    String ultimaPaginaCargada = "";
+    extern String ultimaPaginaCargada;
 
     //Instanciación del objeto preferencias.
 
-    Preferences memoriaEstado;
+    extern Preferences memoriaEstado;
 
-    const uint8_t ledPinSistemaApagado = 2;   //Led que indica si el sistema está apagado.
-    const uint8_t ledPinSistemaEncendido = 4; //Led que indica si el sistema está encendido.
-    String ledEstado;
-    const uint8_t bombaUno = 23;//Salida para controlar la bomba 1.
-    bool bomba1LED = false;
-    const uint8_t bombaDos = 22;//Salida para controlar la bomba 2.
-    bool bomba2LED = false;
-    bool bombaActiva = false;         //Falso significa bomba 1, verdadero significa bomba 2.
-    bool modoSistema = false;         //modoSistema = false significa sistema en modo manual, modoSistema = true
-    bool ledModoSistema = false;      //Significa sistema en modo automático cuando ledModoSistema es true. Cuando
-    bool marchaSistemaLED = false;    //marchaSistema = false significa sistema parado, marchaSistema = true significa
+    extern const uint8_t ledPinSistemaApagado;   //Led que indica si el sistema está apagado.
+    extern const uint8_t ledPinSistemaEncendido; //Led que indica si el sistema está encendido.
+    extern String ledEstado;
+    extern const uint8_t bombaUno;//Salida para controlar la bomba 1.
+    extern bool bomba1LED;
+    extern const uint8_t bombaDos;//Salida para controlar la bomba 2.
+    extern bool bomba2LED;
+    extern bool bombaActiva;         //Falso significa bomba 1, verdadero significa bomba 2.
+    extern bool modoSistema;         //modoSistema = false significa sistema en modo manual, modoSistema = true
+    extern bool ledModoSistema;      //Significa sistema en modo automático cuando ledModoSistema es true. Cuando
+    extern bool marchaSistemaLED;    //marchaSistema = false significa sistema parado, marchaSistema = true significa
 
     //Declaración de terminales de entrada para el sistema.
 
-    const uint8_t supervisorT = 1;    //Esta es la entrada para el supervisor mono/trifásico.
-    bool superT = false;
-    const uint8_t nivelAgua = 3;      //Nivel del agua será una medición analógica.
-    uint8_t nivelA = 0;
+    extern const uint8_t supervisorT;    //Esta es la entrada para el supervisor mono/trifásico.
+    extern bool superT;
+    extern const uint8_t nivelAgua;      //Nivel del agua será una medición analógica.
+    extern uint8_t nivelA;
 
-    String modoEstado;
+    extern String modoEstado;
 
     //Declaración de las variables para el tipo de tanque y volumen mínimo.
 
-    uint8_t tipoTanque = 0;
-    uint8_t volMax = 0;
-    uint8_t volMin = 0;
+    extern uint8_t tipoTanque;
+    extern uint8_t volMax;
+    extern uint8_t volMin;
 
-    //Estructura para almacenar la fecha a programar al sistema.
+    extern const char* dataM;
 
-    typedef struct {
+ //Estructura para almacenar la fecha a programar al sistema.
+
+    typedef struct FechaProg {
         int dia;
         int mes;
         int anio;
@@ -62,7 +65,7 @@
     } FechaProg;
 
     // Estructura para almacenar el día y programa respectivo.
-    typedef struct {
+    typedef struct diaSemana {
         const char* inicioManana;
         const char* finManana;
         const char* inicioTarde;
@@ -71,7 +74,7 @@
 
     // Estructura para almacenar los programas de todos los 
     // dias de la semana.
-    typedef struct {
+    typedef struct Semana {
         diaSemana lunes;
         diaSemana martes;
         diaSemana miercoles;
@@ -81,15 +84,16 @@
         diaSemana domingo;
     } Semana;
 
-    //Variable para almacenar la data leída del rtc.
+       // Campo de bits para almacenar el estado del sistema
 
-    //const char * dataM;
-
-    // Campo de bits para almacenar el estado del sistema
-
-    struct estadoSistema {
+    typedef struct {
         bool bateria  : 1;
         bool reloj    : 1;
-};
+    } estadoSistema;
+
+    extern FechaProg tiempo;
+    extern FechaProg tiempoLeido;
+    extern Semana semana;
+    extern estadoSistema sistema;
 
 #endif

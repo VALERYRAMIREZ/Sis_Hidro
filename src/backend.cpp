@@ -1,48 +1,14 @@
-#include <Arduino.h>
-//#include "SPIFFS.h"
-#include <AsyncTCP.h>
-//#include <ESPAsyncWebServer.h>
-#include <AsyncElegantOTA.h>
-#include <WiFi.h>
-//#include <WiFiMulti.h>
-//#include <preferences.h>
-#include <string.h>
-#include <iostream>
-//#include <sstream>
-#include <Stream.h>
-#include <ESP32Time.h>
-//#include <AsyncJson.h>
-//#include "varSistema.h"
-#include "backend.h"
-using namespace std;
-
-//Instanciación del RTC
-
-ESP32Time rtc(0);            //GMT-0.
-
-//Instanciación del servidor web.
-AsyncWebServer server(80);
-
-//Instanciación del documento JSON para recibir la configurcación
-//del sistema.
-
-//DynamicJsonDocument docJson(512);
-
-/*/ Instanciación de las estructuras de tiempo y programación de
-// trabajo.
-extern FechaProg tiempo;
-extern FechaProg tiempoLeido;
+#include <sstream>
+#include <backend.h>
+    
+extern AsyncWebServer server;
 extern Semana semana;
-extern estadoSistema sistema;*/
+extern FechaProg tiempo;
 
+//extern ESP32Time rtc;
+extern estadoSistema sistema;
 
-//Función de procesamiento de datos. Debido al
-//funcionamiento interno de la función send(), la función
-//procesador es llamada cada vez que encuentra un
-//placeholder en el código html, por esa razón el código
-//interno de esta función está hecho de esa manera.
-
-/*String Procesador(const String& var){//Función que chequea si el sistema está encendido y envía el estado.
+String Procesador(const String& var){//Función que chequea si el sistema está encendido y envía el estado.
   Serial.println("Entrando a Procesador.");
   if(var == "ESTADO_SISTEMA"){
     if(!digitalRead(ledPinSistemaApagado) && digitalRead(ledPinSistemaEncendido)){
@@ -73,11 +39,9 @@ extern estadoSistema sistema;*/
   }
   Serial.println("Saliendo de Procesador.");
   return String();
-}*/
+}
 
-// Función para analizar la data enviada por la página web.
-
-/*void manejaJson(AsyncWebServerRequest *request, String filename, size_t index, uint8_t *data, size_t len, bool final) {
+void manejaJson(AsyncWebServerRequest *request, String filename, size_t index, uint8_t *data, size_t len, bool final) {
   Serial.println("Recibiendo configuración de la dirección IP ." + request->client()->remoteIP().toString() + " " + request->url());
   if(!filename) {
     Serial.println("No hay archivo.");
@@ -102,15 +66,15 @@ extern estadoSistema sistema;*/
 
 // Función para extraer la data enviada desde la página web.
 
-uint8_t Extrae_Data(string trama, FechaProg* destino,char sep) {
+uint8_t Extrae_Data(std::string trama, FechaProg* destino,char sep) {
   uint8_t contador = 0;
-  string lectura = "";
-  stringstream cadena_leida(trama);
+  std::string lectura = "";
+  std::stringstream cadena_leida(trama);
   Serial.print("La trama es: ");
   Serial.println(trama.c_str());
   Serial.print("El stringstream es: ");
   Serial.println(cadena_leida.str().c_str());
-  while(getline(cadena_leida, lectura, sep))
+  while(std::getline(cadena_leida, lectura, sep))
   {
     if(sep == '-')
     {
@@ -154,235 +118,13 @@ uint8_t Extrae_Data(string trama, FechaProg* destino,char sep) {
   Serial.print("El contador es: ");
   Serial.println(contador);
   return contador;
-}*/
-
-// Función para extraer la data de fecha del RTC.
-
-/*bool Compara_RTC(const char * data, Semana tPrograma) {
-  bool comparado = false;
-  uint8_t manHoraIniProg = 0, manMinIniProg = 0, manHoraFinProg = 0, manMinFinProg = 0, tarHoraIniProg = 0, tarMinIniProg = 0, tarHoraFinProg = 0, tarMinFinProg = 0;
-  Serial.print("Fecha completa: ");
-  Serial.println(data);
-  if(sscanf(data, "%2d:%2d:%2d %9[^,], %s %2d %4d", &tiempoLeido.hora, &tiempoLeido.minuto, &tiempoLeido.segundo, tiempoLeido.diaSemana, tiempoLeido.mesAnio, &tiempoLeido.dia, &tiempoLeido.anio) != 7)
-  {
-    Serial.println("La trama de reloj recibida es incorrecta, no se puede operar en automático.");
-    comparado = false;
-    return comparado;
-  }
-  else
-  {
-    if((string) tiempoLeido.diaSemana == "Monday")
-    {
-      sscanf(semana.lunes.inicioManana, "%2d:%2d", &manHoraIniProg, &manMinIniProg);
-      sscanf(semana.lunes.finManana, "%2d:%2d", &manHoraFinProg, &manMinFinProg);
-      sscanf(semana.lunes.inicioTarde, "%2d:%2d", &tarHoraIniProg, &tarMinIniProg);
-      sscanf(semana.lunes.finTarde, "%2d:%2d", &tarHoraFinProg, &tarMinFinProg);
-      Serial.println(manHoraIniProg);
-      Serial.println(manMinIniProg);
-      Serial.println(manHoraFinProg);
-      Serial.println(manMinFinProg);
-      Serial.println(tarHoraIniProg);
-      Serial.println(tarMinIniProg);
-      Serial.println(tarHoraFinProg);
-      Serial.println(tarMinFinProg);
-      if((((tiempoLeido.hora >= manHoraIniProg) && (tiempoLeido.hora <= manHoraFinProg)) && ((tiempoLeido.minuto >= manMinIniProg) && (tiempoLeido.minuto < manMinFinProg)))
-        || (((tiempoLeido.hora >= tarHoraIniProg) && (tiempoLeido.hora <= tarHoraFinProg)) && ((tiempoLeido.minuto >= tarMinIniProg) && (tiempoLeido.minuto < tarMinFinProg))))
-      {
-        comparado = true;
-      }
-    }
-    else if((string) tiempoLeido.diaSemana == "Tuesday")
-    {
-      sscanf(semana.martes.inicioManana, "%2d:%2d", &manHoraIniProg, &manMinIniProg);
-      sscanf(semana.martes.finManana, "%2d:%2d", &manHoraFinProg, &manMinFinProg);
-      sscanf(semana.martes.inicioTarde, "%2d:%2d", &tarHoraIniProg, &tarMinIniProg);
-      sscanf(semana.martes.finTarde, "%2d:%2d", &tarHoraFinProg, &tarMinFinProg);
-      Serial.println(manHoraIniProg);
-      Serial.println(manMinIniProg);
-      Serial.println(manHoraFinProg);
-      Serial.println(manMinFinProg);
-      Serial.println(tarHoraIniProg);
-      Serial.println(tarMinIniProg);
-      Serial.println(tarHoraFinProg);
-      Serial.println(tarMinFinProg);
-      if((((tiempoLeido.hora >= manHoraIniProg) && (tiempoLeido.hora <= manHoraFinProg)) && ((tiempoLeido.minuto >= manMinIniProg) && (tiempoLeido.minuto < manMinFinProg)))
-        || (((tiempoLeido.hora >= tarHoraIniProg) && (tiempoLeido.hora <= tarHoraFinProg)) && ((tiempoLeido.minuto >= tarMinIniProg) && (tiempoLeido.minuto < tarMinFinProg))))
-      {
-        comparado = true;
-      }
-    }
-    else if((string) tiempoLeido.diaSemana == "Wednesday")
-    {
-      sscanf(semana.miercoles.inicioManana, "%2d:%2d", &manHoraIniProg, &manMinIniProg);
-      sscanf(semana.miercoles.finManana, "%2d:%2d", &manHoraFinProg, &manMinFinProg);
-      sscanf(semana.miercoles.inicioTarde, "%2d:%2d", &tarHoraIniProg, &tarMinIniProg);
-      sscanf(semana.miercoles.finTarde, "%2d:%2d", &tarHoraFinProg, &tarMinFinProg);
-      Serial.println(manHoraIniProg);
-      Serial.println(manMinIniProg);
-      Serial.println(manHoraFinProg);
-      Serial.println(manMinFinProg);
-      Serial.println(tarHoraIniProg);
-      Serial.println(tarMinIniProg);
-      Serial.println(tarHoraFinProg);
-      Serial.println(tarMinFinProg);
-      
-      if((((tiempoLeido.hora >= manHoraIniProg) && (tiempoLeido.hora <= manHoraFinProg)) && ((tiempoLeido.minuto >= manMinIniProg) && (tiempoLeido.minuto < manMinFinProg)))
-        || (((tiempoLeido.hora >= tarHoraIniProg) && (tiempoLeido.hora <= tarHoraFinProg)) && ((tiempoLeido.minuto >= tarMinIniProg) && (tiempoLeido.minuto < tarMinFinProg))))
-      {
-        comparado = true;
-      }
-    }
-    else if((string) tiempoLeido.diaSemana == "Thursday")
-    {
-      sscanf(semana.jueves.inicioManana, "%2d:%2d", &manHoraIniProg, &manMinIniProg);
-      sscanf(semana.jueves.finManana, "%2d:%2d", &manHoraFinProg, &manMinFinProg);
-      sscanf(semana.jueves.inicioTarde, "%2d:%2d", &tarHoraIniProg, &tarMinIniProg);
-      sscanf(semana.lunes.finTarde, "%2d:%2d", &tarHoraFinProg, &tarMinFinProg);
-      Serial.println(manHoraIniProg);
-      Serial.println(manMinIniProg);
-      Serial.println(manHoraFinProg);
-      Serial.println(manMinFinProg);
-      Serial.println(tarHoraIniProg);
-      Serial.println(tarMinIniProg);
-      Serial.println(tarHoraFinProg);
-      Serial.println(tarMinFinProg);
-      if((((tiempoLeido.hora >= manHoraIniProg) && (tiempoLeido.hora <= manHoraFinProg)) && ((tiempoLeido.minuto >= manMinIniProg) && (tiempoLeido.minuto < manMinFinProg)))
-        || (((tiempoLeido.hora >= tarHoraIniProg) && (tiempoLeido.hora <= tarHoraFinProg)) && ((tiempoLeido.minuto >= tarMinIniProg) && (tiempoLeido.minuto < tarMinFinProg))))
-      {
-        comparado = true;
-      }
-    }
-    else if((string) tiempoLeido.diaSemana == "Friday")
-    {
-      sscanf(semana.viernes.inicioManana, "%2d:%2d", &manHoraIniProg, &manMinIniProg);
-      sscanf(semana.viernes.finManana, "%2d:%2d", &manHoraFinProg, &manMinFinProg);
-      sscanf(semana.viernes.inicioTarde, "%2d:%2d", &tarHoraIniProg, &tarMinIniProg);
-      sscanf(semana.lunes.finTarde, "%2d:%2d", &tarHoraFinProg, &tarMinFinProg);
-      Serial.println(manHoraIniProg);
-      Serial.println(manMinIniProg);
-      Serial.println(manHoraFinProg);
-      Serial.println(manMinFinProg);
-      Serial.println(tarHoraIniProg);
-      Serial.println(tarMinIniProg);
-      Serial.println(tarHoraFinProg);
-      Serial.println(tarMinFinProg);
-      if((((tiempoLeido.hora >= manHoraIniProg) && (tiempoLeido.hora <= manHoraFinProg)) && ((tiempoLeido.minuto >= manMinIniProg) && (tiempoLeido.minuto < manMinFinProg)))
-        || (((tiempoLeido.hora >= tarHoraIniProg) && (tiempoLeido.hora <= tarHoraFinProg)) && ((tiempoLeido.minuto >= tarMinIniProg) && (tiempoLeido.minuto < tarMinFinProg))))
-      {
-        comparado = true;
-      }
-    }
-    else if((string) tiempoLeido.diaSemana == "Saturday")
-    {
-      sscanf(semana.sabado.inicioManana, "%2d:%2d", &manHoraIniProg, &manMinIniProg);
-      sscanf(semana.sabado.finManana, "%2d:%2d", &manHoraFinProg, &manMinFinProg);
-      sscanf(semana.sabado.inicioTarde, "%2d:%2d", &tarHoraIniProg, &tarMinIniProg);
-      sscanf(semana.sabado.finTarde, "%2d:%2d", &tarHoraFinProg, &tarMinFinProg);
-      Serial.println(manHoraIniProg);
-      Serial.println(manMinIniProg);
-      Serial.println(manHoraFinProg);
-      Serial.println(manMinFinProg);
-      Serial.println(tarHoraIniProg);
-      Serial.println(tarMinIniProg);
-      Serial.println(tarHoraFinProg);
-      Serial.println(tarMinFinProg);
-      if((((tiempoLeido.hora >= manHoraIniProg) && (tiempoLeido.hora <= manHoraFinProg)) && ((tiempoLeido.minuto >= manMinIniProg) && (tiempoLeido.minuto < manMinFinProg)))
-        || (((tiempoLeido.hora >= tarHoraIniProg) && (tiempoLeido.hora <= tarHoraFinProg)) && ((tiempoLeido.minuto >= tarMinIniProg) && (tiempoLeido.minuto < tarMinFinProg))))
-      {
-        comparado = true;
-      }
-    }
-    else if((string) tiempoLeido.diaSemana == "Sunday")
-    {
-      sscanf(semana.domingo.inicioManana, "%2d:%2d", &manHoraIniProg, &manMinIniProg);
-      sscanf(semana.domingo.finManana, "%2d:%2d", &manHoraFinProg, &manMinFinProg);
-      sscanf(semana.domingo.inicioTarde, "%2d:%2d", &tarHoraIniProg, &tarMinIniProg);
-      sscanf(semana.domingo.finTarde, "%2d:%2d", &tarHoraFinProg, &tarMinFinProg);
-      Serial.println(semana.domingo.finTarde);
-      Serial.println(manHoraIniProg);
-      Serial.println(manMinIniProg);
-      Serial.println(manHoraFinProg);
-      Serial.println(manMinFinProg);
-      Serial.println(tarHoraIniProg);
-      Serial.println(tarMinIniProg);
-      Serial.println(tarHoraFinProg);
-      Serial.println(tarMinFinProg);
-      if((((tiempoLeido.hora >= manHoraIniProg) && (tiempoLeido.hora <= manHoraFinProg)) && ((tiempoLeido.minuto >= manMinIniProg) && (tiempoLeido.minuto < manMinFinProg)))
-        || (((tiempoLeido.hora >= tarHoraIniProg) && (tiempoLeido.hora <= tarHoraFinProg)) && ((tiempoLeido.minuto >= tarMinIniProg) && (tiempoLeido.minuto < tarMinFinProg))))
-      {
-        comparado = true;
-      }
-    }
-    else
-    {
-      Serial.println("No se encontró el día de programación");
-      comparado = false;
-    }
-  }
-  Serial.print("Comparado: ");
-  Serial.println(comparado);
-  return comparado;
-}*/
-
-// Función para controlar la bomba a encender
-void Bomba(bool encendido) {
-
 }
 
-void handle_NoEncontrado() {
+void Define_Backend(void)
+{
+    //Funciones para el manejo de la página web.
 
-}
-
-void setup() {
-
-  /*/Adición de redes a las que se puede conectar el dispositivo.
-  wifiMulti.addAP("ABACANTVWIFI8440","85047373038805");
-  wifiMulti.addAP("TP-LINK_D6BF4E","480Secur325");
-  //wifiMulti.addAP("Delfos", "Joseph#29");*/
-
-  //Configuración de velocidad del puerto serial.
-  Serial.begin(115200);
-  Serial.println("Entrando a configuración de aplicación");
-
-  //Inicialización del sistema de preferencias NVS.
-  /*memoriaEstado.begin("estado_sistema", false);
-  memoriaEstado.clear();
-
-  //Lectura de los estados iniciales del sistema.
-  memoriaEstado.getBool("SisEncender",ledEstado);
-  memoriaEstado.getBool("bombaActiva",bombaActiva);*/
-
-
-  /*/Configuración de las salidas del sistema.
-  pinMode(ledPinSistemaApagado,OUTPUT);
-  pinMode(ledPinSistemaEncendido,OUTPUT);
-  pinMode(ledModoSistema,OUTPUT);
-  pinMode(bombaUno,OUTPUT);
-  pinMode(bombaDos,OUTPUT);*/
-
-  /*/Inicialización SPIFFS.
-  if(!SPIFFS.begin(true)){
-    Serial.println("Ha ocurrido un error montando el SPIFFS");
-    return;
-  }
-  else{
-    Serial.println("Inicializado el Sistema de archivos.");
-  }*/
-
-  /*/Configuración e inicialización del wifi.
-  WiFi.mode(WIFI_STA);
-  while (wifiMulti.run() != WL_CONNECTED)
-  {
-    delay(1000);
-    Serial.println("Conectando al WiFi");
-  }
-  Serial.print("Conectado a la red " + WiFi.SSID() + "\n");
-  Serial.print("Dirección IP asignada: ");
-  Serial.println(WiFi.localIP());
-
-  //Funciones para el manejo de la página web.
-
-  /*server.on("/style.css", HTTP_GET, [](AsyncWebServerRequest *request){
+  server.on("/style.css", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(SPIFFS, "/style.css", "text/css");
   });
 
@@ -633,7 +375,7 @@ void setup() {
     request->send(200);
     Serial.println("Configuración recibida.");
     
-    rtc.setTime(0, tiempo.minuto, tiempo.hora, tiempo.dia, tiempo.mes, tiempo.anio);
+    //rtc.setTime(0, tiempo.minuto, tiempo.hora, tiempo.dia, tiempo.mes, tiempo.anio);
     sistema.reloj = true;
   });
   server.addHandler(manejadorJson);
@@ -644,43 +386,5 @@ void setup() {
     Serial.println("Cargando página no encontrada.");
     request->send(SPIFFS, "/no_encontrado.html", String());
         
-  });*/
-
-  /*/Inicio del servidor web.
-  AsyncElegantOTA.begin(&server);    // Start AsyncElegantOTA
-  server.begin();
-
-  Serial.println("Saliendo de configuración de aplicación");*/
-}
- 
-void loop() {
-  
-  /*if(sistema.reloj && modoSistema)
-  {
-    //superT && (nivelA >= 255/(volMax/volMin)) &&
-    if(!bombaActiva && Compara_RTC(rtc.getTimeDate(true).c_str(), semana))
-    {
-      Bomba(true);
-      bombaActiva = true;
-      digitalWrite(ledPinSistemaApagado, true);
-    }
-    else
-    {
-      Bomba(false);
-      bombaActiva = false;
-      digitalWrite(ledPinSistemaApagado, false);
-    }
-  }
-  else if(!modoSistema)
-  {
-    /*switch(modoEstado)
-    {
-      case 0:
-      {
-
-      }
-      break;
-    }
-  }
-  delay(1000);*/
+  });
 }
