@@ -41,6 +41,18 @@ String Procesador(const String& var){//Función que chequea si el sistema está 
   return String();
 }
 
+bool Inicia_SPIFFS(void)
+{
+  if(!SPIFFS.begin(true)){
+    Serial.println("Ha ocurrido un error montando el SPIFFS");
+    return false;
+  }
+  else{
+    Serial.println("Inicializado el Sistema de archivos.");
+  }
+  return true;
+}
+
 void manejaJson(AsyncWebServerRequest *request, String filename, size_t index, uint8_t *data, size_t len, bool final) {
   Serial.println("Recibiendo configuración de la dirección IP ." + request->client()->remoteIP().toString() + " " + request->url());
   if(!filename) {
