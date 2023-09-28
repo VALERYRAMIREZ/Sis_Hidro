@@ -86,7 +86,7 @@
 
        // Campo de bits para almacenar el estado del sistema
 
-    typedef struct {
+    typedef struct estadoSistema {
         bool bateria  : 1;
         bool reloj    : 1;
     } estadoSistema;

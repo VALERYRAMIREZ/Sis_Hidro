@@ -10,9 +10,10 @@
 #include <iostream>
 //#include <sstream>
 #include <Stream.h>
-#include <ESP32Time.h>
+//#include <ESP32Time.h>
 //#include <AsyncJson.h>
 //#include "varSistema.h"
+#include "reloj.h"
 #include "backend.h"
 using namespace std;
 
@@ -26,7 +27,7 @@ AsyncWebServer server(80);
 //Instanciación del documento JSON para recibir la configurcación
 //del sistema.
 
-//DynamicJsonDocument docJson(512);
+DynamicJsonDocument docJson(512);
 
 /*/ Instanciación de las estructuras de tiempo y programación de
 // trabajo.
