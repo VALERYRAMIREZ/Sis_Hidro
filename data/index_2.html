@@ -1,0 +1,28 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>Control para puerta WiFi. IP = %DIRECCION%</title>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" type="text/css" href="style.css">
+  </head>
+  <body>
+    <div class="topnav">
+      <div class="titulo-config">
+        <h1>Control para Puerta auto</h1>
+      </div>
+      <div class="logo-div">
+        <img src="logo" alt="logo-img">
+      </div>
+    </div>
+    <button class="button" onmousedown="toggleCheckbox('on');" onmouseup="toggleCheckbox('off');">ACTIVAR PORTÓN</button>
+  <script>
+  function toggleCheckbox(x) {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "/" + x, true);
+    xhr.send();
+  }
+  </script>
+  </body>
+</html>

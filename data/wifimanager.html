@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Configurador WiFi. IP = %DIRECCION%</title>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+  <div class="topnav">
+    <div class="titulo-config">
+      <h1>Configure los parámetros de Red</h1>
+    </div>
+    <div class="logo-div">
+      <img src="logo" alt="logo-img">
+    </div>
+  </div>
+  <div class="content">
+    <div class="card-grid">
+      <div class="card">
+        <form action="/config" method="POST">
+            <div class="div-label">
+              <label for="ssid">Nombre de Red</label>
+              <input type="text" id="ssid" name="ssid" pattern="\&|\*|\@|\^|\:|\,|\$|\!|\`|\-|\#|\%|\+|\?|\,|\~|\.|\w{8,30}" placeholder="Debe introducir una SSID válida" required>
+            </div>
+            <div class="div-label">
+              <label for="pass">Clave de Red</label>
+              <input type="text" id="pass" name="pass" pattern="/\&|\*|\@|\^|\:|\,|\$|\!|\`|\-|\#|\%|\+|\?|\,|\~|\.|\w{8,30}/g" placeholder="Debe introducir una contraseña válida" required>
+            </div>
+            <div class="div-label">
+              <label for="passo">Clavo de Red</label>
+              <input type="text" id="passo" name="passo" pattern="/\&|\*|\@|\^|\:|\,|\$|\!|\`|\-|\#|\%|\+|\?|\,|\~|\.|\w{8,30}/g" placeholder="Debe introducir una contraseña válida" required>
+            </div>
+            <!--<div class="div-label">
+              <label for="ip">Dirección IP</label>
+              <input type="text" id="ip" name="ip" pattern="^((25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)" placeholder="Introduzca dirección IP válida" required>
+            </div>
+            <div class="div-label">
+              <label for="gateway">Dirección del Gateway</label>
+              <input type="text" id="gateway" name="gateway" pattern="^((25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)" placeholder="Introduzca dirección IP válida" required>
+            </div>
+            <div class="div-label">
+              <label for="subnet">Máscara de subred</label>
+              <input type="text" id="subnet" name="subnet" pattern="^((25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)" placeholder="Introduzca máscara de subred válida" required>
+            </div>-->
+            <div class="div-label">
+              <label for="tEspera">Tiempo de de espera por Red inalámbrica</label>
+              <input type="number" id="tEspera" name="tEspera" pattern="[0-5]{1}[0-9]{1}" placeholder="Introduzca el tiempo en minutos (1-59 minutos)" min="1" max="59" required>
+            </div>
+            <div class="div-label">
+              <label for="nombre-red-ap">Nombre para identificar red AP y acceso web</label>
+              <input type="text" id="nombre-red-ap" name="nombre-red-ap" pattern="\&|\*|\@|\^|\:|\,|\$|\!|\`|\-|\#|\%|\+|\?|\,|\~|\.|\w{8,30}{8,15}" placeholder="Debe introducir un nombre web y nombre de red AP válido" required>
+            </div>
+            <div class="div-label">
+              <label for="clave-red-ap">Clave de la red AP</label>
+              <input type="text" id="clave-red-ap" name="clave-red-ap" pattern="/\&|\*|\@|\^|\:|\,|\$|\!|\`|\-|\#|\%|\+|\?|\,|\~|\.|\w{8,30}/g" placeholder="Debe introducir una contraseña válida para la red AP" required>
+            </div>
+            <div>
+            <input type ="submit" value ="Guardar">
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
