@@ -4,6 +4,16 @@
     //Declaración de usuario y clave de red WiFi.
     WiFiMulti wifiMulti;
 
+    String ssid = "";
+    String pass = "";
+    String ip = "";
+    String gateway = "";
+
+    /*****Habilitador de impresión en********/
+    /*************modo debug*****************/
+
+    bool habDebug = true;
+
     String usu = "admin", clav = "admin";
     char* usuarioHTTP = &usu[0];
     char* claveHTTP = &clav[0];
@@ -51,3 +61,5 @@
     FechaProg tiempo = {}, tiempoLeido = {};
     Semana semana = {};
     estadoSistema sistema;
+
+    wifiConfig wifi_usuario = {}, wifi_usuario_leida = {};

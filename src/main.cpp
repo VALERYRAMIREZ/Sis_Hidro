@@ -6,12 +6,16 @@
 #include <string.h>
 #include <iostream>
 #include <Stream.h>
+//#include <EEPROM.h>
 #include "reloj.h"
 #include "backend.h"
 #include "almacen.h"
+//#include "varSistema.h"
 
 //using namespace std;
+extern wifiConfig wifi_usuario;
 
+extern EEPROMClass eeprom;
 //Instanciación del RTC
 
 ESP32Time rtc(0);            //GMT-0.
@@ -35,6 +39,9 @@ void handle_NoEncontrado() {
 
 void setup() {
 
+  EEPROM.begin(sizeof(struct wifiConfig));
+  EEPROM.get(0, wifi_usuario);
+  //Inicia_EEPROM();
   //Adición de redes a las que se puede conectar el dispositivo.
   //wifiMulti.addAP("ABACANTVWIFI8440","85047373038805");
   wifiMulti.addAP("TP-LINK_D6BF4E","480Secur325");

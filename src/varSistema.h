@@ -3,8 +3,24 @@
     #include <WiFiMulti.h>
     #include <preferences.h>
 
+    #define AP_ssid           "CONTROL-WIFI-RED"
+    #define AP_clave          "administrador"
+    
     //Declaración de usuario y clave de red WiFi.
     extern WiFiMulti wifiMulti;
+
+    unsigned long previousMillis = 0;
+    const long interval = 30000;  // interval to wait for Wi-Fi connection (milliseconds)
+
+    extern String ssid;
+    extern String pass;
+    extern String ip;
+    extern String gateway;
+
+    /*****Habilitador de impresión en********/
+    /*************modo debug*****************/
+
+    extern bool habDebug;
 
     //Definición del usuario, clave y estado de acceso.
 
@@ -90,6 +106,19 @@
         bool bateria  : 1;
         bool reloj    : 1;
     } estadoSistema;
+
+    typedef struct wifiConfig {
+    char ssid[30];
+    char clave[30];
+    char ipDir[30];
+    char gatewaydir[30];
+    char subred[30];
+    bool accesoAP;
+    bool estaWiFi;
+    uint8_t tEnEspera;
+    char nombre_red[30];
+    char claveAP[30];
+    } wifiConfig;
 
     extern FechaProg tiempo;
     extern FechaProg tiempoLeido;
