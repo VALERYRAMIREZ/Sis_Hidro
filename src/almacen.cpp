@@ -1,5 +1,4 @@
 #include "almacen.h"
-#include <EEPROM.h>
 #include "varSistema.h"
 
 EEPROMClass eeprom;

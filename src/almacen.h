@@ -1,6 +1,8 @@
 #ifndef ALMACEN_H
 #define ALMACEN_H
 
+#include <EEPROM.h>
+
 extern EEPROMClass eeprom;
 
 void Inicia_Almacen(void);

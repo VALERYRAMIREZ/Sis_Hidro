@@ -6,7 +6,7 @@
 #include <string.h>
 #include <iostream>
 #include <Stream.h>
-//#include <EEPROM.h>
+#include <EEPROM.h>
 #include "reloj.h"
 #include "backend.h"
 #include "almacen.h"
@@ -39,8 +39,8 @@ void handle_NoEncontrado() {
 
 void setup() {
 
-  EEPROM.begin(sizeof(struct wifiConfig));
-  EEPROM.get(0, wifi_usuario);
+  eeprom.begin(sizeof(struct wifiConfig));
+  eeprom.get(0, wifi_usuario);
   //Inicia_EEPROM();
   //Adición de redes a las que se puede conectar el dispositivo.
   //wifiMulti.addAP("ABACANTVWIFI8440","85047373038805");

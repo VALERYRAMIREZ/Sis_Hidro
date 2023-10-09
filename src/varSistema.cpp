@@ -4,6 +4,8 @@
     //Declaración de usuario y clave de red WiFi.
     WiFiMulti wifiMulti;
 
+    unsigned long previousMillis = 0;
+
     String ssid = "";
     String pass = "";
     String ip = "";

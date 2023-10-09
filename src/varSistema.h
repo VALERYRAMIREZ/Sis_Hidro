@@ -9,7 +9,7 @@
     //Declaración de usuario y clave de red WiFi.
     extern WiFiMulti wifiMulti;
 
-    unsigned long previousMillis = 0;
+    extern unsigned long previousMillis;
     const long interval = 30000;  // interval to wait for Wi-Fi connection (milliseconds)
 
     extern String ssid;
