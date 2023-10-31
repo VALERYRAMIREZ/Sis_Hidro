@@ -14,6 +14,8 @@ void manejaJson(AsyncWebServerRequest *request, String filename, size_t index, u
 
 uint8_t Extrae_Data(std::string trama, FechaProg* destino,char sep);
 
-void Define_Backend(void);
+void notFound(AsyncWebServerRequest *request);
+
+void Define_Backend(bool tipoWeb);
 
 #endif

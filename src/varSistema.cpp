@@ -1,6 +1,24 @@
 #include "varSistema.h"
 
 
+    /*****Claves de acceso a programación****/
+
+    const char* usuarioAdmin = "admin";
+    const char* claveAdmin = "admin";
+
+
+    /*****Parámetros a buscar una vez********/
+    /***realizada la carga de los datos de***/
+    /**********la red a utilizar*************/
+
+    const char* PARA_ENTRADA_1 = "ssid";
+    const char* PARA_ENTRADA_2 = "pass";
+    const char* PARA_ENTRADA_3 = "ip";
+    const char* PARA_ENTRADA_4 = "gateway";
+    const char* PARA_ENTRADA_5 = "tEspera";
+    const char* PARA_ENTRADA_6 = "nombre-red-ap";
+const char* PARA_ENTRADA_7 = "clave-red-ap";
+
     //Declaración de usuario y clave de red WiFi.
     WiFiMulti wifiMulti;
 

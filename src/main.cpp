@@ -1,6 +1,6 @@
 #include <Arduino.h>
 #include <AsyncTCP.h>
-#include <AsyncElegantOTA.h>
+//#include <AsyncElegantOTA.h>
 //#include <WiFi.h>
 //#include <WiFiMulti.h>
 #include <string.h>
@@ -10,8 +10,11 @@
 #include "reloj.h"
 #include "backend.h"
 #include "almacen.h"
+#include "mWifi.h"
+#include <actualOTA.h>
 //#include "varSistema.h"
 
+extern AsyncElegantOtaClass OTA;
 //using namespace std;
 extern wifiConfig wifi_usuario;
 
@@ -71,7 +74,15 @@ void setup() {
   Inicia_SPIFFS();
 
   //Configuración e inicialización del wifi.
-  WiFi.mode(WIFI_STA);
+  if(initWiFi())
+  {
+    Define_Backend(true);
+  }
+  else
+  {
+    Define_Backend(false);
+  }
+  /*WiFi.mode(WIFI_STA);
   while (wifiMulti.run() != WL_CONNECTED)
   {
     delay(1000);
@@ -79,12 +90,12 @@ void setup() {
   }
   Serial.print("Conectado a la red " + WiFi.SSID() + "\n");
   Serial.print("Dirección IP asignada: ");
-  Serial.println(WiFi.localIP());
+  Serial.println(WiFi.localIP());*/
 
-  Define_Backend();
+  //  Define_Backend();
 
   //Inicio del servidor web.
-  AsyncElegantOTA.begin(&server);    // Start AsyncElegantOTA
+  OTA.begin(&server);    // Start AsyncElegantOTA
   server.begin();
 
   Serial.println("Saliendo de configuración de aplicación");

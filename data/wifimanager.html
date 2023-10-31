@@ -13,52 +13,80 @@
       <h1>Configure los parámetros de Red</h1>
     </div>
     <div class="logo-div">
-      <img src="logo" alt="logo-img">
+      <img src="logoE" alt="logo-img">
     </div>
   </div>
   <div class="content">
     <div class="card-grid">
       <div class="card">
         <form action="/config" method="POST">
+          <div class="entrada">
             <div class="div-label">
               <label for="ssid">Nombre de Red</label>
+            </div>
+            <div class="entrada-dato">
               <input type="text" id="ssid" name="ssid" pattern="\&|\*|\@|\^|\:|\,|\$|\!|\`|\-|\#|\%|\+|\?|\,|\~|\.|\w{8,30}" placeholder="Debe introducir una SSID válida" required>
             </div>
+          </div>
+          <div class="entrada">
             <div class="div-label">
               <label for="pass">Clave de Red</label>
+            </div>
+            <div class="entrada-dato">
               <input type="text" id="pass" name="pass" pattern="/\&|\*|\@|\^|\:|\,|\$|\!|\`|\-|\#|\%|\+|\?|\,|\~|\.|\w{8,30}/g" placeholder="Debe introducir una contraseña válida" required>
             </div>
+          </div>
+          <div class="entrada">
             <div class="div-label">
-              <label for="passo">Clavo de Red</label>
-              <input type="text" id="passo" name="passo" pattern="/\&|\*|\@|\^|\:|\,|\$|\!|\`|\-|\#|\%|\+|\?|\,|\~|\.|\w{8,30}/g" placeholder="Debe introducir una contraseña válida" required>
-            </div>
-            <!--<div class="div-label">
               <label for="ip">Dirección IP</label>
+            </div>
+            <div class="entrada-dato">
               <input type="text" id="ip" name="ip" pattern="^((25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)" placeholder="Introduzca dirección IP válida" required>
             </div>
+          </div>
+          <div class="entrada">
             <div class="div-label">
               <label for="gateway">Dirección del Gateway</label>
+            </div>
+            <div class="entrada-dato">
               <input type="text" id="gateway" name="gateway" pattern="^((25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)" placeholder="Introduzca dirección IP válida" required>
             </div>
+          </div>
+          <div class="entrada">
             <div class="div-label">
               <label for="subnet">Máscara de subred</label>
+            </div>
+            <div class="entrada-dato">
               <input type="text" id="subnet" name="subnet" pattern="^((25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)" placeholder="Introduzca máscara de subred válida" required>
-            </div>-->
+            </div>
+          </div>
+          <div class="entrada">
             <div class="div-label">
-              <label for="tEspera">Tiempo de de espera por Red inalámbrica</label>
+              <label for="tEspera">Tiempo de espera Red</label>
+            </div>
+            <div class="entrada-dato">
               <input type="number" id="tEspera" name="tEspera" pattern="[0-5]{1}[0-9]{1}" placeholder="Introduzca el tiempo en minutos (1-59 minutos)" min="1" max="59" required>
             </div>
+          </div>
+          <div class="entrada">
             <div class="div-label">
-              <label for="nombre-red-ap">Nombre para identificar red AP y acceso web</label>
+              <label for="nombre-red-ap">Nombre red AP/acceso web</label>
+            </div>
+            <div class="entrada-dato">
               <input type="text" id="nombre-red-ap" name="nombre-red-ap" pattern="\&|\*|\@|\^|\:|\,|\$|\!|\`|\-|\#|\%|\+|\?|\,|\~|\.|\w{8,30}{8,15}" placeholder="Debe introducir un nombre web y nombre de red AP válido" required>
             </div>
+          </div>
+          <div class="entrada">
             <div class="div-label">
               <label for="clave-red-ap">Clave de la red AP</label>
+            </div>
+            <div class="entrada-dato">
               <input type="text" id="clave-red-ap" name="clave-red-ap" pattern="/\&|\*|\@|\^|\:|\,|\$|\!|\`|\-|\#|\%|\+|\?|\,|\~|\.|\w{8,30}/g" placeholder="Debe introducir una contraseña válida para la red AP" required>
             </div>
-            <div>
-            <input type ="submit" value ="Guardar">
           </div>
+            <div>
+              <input type ="submit" value ="Guardar">
+            </div>
         </form>
       </div>
     </div>

@@ -1,12 +1,23 @@
 #include <sstream>
-#include <backend.h>
+#include <AsyncElegantOTA.h>
+#include <EEPROM.h>
+#include "SPIFFS.h"
+#include "backend.h"
+#include "debuguear.h"
+#include "varSistema.h"
+
     
 extern AsyncWebServer server;
 extern Semana semana;
 extern FechaProg tiempo;
+extern AsyncElegantOtaClass OTA;
 
+extern wifiConfig wifi_usuario;
 //extern ESP32Time rtc;
 extern estadoSistema sistema;
+
+extern EEPROMClass eeprom;
+extern wifiConfig wifi_usuario_leida;
 
 String Procesador(const String& var){//Función que chequea si el sistema está encendido y envía el estado.
   Serial.println("Entrando a Procesador.");
@@ -132,11 +143,16 @@ uint8_t Extrae_Data(std::string trama, FechaProg* destino,char sep) {
   return contador;
 }
 
-void Define_Backend(void)
+void notFound(AsyncWebServerRequest *request) {
+  request->send(404, "text/plain", "Not found");
+}
+
+void Define_Backend(bool tipoWeb)
 {
     //Funciones para el manejo de la página web.
-
-  server.on("/style.css", HTTP_GET, [](AsyncWebServerRequest *request){
+  if(tipoWeb)
+  {
+    server.on("/style.css", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(SPIFFS, "/style.css", "text/css");
   });
 
@@ -162,7 +178,7 @@ void Define_Backend(void)
 
   server.on("/logoE", HTTP_GET, [](AsyncWebServerRequest * request){
     Serial.println("Cargando logo-empresa");
-    request->send(SPIFFS, "/Logo-empresa.png", String());
+    request->send(SPIFFS, "/logo.jpg", String());
         
   });
 
@@ -246,6 +262,17 @@ void Define_Backend(void)
   });
 
   //Manejo de la página de configuración.
+
+  server.on("/manager", HTTP_GET, [](AsyncWebServerRequest *request){
+    if(!request->authenticate(usuarioHTTP, claveHTTP)) {
+      return request->requestAuthentication();
+    };
+    ultimaPaginaCargada = "/wifimanager.html";
+    imprimeDebug(habDebug, "Entrando a página configuración.", "vacío");
+    request->send(SPIFFS, ultimaPaginaCargada, String());
+        
+  });
+
   server.on("/config", HTTP_GET, [](AsyncWebServerRequest *request){
     if(!request->authenticate(usuarioHTTP, claveHTTP)) {
       return request->requestAuthentication();
@@ -397,6 +424,145 @@ void Define_Backend(void)
   server.onNotFound([](AsyncWebServerRequest *request){
     Serial.println("Cargando página no encontrada.");
     request->send(SPIFFS, "/no_encontrado.html", String());
-        
   });
+
+    imprimeDebug(habDebug, "Inicializando el servidor web para OTA en STA.", "vacio");
+    OTA.begin(&server, usuarioAdmin, claveAdmin);
+    imprimeDebug(habDebug, "Inicializando el servidor web en STA.", "vacio");
+    imprimeDebug(habDebug, "Servidor MDNS iniciado", "vacio");
+    server.begin();
+    /*if (!MDNS.begin(wifi_usuario.nombre_red)) {
+      imprimeDebug(habDebug, "Ocurrió un error al configurar el servidor MDNS", "vacio");
+      while (1) {
+        delay(1000);
+      }
+    }*/
+  }
+  else
+  {
+    wifi_usuario.accesoAP = false;
+    eeprom.put(0, wifi_usuario);
+    eeprom.commit();
+    imprimeDebug(habDebug, "Configurando PA (Punto de Acceso)", "vacio");
+    eeprom.get(0, wifi_usuario_leida);
+    imprimeDebug(habDebug, "AP_ssid: ", AP_ssid);
+    imprimeDebug(habDebug, "AP_clave: ", AP_clave);
+    wifi_usuario_leida.accesoAP   ?   WiFi.softAP(wifi_usuario_leida.nombre_red, wifi_usuario_leida.claveAP) :
+                                      WiFi.softAP(AP_ssid, AP_clave);
+                                      
+    IPAddress IP = WiFi.softAPIP();
+    if(habDebug)
+    {
+      Serial.print("AP IP address: ");
+      Serial.println(IP);
+    }
+
+    server.onNotFound(notFound);
+
+    server.on("/manager", HTTP_GET, [](AsyncWebServerRequest *request){
+      request->send(SPIFFS, "/wifimanager.html", String(), false, Procesador);
+      imprimeDebug(habDebug, "Desplegando la página de configuración del wifi en AP.", "vacio");
+      imprimeDebug(habDebug, "Enviada la página de configuración del WiFi en AP.", "vacio");
+    });
+
+    server.on("/style.css", HTTP_GET, [](AsyncWebServerRequest *request){
+      request->send(SPIFFS, "/style.css", "text/css");
+    });
+
+        server.on("/style_2.css", HTTP_GET, [](AsyncWebServerRequest *request){
+      request->send(SPIFFS, "/style_2.css", "text/css");
+    });
+
+    server.on("/config", HTTP_POST, [](AsyncWebServerRequest *request){
+      wifi_usuario.estaWiFi = true;
+      eeprom.put(0, wifi_usuario);
+      eeprom.commit();
+      imprimeDebug(habDebug, "Comenzando almacenamiento de datos de para STA.", "vacio");
+      int params = request->params();
+      for(int i = 0; i < params; i++)
+      {
+        AsyncWebParameter* p = request->getParam(i);
+        if(p->isPost())
+        {
+          if(p->name() == PARA_ENTRADA_1)  //ssid.
+          {
+            strncpy(wifi_usuario.ssid, p->value().c_str(), sizeof(wifi_usuario.ssid));
+            imprimeDebug(habDebug, "SSID establecido a: ", wifi_usuario.ssid);
+          }
+          if(p->name() == PARA_ENTRADA_2)  //pass.
+          {
+            strncpy(wifi_usuario.clave, p->value().c_str(), sizeof(wifi_usuario.clave));
+            imprimeDebug(habDebug, "Clave establecida a: ", wifi_usuario.clave);
+          }
+          if(p->name() == PARA_ENTRADA_3)  //IP.
+          {
+            strncpy(wifi_usuario.ipDir, p->value().c_str(), sizeof(wifi_usuario.ipDir));
+            imprimeDebug(habDebug, "Dirección IP establecida a: ", wifi_usuario.ipDir);
+          }
+           if(p->name() == PARA_ENTRADA_4)  //gateway.
+          {
+            strncpy(wifi_usuario.gatewaydir, p->value().c_str(), sizeof(wifi_usuario.gatewaydir));
+            imprimeDebug(habDebug, "Gateway establecida a: ", wifi_usuario.gatewaydir);
+          }
+          if(p->name() == PARA_ENTRADA_5)  //tEspera.
+          {
+            imprimeDebug(habDebug, "Tiempo de espera por red establecido a: ", p->value().c_str());
+            uint8_t num = atoi(p->value().c_str());
+            char buffer[10];
+            sprintf(buffer, "%d", num);
+            wifi_usuario.tEnEspera = atoi(p->value().c_str());
+            eeprom.put(0, wifi_usuario);
+            eeprom.commit();
+            //imprimeDebug(habDebug, "Gateway establecida a: ", std::to_string(wifi_usuario.tEnEspera));
+          }
+          if(p->name() == PARA_ENTRADA_6)  //nombre-red.
+          {
+            imprimeDebug(habDebug, "Nombre de equip en STA y AP establecido a: ", p->value().c_str());
+            strncpy(wifi_usuario.nombre_red, p->value().c_str(),sizeof(wifi_usuario.nombre_red));
+          }
+          if(p->name() == PARA_ENTRADA_7)  //clave-ap.
+          {
+            imprimeDebug(habDebug, "Clave de AP establecida a: ", p->value().c_str());
+            strncpy(wifi_usuario.claveAP, p->value().c_str(),sizeof(wifi_usuario.claveAP));
+          }
+        }
+      }
+      imprimeDebug(habDebug, "Almacenando parámetros de red en la estructura.", "vacio");
+      wifi_usuario.accesoAP = true;
+      imprimeDebug(habDebug, "Almacenados los datos en la estructura, almacenando estructura en la EEPROM", "vacio");
+      eeprom.put(0, wifi_usuario);
+      if(eeprom.commit())
+      {
+        imprimeDebug(habDebug, "Datos almacenados en la EEPROM después del commit()", "vacio");
+        eeprom.get(0, wifi_usuario_leida);
+        imprimeDebug(habDebug, "", wifi_usuario_leida.ssid);
+        imprimeDebug(habDebug, "", wifi_usuario_leida.clave);
+        imprimeDebug(habDebug, "", wifi_usuario_leida.ipDir);
+        imprimeDebug(habDebug, "", wifi_usuario_leida.gatewaydir);
+        if(habDebug)
+        {
+          Serial.print(wifi_usuario_leida.tEnEspera);
+          Serial.println("");
+        }
+        imprimeDebug(habDebug, "", wifi_usuario_leida.nombre_red);
+        imprimeDebug(habDebug, "", wifi_usuario_leida.claveAP);
+        if(habDebug)
+        {
+          Serial.println(wifi_usuario_leida.accesoAP);
+        }
+      }
+      delay(10000);
+      imprimeDebug(habDebug, "En 10 segundos se estará reiniciando el ESP. Una vez reiniciado vaya a la dirección IP: ",  (const char*) wifi_usuario_leida.ipDir);
+      delay(10000);
+      ESP.restart();
+    });
+    imprimeDebug(habDebug, "Inicializando el servidor web para OTA en AP.", "vacio");
+    AsyncElegantOTA.begin(&server, usuarioAdmin, claveAdmin);
+    imprimeDebug(habDebug, "Inicializando el servidor web en AP", "vacio");
+    server.begin();
+    imprimeDebug(habDebug, "Iniciado el servidor Web en modo AP.", "vacio");
+    imprimeDebug(habDebug, "La dirección MAC del módulo es: ", "vacio");
+    imprimeDebug(habDebug, WiFi.softAPmacAddress(), "vacio");
+  }
+  imprimeDebug(habDebug, "Saliendo de configuración", "vacio");
 }

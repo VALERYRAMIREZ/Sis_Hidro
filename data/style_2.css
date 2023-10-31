@@ -57,9 +57,10 @@ body {
   display: grid; 
   grid-gap: 2rem; 
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  background-color: yellow;
 }
 
-.card { 
+.card {
   background-color: white; 
   box-shadow: 2px 2px 12px 1px rgba(140,140,140,.5);
 }
@@ -107,13 +108,23 @@ input[type=text]:valid {
   border: 2px solid black;
 }
 
-.div-label {
+.entrada {
   display: flex;
 }
+
+.div-label {
+  display: flex;
+  width: 30%;
+}
+
 label {
   font-size: 1.2rem;
-  width: 30%;
-  margin-top: 26px;
+  margin-top: 10px;
+}
+.entrada-dato {
+  display: flex;
+  width: 68%;
+
 }
 .value{
   font-size: 1.2rem;

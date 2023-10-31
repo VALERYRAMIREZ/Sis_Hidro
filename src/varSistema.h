@@ -6,6 +6,23 @@
     #define AP_ssid           "CONTROL-WIFI-RED"
     #define AP_clave          "administrador"
     
+        /*****Claves de acceso a programación****/
+
+    extern const char* usuarioAdmin;
+    extern const char* claveAdmin;
+
+    /*****Parámetros a buscar una vez********/
+    /***realizada la carga de los datos de***/
+    /**********la red a utilizar*************/
+
+    extern const char* PARA_ENTRADA_1;
+    extern const char* PARA_ENTRADA_2;
+    extern const char* PARA_ENTRADA_3;
+    extern const char* PARA_ENTRADA_4;
+    extern const char* PARA_ENTRADA_5;
+    extern const char* PARA_ENTRADA_6;
+    extern const char* PARA_ENTRADA_7;
+    
     //Declaración de usuario y clave de red WiFi.
     extern WiFiMulti wifiMulti;
 
