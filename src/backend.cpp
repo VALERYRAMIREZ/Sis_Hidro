@@ -160,8 +160,12 @@ void Define_Backend(bool tipoWeb)
     //Funciones para el manejo de la página web.
   if(tipoWeb)
   {
-    server.on("/style.css", HTTP_GET, [](AsyncWebServerRequest *request){
+  server.on("/style.css", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(SPIFFS, "/style.css", "text/css");
+  });
+
+  server.on("/style_2.css", HTTP_GET, [](AsyncWebServerRequest *request){
+      request->send(SPIFFS, "/style_2.css", "text/css");
   });
 
   server.on("/app", HTTP_GET, [](AsyncWebServerRequest *request){
@@ -477,7 +481,7 @@ void Define_Backend(bool tipoWeb)
       request->send(SPIFFS, "/style.css", "text/css");
     });
 
-        server.on("/style_2.css", HTTP_GET, [](AsyncWebServerRequest *request){
+    server.on("/style_2.css", HTTP_GET, [](AsyncWebServerRequest *request){
       request->send(SPIFFS, "/style_2.css", "text/css");
     });
 
