@@ -20,8 +20,16 @@ extern EEPROMClass eeprom;
 extern wifiConfig wifi_usuario_leida;
 
 String Procesador(const String& var){//Función que chequea si el sistema está encendido y envía el estado.
+  Serial.print("La variable recibida es: ");
+  Serial.println(var);
   Serial.println("Entrando a Procesador.");
-  if(var == "ESTADO_SISTEMA"){
+  if(var == "DIRECCION")
+  {
+    Serial.println("Enviando dirección IP.");
+    Serial.println(WiFi.softAPIP());
+    return WiFi.softAPIP().toString();
+  }
+  else if(var == "ESTADO_SISTEMA"){
     if(!digitalRead(ledPinSistemaApagado) && digitalRead(ledPinSistemaEncendido)){
       ledEstado = "ENCENDIDO";
     }
@@ -49,7 +57,7 @@ String Procesador(const String& var){//Función que chequea si el sistema está 
     return modoEstado;
   }
   Serial.println("Saliendo de Procesador.");
-  return String();
+  return "String()";
 }
 
 bool Inicia_SPIFFS(void)
@@ -269,7 +277,7 @@ void Define_Backend(bool tipoWeb)
     };
     ultimaPaginaCargada = "/wifimanager.html";
     imprimeDebug(habDebug, "Entrando a página configuración.", "vacío");
-    request->send(SPIFFS, ultimaPaginaCargada, String());
+    request->send(SPIFFS, ultimaPaginaCargada, String(), false, Procesador);
         
   });
 

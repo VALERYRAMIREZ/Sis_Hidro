@@ -49,18 +49,20 @@ body {
 
 .content { 
   padding: 5%;
+  height: auto;
 }
 
 .card-grid { 
   max-width: 900px; 
+  height: auto;
   margin: 0 auto; 
   display: grid; 
   grid-gap: 2rem; 
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  background-color: yellow;
 }
 
 .card {
+  height: auto;
   background-color: white; 
   box-shadow: 2px 2px 12px 1px rgba(140,140,140,.5);
 }

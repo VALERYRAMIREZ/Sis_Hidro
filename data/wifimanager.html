@@ -25,7 +25,7 @@
               <label for="ssid">Nombre de Red</label>
             </div>
             <div class="entrada-dato">
-              <input type="text" id="ssid" name="ssid" pattern="\&|\*|\@|\^|\:|\,|\$|\!|\`|\-|\#|\%|\+|\?|\,|\~|\.|\w{8,30}" placeholder="Debe introducir una SSID válida" required>
+              <input type="text" id="ssid" name="ssid" pattern="\&|\*|\@|\^|\:|\,|\$|\!|\`|\-|\#|\\u0025|\+|\?|\,|\~|\.|\w{8,30}" placeholder="Debe introducir una SSID válida" required>
             </div>
           </div>
           <div class="entrada">
@@ -33,7 +33,7 @@
               <label for="pass">Clave de Red</label>
             </div>
             <div class="entrada-dato">
-              <input type="text" id="pass" name="pass" pattern="/\&|\*|\@|\^|\:|\,|\$|\!|\`|\-|\#|\%|\+|\?|\,|\~|\.|\w{8,30}/g" placeholder="Debe introducir una contraseña válida" required>
+              <input type="text" id="pass" name="pass" pattern="/\&|\*|\@|\^|\:|\,|\$|\!|\`|\-|\#|\\u0025|\+|\?|\,|\~|\.|\w{8,30}/g" placeholder="Debe introducir una contraseña válida" required>
             </div>
           </div>
           <div class="entrada">
@@ -73,7 +73,7 @@
               <label for="nombre-red-ap">Nombre red AP/acceso web</label>
             </div>
             <div class="entrada-dato">
-              <input type="text" id="nombre-red-ap" name="nombre-red-ap" pattern="\&|\*|\@|\^|\:|\,|\$|\!|\`|\-|\#|\%|\+|\?|\,|\~|\.|\w{8,30}{8,15}" placeholder="Debe introducir un nombre web y nombre de red AP válido" required>
+              <input type="text" id="nombre-red-ap" name="nombre-red-ap" pattern="\&|\*|\@|\^|\:|\,|\$|\!|\`|\-|\#|\\u0025|\+|\?|\,|\~|\.|\w{8,30}{8,15}" placeholder="Debe introducir un nombre web y nombre de red AP válido" required>
             </div>
           </div>
           <div class="entrada">
@@ -81,12 +81,12 @@
               <label for="clave-red-ap">Clave de la red AP</label>
             </div>
             <div class="entrada-dato">
-              <input type="text" id="clave-red-ap" name="clave-red-ap" pattern="/\&|\*|\@|\^|\:|\,|\$|\!|\`|\-|\#|\%|\+|\?|\,|\~|\.|\w{8,30}/g" placeholder="Debe introducir una contraseña válida para la red AP" required>
+              <input type="text" id="clave-red-ap" name="clave-red-ap" pattern="/\&|\*|\@|\^|\:|\,|\$|\!|\`|\-|\#|\\u0025|\+|\?|\,|\~|\.|\w{8,30}/g" placeholder="Debe introducir una contraseña válida para la red AP" required>
             </div>
           </div>
-            <div>
-              <input type ="submit" value ="Guardar">
-            </div>
+          <div>
+            <input type ="submit" value ="Guardar">
+          </div>
         </form>
       </div>
     </div>
