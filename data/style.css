@@ -352,7 +352,7 @@
   
   /*-------Estilo del tanque de agua------------*/
 
-  .cuerpo_sistema .controles_sistema .bloque_dash .contenido .box {
+  .cuerpo_sistema .controles_sistema .bloque_dash .contenido #box {
     margin: 0 auto;
     width:100%;
     height:95%;
@@ -361,7 +361,7 @@
     position: relative;
   }
 
-  .cuerpo_sistema .controles_sistema .bloque_dash .contenido .box .tile01 {
+  .cuerpo_sistema .controles_sistema .bloque_dash .contenido #box #tile01 {
   
   width:100%;
   height:100%; 
@@ -626,7 +626,7 @@
     display: block;
     text-align: center;
     width: 95%;
-    height: 85%;
+    height: 150%;
     margin: 0 auto;
     padding-top: 15%;
   }
@@ -762,5 +762,15 @@
 
   .cuerpo_sistema .bloque_dash .data_acceso ul li {
     margin: 2%;
+  }
+}
+
+@media (min-width: 821px) {
+  .bloque_dash .contenido {
+    display: inline-block;
+    text-align: center;
+    width: 95%;
+    height: 85%;
+    margin: 0 auto;
   }
 }
