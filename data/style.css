@@ -1,5 +1,7 @@
+  @import url("./app.js");
   /* Estilo con menú en modo dia/noche. */
 
+  
   * {
     font-family: Arial, Helvetica, sans-serif;
     margin: 0;
@@ -195,6 +197,7 @@
   }
 
   .cuerpo_sistema .configurar form .titulo_2,
+  .cuerpo_sistema .configurar form .titulo_2 #mask,
   .cuerpo_sistema .configurar form li label {
     color: var(--primary-color-light);
   }
@@ -376,17 +379,20 @@
   animation-timing-function: linear;
 }
 
+.cuerpo_sistema .controles_sistema .bloque_dash .contenido #box #tile01 #mask {
+  color: var(--primary-color-light);
+}
+
  @keyframes wave-animation
  { 
   0% {
-    background-position: 0px 0%;
+    background-position: 0px 10%;
   }
-
   50% {
-    background-position: 40px 50%;
+    background-position: setBackgroundPositionY("42");
   }
  100% {
-    background-position: 80px 100%;
+    background-position: 0px 10%;
   }
  }
 

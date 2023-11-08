@@ -23,7 +23,12 @@ String Procesador(const String& var){//Función que chequea si el sistema está 
   Serial.print("La variable recibida es: ");
   Serial.println(var);
   Serial.println("Entrando a Procesador.");
-  if(var == "DIRECCION")
+  if(var == "NIVEL_TANQUE")
+  {
+    Serial.println("Enviando nivel del tanque.");
+    return "42";
+  }
+  else if(var == "DIRECCION")
   {
     Serial.println("Enviando dirección IP.");
     Serial.println(WiFi.softAPIP());
@@ -176,7 +181,7 @@ void Define_Backend(bool tipoWeb)
   server.on("/apagar", HTTP_GET, [](AsyncWebServerRequest *request){
     digitalWrite(ledPinSistemaEncendido,LOW);
     digitalWrite(ledPinSistemaApagado,HIGH);
-    request->send(SPIFFS,"/index.html",String(),false,Procesador);
+    request->send(SPIFFS, "/index.html", String(), false, Procesador);
     
   });
 
@@ -482,7 +487,7 @@ void Define_Backend(bool tipoWeb)
     });
 
     server.on("/style_2.css", HTTP_GET, [](AsyncWebServerRequest *request){
-      request->send(SPIFFS, "/style_2.css", "text/css");
+      request->send(SPIFFS, "/style_2.css", String(), false, Procesador);
     });
 
     server.on("/config", HTTP_POST, [](AsyncWebServerRequest *request){

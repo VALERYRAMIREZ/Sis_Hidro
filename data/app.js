@@ -123,6 +123,9 @@ if(document.getElementById("forma") != null) {              // Si encuentra la f
         envioForma.send(config);*/
     });
 }
+function setBackgroundPositionY(y) {
+    return `background-position: 0px ${y}%;`;
+  }
 
 /*function Aplica_Estado_Inicial() {
     if(localStorage.getItem("primeraCarga") === null) {
