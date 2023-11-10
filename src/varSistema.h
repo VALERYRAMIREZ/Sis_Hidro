@@ -103,6 +103,7 @@
         const char* finManana;
         const char* inicioTarde;
         const char* finTarde;
+        bool diaHabil;
     } diaSemana;
 
     // Estructura para almacenar los programas de todos los 
