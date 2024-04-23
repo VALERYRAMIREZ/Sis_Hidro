@@ -50,13 +50,13 @@ const char* PARA_ENTRADA_7 = "clave-red-ap";
     const uint8_t ledPinSistemaApagado = 2;   //Led que indica si el sistema está apagado.
     const uint8_t ledPinSistemaEncendido = 4; //Led que indica si el sistema está encendido.
     String ledEstado;
-    const uint8_t bombaUno = 23;//Salida para controlar la bomba 1.
+    const uint8_t bombaUno = 22;//Salida para controlar la bomba 1.
     bool bomba1LED = false;
-    const uint8_t bombaDos = 22;//Salida para controlar la bomba 2.
+    const uint8_t bombaDos = 21;//Salida para controlar la bomba 2.
     bool bomba2LED = false;
     bool bombaActiva = false;         //Falso significa bomba 1, verdadero significa bomba 2.
     bool modoSistema = false;         //modoSistema = false significa sistema en modo manual, modoSistema = true
-    bool ledModoSistema = false;      //Significa sistema en modo automático cuando ledModoSistema es true. Cuando
+    uint8_t ledModoSistema = 23;      //Significa sistema en modo automático cuando ledModoSistema es true. Cuando
     bool marchaSistemaLED = false;    //marchaSistema = false significa sistema parado, marchaSistema = true significa
 
     //Declaración de terminales de entrada para el sistema.

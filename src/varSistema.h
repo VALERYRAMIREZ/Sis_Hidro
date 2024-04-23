@@ -64,7 +64,7 @@
     extern bool bomba2LED;
     extern bool bombaActiva;         //Falso significa bomba 1, verdadero significa bomba 2.
     extern bool modoSistema;         //modoSistema = false significa sistema en modo manual, modoSistema = true
-    extern bool ledModoSistema;      //Significa sistema en modo automático cuando ledModoSistema es true. Cuando
+    extern uint8_t ledModoSistema;      //Significa sistema en modo automático cuando ledModoSistema es true. Cuando
     extern bool marchaSistemaLED;    //marchaSistema = false significa sistema parado, marchaSistema = true significa
 
     //Declaración de terminales de entrada para el sistema.

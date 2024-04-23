@@ -1,6 +1,7 @@
 #include <sstream>
 #include <AsyncElegantOTA.h>
 #include <EEPROM.h>
+#include <ESP32Time.h>
 #include "SPIFFS.h"
 #include "backend.h"
 #include "debuguear.h"
@@ -18,6 +19,7 @@ extern estadoSistema sistema;
 
 extern EEPROMClass eeprom;
 extern wifiConfig wifi_usuario_leida;
+extern ESP32Time rtc;
 
 String Procesador(const String& var){//Función que chequea si el sistema está encendido y envía el estado.
   Serial.print("La variable recibida es: ");
@@ -446,7 +448,7 @@ void Define_Backend(bool tipoWeb)
     request->send(200);
     Serial.println("Configuración recibida.");
     
-    //rtc.setTime(0, tiempo.minuto, tiempo.hora, tiempo.dia, tiempo.mes, tiempo.anio);
+    rtc.setTime(0, tiempo.minuto, tiempo.hora, tiempo.dia, tiempo.mes, tiempo.anio);
     sistema.reloj = true;
   });
   server.addHandler(manejadorJson);

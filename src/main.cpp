@@ -46,7 +46,7 @@ void setup() {
   eeprom.get(0, wifi_usuario);
   //Inicia_EEPROM();
   //Adición de redes a las que se puede conectar el dispositivo.
-  //wifiMulti.addAP("ABACANTVWIFI8440","85047373038805");
+  wifiMulti.addAP("ABACANTVWIFI8440","85047373038805");
   wifiMulti.addAP("TP-LINK_D6BF4E","480Secur325");
   wifiMulti.addAP("Delfos", "Joseph#29");
 
@@ -130,5 +130,6 @@ void loop() {
       break;
     }
   }
+  Serial.println(rtc.getDateTime(true));
   delay(1000);*/
 }
