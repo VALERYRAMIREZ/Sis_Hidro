@@ -51,43 +51,12 @@ function resPantalla() {
 
 var botonControl = document.querySelectorAll("a");
 botonControl.forEach(enlace => {
-    enlace.addEventListener("click", function(e) {
-        console.log("Evento e: ");
-        console.log(e);
-        let solHref = e.target.href;
+    enlace.addEventListener("click", function(event) {
+        let clickadas = 1; 
+        console.log("Evento 'event': ");
+        console.log(event.target);
+        let solHref = event.target.href;
         console.log("href del botón: " + solHref);
-        let regex = /\#\d$/;
-        let funcSistema = solHref.match(regex);
-        console.log(typeof(funcSistema));
-        console.log("Dirección parcial: " + funcSistema);
-        (e.target.style.backgroundColor !== 'red') ? e.target.style.backgroundColor = 'red' : e.target.style.backgroundColor = inicialBotonBg;
-        switch(funcSistema[0]) {
-            case '#1':
-            {
-                console.log("APAGAR");
-            }
-            break;
-            case "#2":
-            {
-                console.log("ENCENDER");
-            }
-            break;
-            case "#3":
-            {
-                console.log("AUTO");
-            }
-            break;
-            case "#4":
-            {
-                console.log("MANUAL");
-            }
-            break;
-            default:
-            {
-                console.log("Sin opción para funcSistema = " + funcSistema);
-            }
-            break;
-        }
     });
 });
 
