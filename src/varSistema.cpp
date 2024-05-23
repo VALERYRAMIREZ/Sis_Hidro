@@ -1,6 +1,7 @@
 #include "varSistema.h"
 
 
+    
     /*****Claves de acceso a programación****/
 
     const char* usuarioAdmin = "admin";
@@ -17,7 +18,7 @@
     const char* PARA_ENTRADA_4 = "gateway";
     const char* PARA_ENTRADA_5 = "tEspera";
     const char* PARA_ENTRADA_6 = "nombre-red-ap";
-const char* PARA_ENTRADA_7 = "clave-red-ap";
+    const char* PARA_ENTRADA_7 = "clave-red-ap";
 
     //Declaración de usuario y clave de red WiFi.
     WiFiMulti wifiMulti;
@@ -38,6 +39,17 @@ const char* PARA_ENTRADA_7 = "clave-red-ap";
     char* usuarioHTTP = &usu[0];
     char* claveHTTP = &clav[0];
     bool eHTTP = false;
+
+    /*****Variables a utilizar en el tempodizador*****/
+    /***************sensor de nivel.******************/
+
+    hw_timer_t *tempo = NULL;
+    volatile bool haTemporizado = false;
+    
+    /*****Variables a utilizar en la interrupción*****/
+    /***************sensor de nivel.******************/
+
+    bool volatile haInterrumpido = false;
 
     //Variable que almacenará la última página cargada.
 
@@ -83,3 +95,9 @@ const char* PARA_ENTRADA_7 = "clave-red-ap";
     estadoSistema sistema;
 
     wifiConfig wifi_usuario = {}, wifi_usuario_leida = {};
+
+    //Variables para cálculo de tiempos de retardo de la
+    //señal del sensor de nivel.
+
+    uint32_t tiempoUno = 0;
+    uint32_t tiempoDos = 0;

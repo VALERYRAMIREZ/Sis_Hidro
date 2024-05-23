@@ -13,6 +13,7 @@
 #include "mWifi.h"
 #include <actualOTA.h>
 //#include "varSistema.h"
+#include "interrupcion.h"
 
 extern AsyncElegantOtaClass OTA;
 //using namespace std;
@@ -31,20 +32,52 @@ AsyncWebServer server(80);
 
 DynamicJsonDocument docJson(512);
 
+// Terminal de interrupcion.
+const int pinInt = 14;
+
 // Función para controlar la bomba a encender
 void Bomba(bool encendido) {
 
 }
 
 void handle_NoEncontrado() {
+  
+}
 
+//Variable para controlar el temporizador.
+extern hw_timer_t *tempo;
+extern volatile bool haTemporizado;
+
+void IRAM_ATTR miTemporizador()
+{
+  haTemporizado = true;
+}
+
+//Variable para controlar el estado de la interrupción.
+extern volatile bool haInterrumpido;
+
+//Función para controlar la interrupción.
+void IRAM_ATTR miInterrupcion() 
+{
+  haInterrumpido = true;
 }
 
 void setup() {
 
+  //Configuración del temporizador.
+  tempo = timerBegin(0, 80, true);
+  timerAttachInterrupt(tempo, &miTemporizador, true);
+  timerAlarmWrite(tempo, 10000000, true);
+  timerAlarmEnable(tempo);
+
+  //Configuración de la interrupción.
+  pinMode(pinInt, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(pinInt), miInterrupcion, CHANGE);
+
+  //Inicia_EEPROM();
   eeprom.begin(sizeof(struct wifiConfig));
   eeprom.get(0, wifi_usuario);
-  //Inicia_EEPROM();
+
   //Adición de redes a las que se puede conectar el dispositivo.
   wifiMulti.addAP("ABACANTVWIFI8440","85047373038805");
   wifiMulti.addAP("TP-LINK_D6BF4E","480Secur325");
@@ -101,7 +134,22 @@ void setup() {
   Serial.println("Saliendo de configuración de aplicación");
 }
  
-void loop() {
+void loop()
+{
+  //Procesamiento del temporizador. Aquí se procesa lo
+  //que hará el programa cuando se active el temporizador.
+  if(haTemporizado)
+  {
+    //Serial.println("Ha temporizado");
+    haTemporizado = false;
+  }
+  //Procesamiento de la interrupción. Aquí se calcula la
+  //profundidad a la que está el nivel de agua.
+  if(haInterrumpido)
+  {
+    profundidad(millis());
+    haInterrumpido = false;
+  }
   
   /*if(sistema.reloj && modoSistema)
   {

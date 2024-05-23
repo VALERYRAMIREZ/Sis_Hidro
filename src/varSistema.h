@@ -143,4 +143,10 @@
     extern Semana semana;
     extern estadoSistema sistema;
 
+    //Variables para cálculo de tiempos de retardo de la
+    //señal del sensor de nivel.
+
+    extern uint32_t tiempoUno;
+    extern uint32_t tiempoDos;
+
 #endif
