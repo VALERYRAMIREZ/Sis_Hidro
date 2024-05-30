@@ -78,6 +78,12 @@
     const uint8_t nivelAgua = 3;      //Nivel del agua será una medición analógica.
     uint8_t nivelA = 0;
 
+    //Terminal de gatillo para sensor de nivel.
+    const int pinGatillo = 13;
+
+    // Terminal de interrupcion.
+    const int pinInt = 12;
+
     String modoEstado;
 
     //Declaración de las variables para el tipo de tanque y volumen mínimo.
@@ -95,9 +101,3 @@
     estadoSistema sistema;
 
     wifiConfig wifi_usuario = {}, wifi_usuario_leida = {};
-
-    //Variables para cálculo de tiempos de retardo de la
-    //señal del sensor de nivel.
-
-    uint32_t tiempoUno = 0;
-    uint32_t tiempoDos = 0;

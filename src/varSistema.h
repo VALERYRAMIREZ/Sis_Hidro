@@ -74,6 +74,12 @@
     extern const uint8_t nivelAgua;      //Nivel del agua será una medición analógica.
     extern uint8_t nivelA;
 
+    //Terminal de gatillo para sensor de nivel.
+    extern const int pinGatillo;
+
+    // Terminal de interrupcion.
+    extern const int pinInt;
+
     extern String modoEstado;
 
     //Declaración de las variables para el tipo de tanque y volumen mínimo.
@@ -142,11 +148,4 @@
     extern FechaProg tiempoLeido;
     extern Semana semana;
     extern estadoSistema sistema;
-
-    //Variables para cálculo de tiempos de retardo de la
-    //señal del sensor de nivel.
-
-    extern uint32_t tiempoUno;
-    extern uint32_t tiempoDos;
-
 #endif

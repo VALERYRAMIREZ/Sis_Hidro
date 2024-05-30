@@ -13,7 +13,6 @@
 #include "mWifi.h"
 #include <actualOTA.h>
 //#include "varSistema.h"
-#include "interrupcion.h"
 
 extern AsyncElegantOtaClass OTA;
 //using namespace std;
@@ -32,9 +31,6 @@ AsyncWebServer server(80);
 
 DynamicJsonDocument docJson(512);
 
-// Terminal de interrupcion.
-const int pinInt = 14;
-
 // Función para controlar la bomba a encender
 void Bomba(bool encendido) {
 
@@ -48,6 +44,7 @@ void handle_NoEncontrado() {
 extern hw_timer_t *tempo;
 extern volatile bool haTemporizado;
 
+//Función para manejar el temporizador.
 void IRAM_ATTR miTemporizador()
 {
   haTemporizado = true;
@@ -71,8 +68,8 @@ void setup() {
   timerAlarmEnable(tempo);
 
   //Configuración de la interrupción.
-  pinMode(pinInt, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(pinInt), miInterrupcion, CHANGE);
+  pinMode(pinGatillo, OUTPUT);
+  pinMode(pinInt, INPUT);
 
   //Inicia_EEPROM();
   eeprom.begin(sizeof(struct wifiConfig));
@@ -140,15 +137,13 @@ void loop()
   //que hará el programa cuando se active el temporizador.
   if(haTemporizado)
   {
-    //Serial.println("Ha temporizado");
+    digitalWrite(pinGatillo, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(pinGatillo, LOW);
+    Serial.print("La profundidad del tanque es de: ");
+    Serial.print((long) pulseIn(pinInt, HIGH)*0.00034/2);
+    Serial.println(" m.");
     haTemporizado = false;
-  }
-  //Procesamiento de la interrupción. Aquí se calcula la
-  //profundidad a la que está el nivel de agua.
-  if(haInterrumpido)
-  {
-    profundidad(millis());
-    haInterrumpido = false;
   }
   
   /*if(sistema.reloj && modoSistema)
