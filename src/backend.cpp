@@ -28,7 +28,7 @@ String Procesador(const String& var){//Función que chequea si el sistema está 
   if(var == "NIVEL_TANQUE")
   {
     Serial.println("Enviando nivel del tanque.");
-    return "42";
+    return (String) sistema.nTanque;
   }
   else if(var == "DIRECCION")
   {
@@ -265,15 +265,16 @@ void Define_Backend(bool tipoWeb)
       digitalWrite(ledModoSistema,LOW);
       modoSistema = false;
     }
-    request->send(SPIFFS,"/index.html", String(), false,Procesador);
+    request->send(SPIFFS,"/index.html", String(), false, Procesador);
         
   });
 
   //Manejo de la página principal del sistema
   server.on("/index", HTTP_GET, [](AsyncWebServerRequest *request){
-    if(!request->authenticate(usuarioHTTP, claveHTTP)) {
+    if(!request->authenticate(usuarioHTTP, claveHTTP) && !cuentaAcceso) {
       return request->requestAuthentication("Ingreso al Sistema");
     };
+    cuentaAcceso = true;
     ultimaPaginaCargada = "/index.html";
     Serial.println("Entrando a página principal");
     request->send(SPIFFS, ultimaPaginaCargada, String(), false, Procesador);

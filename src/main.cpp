@@ -19,6 +19,9 @@ extern AsyncElegantOtaClass OTA;
 extern wifiConfig wifi_usuario;
 
 extern EEPROMClass eeprom;
+
+extern estadoSistema sistema;
+
 //Instanciación del RTC
 
 ESP32Time rtc(0);            //GMT-0.
@@ -141,7 +144,8 @@ void loop()
     delayMicroseconds(10);
     digitalWrite(pinGatillo, LOW);
     Serial.print("La profundidad del tanque es de: ");
-    Serial.print((long) pulseIn(pinInt, HIGH)*0.00034/2);
+    sistema.nTanque = (pulseIn(pinInt, HIGH)*0.00034/2);
+    Serial.print(sistema.nTanque);
     Serial.println(" m.");
     haTemporizado = false;
   }

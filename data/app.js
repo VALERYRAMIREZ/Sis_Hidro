@@ -96,6 +96,59 @@ function setBackgroundPositionY(y) {
     return `background-position: 0px ${y}%;`;
   }
 
+/*Funciones para leer el nivel del tanque.*/
+
+function ejecutarScripts() {
+    // Ejecutar scripts específicos aquí
+    // Por ejemplo, ejecutar el script del tema:
+    let tema = localStorage.getItem("tema");
+    if (tema) {
+      document.body.classList = tema;
+    }
+    // Ejecutar el script del texto del botón:
+    let textoTema = localStorage.getItem("textoTema");
+    if (textoTema) {
+      document.getElementById("temVis").innerHTML = textoTema;
+    }
+    // ... Ejecutar otros scripts necesarios
+  }
+
+function leeNivelTanque() {
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if(this.readyState == 4 && this.status == 200)
+        {
+            document.documentElement.innerHTML = this.responseText;
+            ejecutarScripts();
+            console.log(localStorage.getItem("tema"));
+            console.log(localStorage.getItem("textoTema"));
+            console.log(this.responseText);
+        }
+        else
+        {
+            console.log("Contenido no cargado");
+        }
+    };
+    xhr.open("HTTP_GET", "/index", true);
+    xhr.send();
+    console.log("Solicitada actualización del tanque.");
+}
+window.onload = function() {
+    let intervalo;
+    if((window.location.pathname === "/index") ||
+        (window.location.pathname === "/apagar") ||
+        (window.location.pathname === "/encender") ||
+        (window.location.pathname === "/auto") ||
+        (window.location.pathname === "/manual"))
+    {
+        intervalo = setInterval(leeNivelTanque, 20000);
+    }
+    else
+    {
+        clearInterval(intervalo);
+        intervalo = null;
+    }
+}
 /*function Aplica_Estado_Inicial() {
     if(localStorage.getItem("primeraCarga") === null) {
         console.log("Clases del body: " + document.body.classList);

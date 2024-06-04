@@ -21,6 +21,7 @@
     const char* PARA_ENTRADA_7 = "clave-red-ap";
 
     //Declaración de usuario y clave de red WiFi.
+
     WiFiMulti wifiMulti;
 
     unsigned long previousMillis = 0;
@@ -39,6 +40,11 @@
     char* usuarioHTTP = &usu[0];
     char* claveHTTP = &clav[0];
     bool eHTTP = false;
+
+    /******Contador de acceso a  página /index********/
+    /***********antes de introducir clave.************/
+
+    bool cuentaAcceso = false;
 
     /*****Variables a utilizar en el tempodizador*****/
     /***************sensor de nivel.******************/
@@ -98,6 +104,6 @@
 
     FechaProg tiempo = {}, tiempoLeido = {};
     Semana semana = {};
-    estadoSistema sistema;
+    estadoSistema sistema = {};
 
     wifiConfig wifi_usuario = {}, wifi_usuario_leida = {};

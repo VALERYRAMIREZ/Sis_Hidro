@@ -47,6 +47,12 @@
     extern char* claveHTTP;
     extern bool eHTTP;
 
+
+    /******Contador de acceso a  página /index********/
+    /***********antes de introducir clave.************/
+
+    extern bool cuentaAcceso;
+
     //Variable que almacenará la última página cargada.
 
     extern String ultimaPaginaCargada;
@@ -129,6 +135,7 @@
     typedef struct estadoSistema {
         bool bateria  : 1;
         bool reloj    : 1;
+        float nTanque;
     } estadoSistema;
 
     typedef struct wifiConfig {
