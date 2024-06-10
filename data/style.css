@@ -399,6 +399,8 @@
 }
 
 .cuerpo_sistema .controles_sistema .bloque_dash .contenido #box #tile01 #mask {
+  width: 50%;
+  font-size: 4em;
   color: var(--primary-color-light);
 }
 

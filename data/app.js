@@ -118,18 +118,23 @@ function leeNivelTanque() {
     xhr.onreadystatechange = function() {
         if(this.readyState == 4 && this.status == 200)
         {
-            document.documentElement.innerHTML = this.responseText;
-            ejecutarScripts();
+            var volTanqueWeb = JSON.parse(this.responseText);
+            console.log(volTanqueWeb);
+            var volActualWeb = document.getElementById("mask");
+            volActualWeb.innerHTML = volTanqueWeb.colAgua;
+            //document.getElementById("mask");
+             
+            /*ejecutarScripts();
             console.log(localStorage.getItem("tema"));
             console.log(localStorage.getItem("textoTema"));
-            console.log(this.responseText);
+            console.log(this.responseText);*/
         }
         else
         {
             console.log("Contenido no cargado");
         }
     };
-    xhr.open("HTTP_GET", "/index", true);
+    xhr.open("HTTP_GET", "/data-tanque", true);
     xhr.send();
     console.log("Solicitada actualización del tanque.");
 }

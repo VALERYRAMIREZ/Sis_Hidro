@@ -2,6 +2,7 @@
 #define VARSISTEMA_H
     #include <WiFiMulti.h>
     #include <preferences.h>
+    #include <StreamString.h>
 
     #define AP_ssid           "CONTROL-WIFI-RED"
     #define AP_clave          "administrador"
@@ -135,7 +136,7 @@
     typedef struct estadoSistema {
         bool bateria  : 1;
         bool reloj    : 1;
-        float nTanque;
+        StreamString nTanque;
     } estadoSistema;
 
     typedef struct wifiConfig {

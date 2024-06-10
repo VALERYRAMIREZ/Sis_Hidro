@@ -12,6 +12,7 @@
 #include "almacen.h"
 #include "mWifi.h"
 #include <actualOTA.h>
+#include "sensores.h"
 //#include "varSistema.h"
 
 extern AsyncElegantOtaClass OTA;
@@ -64,6 +65,7 @@ void IRAM_ATTR miInterrupcion()
 
 void setup() {
 
+  StreamString valorTanque;
   //Configuración del temporizador.
   tempo = timerBegin(0, 80, true);
   timerAttachInterrupt(tempo, &miTemporizador, true);
@@ -140,13 +142,10 @@ void loop()
   //que hará el programa cuando se active el temporizador.
   if(haTemporizado)
   {
-    digitalWrite(pinGatillo, HIGH);
-    delayMicroseconds(10);
-    digitalWrite(pinGatillo, LOW);
-    Serial.print("La profundidad del tanque es de: ");
-    sistema.nTanque = (pulseIn(pinInt, HIGH)*0.00034/2);
+    //sistema.nTanque = Json_Sensor_Nivel();
+    Serial.print("El nivel del líquido se encuentra a ");
     Serial.print(sistema.nTanque);
-    Serial.println(" m.");
+    Serial.println(" m de profundidad.");
     haTemporizado = false;
   }
   

@@ -1,3 +1,4 @@
+#include <ArduinoJson.h>
 #include "varSistema.h"
 
 
@@ -49,6 +50,7 @@
     /*****Variables a utilizar en el tempodizador*****/
     /***************sensor de nivel.******************/
 
+    DynamicJsonDocument nivel(50);
     hw_timer_t *tempo = NULL;
     volatile bool haTemporizado = false;
     

@@ -281,6 +281,16 @@ void Define_Backend(bool tipoWeb)
         
   });
 
+server.on("/data-tanque", HTTP_GET, [](AsyncWebServerRequest *request){
+  if(!request->authenticate(usuarioHTTP, claveHTTP) && !cuentaAcceso) {
+      return request->requestAuthentication("Ingreso al Sistema");
+    };
+    ultimaPaginaCargada = "/data-tanque";
+    cuentaAcceso = true;
+    String json = sistema.nTanque;
+    request->send(200, "application/json", json);
+    json = String();
+});
   //Manejo de la página de configuración.
 
   server.on("/manager", HTTP_GET, [](AsyncWebServerRequest *request){
