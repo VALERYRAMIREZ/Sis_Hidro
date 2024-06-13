@@ -2,10 +2,12 @@
 #include <AsyncElegantOTA.h>
 #include <EEPROM.h>
 #include <ESP32Time.h>
+#include <ArduinoJson.h>
 #include "SPIFFS.h"
 #include "backend.h"
 #include "debuguear.h"
 #include "varSistema.h"
+#include "sensores.h"
 
     
 extern AsyncWebServer server;
@@ -285,9 +287,9 @@ server.on("/data-tanque", HTTP_GET, [](AsyncWebServerRequest *request){
   if(!request->authenticate(usuarioHTTP, claveHTTP) && !cuentaAcceso) {
       return request->requestAuthentication("Ingreso al Sistema");
     };
+    String json = Json_Sensor_Nivel(true);
     ultimaPaginaCargada = "/data-tanque";
     cuentaAcceso = true;
-    String json = sistema.nTanque;
     request->send(200, "application/json", json);
     json = String();
 });

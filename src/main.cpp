@@ -142,9 +142,9 @@ void loop()
   //que hará el programa cuando se active el temporizador.
   if(haTemporizado)
   {
-    //sistema.nTanque = Json_Sensor_Nivel();
+    sistema.nTanque = Json_Sensor_Nivel(false);
     Serial.print("El nivel del líquido se encuentra a ");
-    Serial.print(sistema.nTanque);
+    //Serial.print(std::setprecision(sistema.nTanque));
     Serial.println(" m de profundidad.");
     haTemporizado = false;
   }

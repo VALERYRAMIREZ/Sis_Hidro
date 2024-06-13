@@ -7,6 +7,8 @@ extern const int pinInt;
 
 extern JsonDocument nivel;
 
-StreamString Json_Sensor_Nivel();
+StreamString Json_Sensor_Nivel(bool J);
+
+//StreamString Json_Data_Nivel(bool J, String dataNivel);
 
 #endif
