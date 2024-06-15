@@ -120,9 +120,9 @@ function leeNivelTanque() {
         {
             var volTanqueWeb = JSON.parse(this.responseText);
             console.log(volTanqueWeb);
-            var volActualWeb = document.getElementById("mask");
-            volActualWeb.innerHTML = volTanqueWeb.colAgua;
-            //document.getElementById("mask");
+            var volActualWeb = document.getElementById("mask01");
+            volActualWeb.innerHTML = volTanqueWeb.colAgua.toFixed(2);
+            //document.getElementById("mask01");
              
             /*ejecutarScripts();
             console.log(localStorage.getItem("tema"));

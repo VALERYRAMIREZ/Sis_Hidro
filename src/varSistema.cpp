@@ -99,6 +99,10 @@
     uint8_t tipoTanque = 0;
     uint8_t volMax = 0;
     uint8_t volMin = 0;
+    float radioSup = 0.00;
+    float radioInf = 0.00;
+    float alturaTanque = 0.00;
+    float profTanque = 0.00;
 
     //Variable para almacenar la data leída del rtc.
 

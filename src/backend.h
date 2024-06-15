@@ -1,6 +1,7 @@
 #ifndef BACKEND_H
 #define BACKEND_H
 #include <Arduino.h>
+#include <math.h>
 #include "SPIFFS.h"
 #include <ESPAsyncWebServer.h>
 #include <AsyncJson.h>

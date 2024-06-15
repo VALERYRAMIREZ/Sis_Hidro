@@ -94,6 +94,10 @@
     extern uint8_t tipoTanque;
     extern uint8_t volMax;
     extern uint8_t volMin;
+    extern float radioSup;
+    extern float radioInf;
+    extern float alturaTanque;
+    extern float profTanque;
 
     extern const char* dataM;
 
@@ -137,6 +141,7 @@
         bool bateria  : 1;
         bool reloj    : 1;
         StreamString nTanque;
+        StreamString vTanque;
     } estadoSistema;
 
     typedef struct wifiConfig {

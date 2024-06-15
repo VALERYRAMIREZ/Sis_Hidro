@@ -133,6 +133,14 @@ void setup() {
   OTA.begin(&server);    // Start AsyncElegantOTA
   server.begin();
 
+
+  //Varaibles relacionadas con el tanque.
+
+  tipoTanque = 2;           //Tanque cilíndrico.
+  alturaTanque = 3.50;
+  radioSup = 1.00;
+  radioInf = 0.50;
+
   Serial.println("Saliendo de configuración de aplicación");
 }
  
@@ -144,8 +152,13 @@ void loop()
   {
     sistema.nTanque = Json_Sensor_Nivel(false);
     Serial.print("El nivel del líquido se encuentra a ");
-    //Serial.print(std::setprecision(sistema.nTanque));
+    Serial.print(sistema.nTanque);
     Serial.println(" m de profundidad.");
+    Serial.println(sistema.nTanque.toFloat());
+    sistema.vTanque = Json_Sensor_Volumen(sistema.nTanque.toFloat(), alturaTanque, false);
+    Serial.print("El volumen del tanque es: ");
+    Serial.print(sistema.vTanque);
+    Serial.println(" litros.");
     haTemporizado = false;
   }
   

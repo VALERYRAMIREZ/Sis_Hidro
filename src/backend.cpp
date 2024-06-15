@@ -29,8 +29,12 @@ String Procesador(const String& var){//Función que chequea si el sistema está 
   Serial.println("Entrando a Procesador.");
   if(var == "NIVEL_TANQUE")
   {
-    Serial.println("Enviando nivel del tanque.");
-    return (String) sistema.nTanque;
+    char valor[50];
+    sprintf(valor, "%.2lf", sistema.vTanque.toFloat());
+    Serial.print("Enviando nivel del tanque: .");
+    Serial.print(valor);
+    Serial.println(" m.");
+    return valor;
   }
   else if(var == "DIRECCION")
   {
@@ -287,7 +291,9 @@ server.on("/data-tanque", HTTP_GET, [](AsyncWebServerRequest *request){
   if(!request->authenticate(usuarioHTTP, claveHTTP) && !cuentaAcceso) {
       return request->requestAuthentication("Ingreso al Sistema");
     };
-    String json = Json_Sensor_Nivel(true);
+    //String json = Json_Sensor_Nivel(true);
+    String json = Json_Sensor_Volumen(sistema.nTanque.toFloat(), alturaTanque, true);
+    Serial.println(json);
     ultimaPaginaCargada = "/data-tanque";
     cuentaAcceso = true;
     request->send(200, "application/json", json);
