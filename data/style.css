@@ -313,6 +313,16 @@
     margin: 20px auto;
   }
   
+  #la-fecha,
+  #la-hora {
+    display: inline-block;
+    justify-content: center;
+    color: var(--primary-color-light);
+    height: 10%;
+    width: 50%;
+    margin-bottom: 5%;
+  }
+
   .cuerpo_sistema .controles_sistema .bloque_dash .titulo_2 {
     display: flex;
     justify-content: center;

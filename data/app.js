@@ -113,47 +113,65 @@ function ejecutarScripts() {
     // ... Ejecutar otros scripts necesarios
   }
 
-function leeNivelTanque() {
-    var xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function() {
-        if(this.readyState == 4 && this.status == 200)
+
+  /*Funciones para mostrar el nivel del tanque en la página de visualización*/
+
+    function leeNivelTanque() {
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function() {
+            if(this.readyState == 4 && this.status == 200)
+            {
+                var volTanqueWeb = JSON.parse(this.responseText);
+                console.log(volTanqueWeb);
+                var volActualWeb = document.getElementById("mask01");
+                volActualWeb.innerHTML = volTanqueWeb.colAgua.toFixed(2);
+            }
+            else
+            {
+                console.log("Contenido no cargado");
+            }
+        };
+        xhr.open("HTTP_GET", "/data-tanque", true);
+        xhr.send();
+        console.log("Solicitada actualización del tanque.");
+    }
+    window.onload = function() {
+        let intervalo;
+        if((window.location.pathname === "/index") ||
+            (window.location.pathname === "/apagar") ||
+            (window.location.pathname === "/encender") ||
+            (window.location.pathname === "/auto") ||
+            (window.location.pathname === "/manual"))
         {
-            var volTanqueWeb = JSON.parse(this.responseText);
-            console.log(volTanqueWeb);
-            var volActualWeb = document.getElementById("mask01");
-            volActualWeb.innerHTML = volTanqueWeb.colAgua.toFixed(2);
-            //document.getElementById("mask01");
-             
-            /*ejecutarScripts();
-            console.log(localStorage.getItem("tema"));
-            console.log(localStorage.getItem("textoTema"));
-            console.log(this.responseText);*/
+            intervalo = setInterval(leeNivelTanque, 20000);
         }
         else
         {
-            console.log("Contenido no cargado");
+            clearInterval(intervalo);
+            intervalo = null;
         }
+    }
+
+    /* Funciones para mostrar la fecha y la hora en todas las
+       ventanas. */
+    window.onload = function() {
+       setInterval(() => {
+            let hoyFecha = new Date();
+            let hoyHora = hoyFecha.toLocaleTimeString();
+            let dia = hoyFecha.getDate();
+            let mes = hoyFecha.getMonth() + 1;
+            let anio = hoyFecha.getFullYear();
+            let diaSemana = hoyFecha.getDay();
+            dia = ('0' + dia).slice(-2);
+            mes = ('0' + mes).slice(-2);
+            let semana = ['DOMINGO', 'LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES', 'SÁBADO'];
+            let muestraSemana = semana[diaSemana];
+            let fechaCompleta = `${muestraSemana}-${dia}-${mes}-${anio}`;
+            document.getElementById("la-fecha").innerHTML = fechaCompleta;
+            document.getElementById("la-hora").innerHTML = hoyHora;
+            console.log(fechaCompleta + '->' + hoyHora);
+       }, 1000);
     };
-    xhr.open("HTTP_GET", "/data-tanque", true);
-    xhr.send();
-    console.log("Solicitada actualización del tanque.");
-}
-window.onload = function() {
-    let intervalo;
-    if((window.location.pathname === "/index") ||
-        (window.location.pathname === "/apagar") ||
-        (window.location.pathname === "/encender") ||
-        (window.location.pathname === "/auto") ||
-        (window.location.pathname === "/manual"))
-    {
-        intervalo = setInterval(leeNivelTanque, 20000);
-    }
-    else
-    {
-        clearInterval(intervalo);
-        intervalo = null;
-    }
-}
 /*function Aplica_Estado_Inicial() {
     if(localStorage.getItem("primeraCarga") === null) {
         console.log("Clases del body: " + document.body.classList);
