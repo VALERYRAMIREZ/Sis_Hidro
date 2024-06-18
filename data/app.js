@@ -116,7 +116,7 @@ function ejecutarScripts() {
 
   /*Funciones para mostrar el nivel del tanque en la página de visualización*/
 
-    function leeNivelTanque() {
+    function Lee_Nivel_Tanque() {
         var xhr = new XMLHttpRequest();
         xhr.onreadystatechange = function() {
             if(this.readyState == 4 && this.status == 200)
@@ -134,27 +134,48 @@ function ejecutarScripts() {
         xhr.open("HTTP_GET", "/data-tanque", true);
         xhr.send();
         console.log("Solicitada actualización del tanque.");
-    }
+    };
+
+    // Funciones para enviar la hora y la fecha a la ventana
+    function Fecha_Hora() {
+        let hoyFecha = new Date();
+        let hoyHora = hoyFecha.toLocaleTimeString();
+        let dia = hoyFecha.getDate();
+        let mes = hoyFecha.getMonth() + 1;
+        let anio = hoyFecha.getFullYear();
+        let diaSemana = hoyFecha.getDay();
+        dia = ('0' + dia).slice(-2);
+        mes = ('0' + mes).slice(-2);
+        let semana = ['DOMINGO', 'LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES', 'SÁBADO'];
+        let muestraSemana = semana[diaSemana];
+        let fechaCompleta = `${muestraSemana}-${dia}-${mes}-${anio}`;
+        document.getElementById("la-fecha").innerHTML = fechaCompleta;
+        document.getElementById("la-hora").innerHTML = hoyHora;
+        console.log(fechaCompleta + '->' + hoyHora);
+    };
+
     window.onload = function() {
-        let intervalo;
+        let intervaloVolumen;
+        let intervaloFecha;
+        intervaloFecha = setInterval(Fecha_Hora, 1000);
         if((window.location.pathname === "/index") ||
             (window.location.pathname === "/apagar") ||
             (window.location.pathname === "/encender") ||
             (window.location.pathname === "/auto") ||
             (window.location.pathname === "/manual"))
         {
-            intervalo = setInterval(leeNivelTanque, 20000);
+            intervaloVolumen = setInterval(Lee_Nivel_Tanque, 20000);
         }
         else
         {
-            clearInterval(intervalo);
-            intervalo = null;
+            clearInterval(intervaloVolumen);
+            intervaloVolumen = null;
         }
     }
 
     /* Funciones para mostrar la fecha y la hora en todas las
        ventanas. */
-    window.onload = function() {
+    /*window.onload = function() {
        setInterval(() => {
             let hoyFecha = new Date();
             let hoyHora = hoyFecha.toLocaleTimeString();
@@ -171,7 +192,7 @@ function ejecutarScripts() {
             document.getElementById("la-hora").innerHTML = hoyHora;
             console.log(fechaCompleta + '->' + hoyHora);
        }, 1000);
-    };
+    };*/
 /*function Aplica_Estado_Inicial() {
     if(localStorage.getItem("primeraCarga") === null) {
         console.log("Clases del body: " + document.body.classList);

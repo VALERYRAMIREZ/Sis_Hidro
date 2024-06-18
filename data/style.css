@@ -313,16 +313,39 @@
     margin: 20px auto;
   }
   
-  #la-fecha,
-  #la-hora {
-    display: inline-block;
+  #reloj {
+    display: flex;
     justify-content: center;
-    color: var(--primary-color-light);
-    height: 10%;
-    width: 50%;
-    margin-bottom: 5%;
+    min-height: 5%;
   }
 
+  #la-fecha, #la-hora {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--primary-color-light);
+    height: auto;
+    width: auto;
+  }
+
+  .estado_sistema {
+    display: flex;
+    justify-content: space-around;
+    width: 90%;
+    min-height: 5%;
+    border-color: #000;
+    background-color: var(--grad-uno-color);
+    border-radius: 5%;
+    box-shadow: 5px 5px 10px#999;
+    margin: 0 auto;
+    color: var(--primary-color-light);
+  }
+
+  .estado_sistema .estado {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
   .cuerpo_sistema .controles_sistema .bloque_dash .titulo_2 {
     display: flex;
     justify-content: center;
