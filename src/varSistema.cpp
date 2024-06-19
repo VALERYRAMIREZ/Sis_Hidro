@@ -69,7 +69,7 @@
 
     const uint8_t ledPinSistemaApagado = 2;   //Led que indica si el sistema está apagado.
     const uint8_t ledPinSistemaEncendido = 4; //Led que indica si el sistema está encendido.
-    String ledEstado;
+    String ledEstado = "APAGADO";
     const uint8_t bombaUno = 22;//Salida para controlar la bomba 1.
     bool bomba1LED = false;
     const uint8_t bombaDos = 21;//Salida para controlar la bomba 2.
@@ -92,7 +92,7 @@
     // Terminal de interrupcion.
     const int pinInt = 12;
 
-    String modoEstado;
+    String modoEstado = "MANUAL";
 
     //Declaración de las variables para el tipo de tanque y volumen mínimo.
 
