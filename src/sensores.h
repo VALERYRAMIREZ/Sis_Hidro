@@ -13,4 +13,6 @@ StreamString Json_Sensor_Nivel(bool J);
 
 StreamString Json_Sensor_Volumen(float profundidad, float altura, bool J);
 
+void Actual_Estado();
+
 #endif

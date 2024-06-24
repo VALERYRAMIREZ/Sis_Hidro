@@ -43,13 +43,13 @@ bloqueado.addEventListener("click", function() {
 
 function resPantalla() {
     return window.innerWidth;
-}
+};
 
 /*----------------Funcionamiento de los cambios de estilo-------------------*/
 /*------------------en los botones de control del sistema-------------------*/
 /*--------------------------------de bombeo---------------------------------*/
 
-var botonControl = document.querySelectorAll("a");
+/*var botonControl = document.querySelectorAll("a");
 botonControl.forEach(enlace => {
     enlace.addEventListener("click", function(event) {
         let clickadas = 1; 
@@ -58,7 +58,7 @@ botonControl.forEach(enlace => {
         let solHref = event.target.href;
         console.log("href del botón: " + solHref);
     });
-});
+});*/
 
 if(document.getElementById("forma") != null) {              // Si encuentra la forma con la id igual a "forma",
     var elementoForma = document.getElementById("forma");   // extrae los valores completos.
@@ -91,10 +91,11 @@ if(document.getElementById("forma") != null) {              // Si encuentra la f
         envioForma.open("POST", "forma-dato", true);
         envioForma.send(config);*/
     });
-}
+};
+
 function setBackgroundPositionY(y) {
     return `background-position: 0px ${y}%;`;
-  }
+};
 
 /*Funciones para leer el nivel del tanque.*/
 
@@ -111,14 +112,49 @@ function ejecutarScripts() {
       document.getElementById("temVis").innerHTML = textoTema;
     }
     // ... Ejecutar otros scripts necesarios
-  }
+  };
 
+  // Funciones para actualizar el estado del sistema en la ventana /index.
+  
+    function Actualiza_Estado() {
+        console.log("Entrando a Actualiza_Estado().");
+        var actEstado = new XMLHttpRequest();
+        let mSistema = ["MANUAL", "AUTO"];
+        actEstado.onreadystatechange = function() {
+            if(this.readyState == 4 && this.status == 200)
+            {
+                console.log("Analizando los componentes reibidos en Actualiza_Estado()");
+                var estadoWeb = JSON.parse(this.responseText);
+                console.log(estadoWeb);
+                var estadoEnc = document.getElementById("estado-sistema");
+                estadoEnc.innerHTML = "<p>Estado Sistema: " + "<strong>" + `${estadoWeb["estado-sistema"]}` + "</strong>";
+                var modoEnc = document.getElementById("modo-sistema");
+                if(estadoWeb["modo-sistema"])
+                {
+                    modoEnc.innerHTML = "<p>Modo Sistema: " + "<strong>" + `${mSistema[1]}` + "</strong>";
+                }
+                else if(!estadoWeb["modo-sistema"])
+                {
+                    modoEnc.innerHTML = "<p>Modo Sistema: " + "<strong>" + `${mSistema[0]}` + "</strong>";
+                };
+                console.log("Enviados los componentes a actualizar a la pantalla");
+            }
+            else
+            {
+                console.log("Contenido no cargado en Actualiza_Estado()");
+                
+            }
+        };
+        actEstado.open("HTTP_GET", "/data-estado", true);
+        actEstado.send();
+        console.log("Solicitada la actualización del estado del sistema");
+    };
 
-  /*Funciones para mostrar el nivel del tanque en la página de visualización*/
+    // Funciones para mostrar el nivel del tanque en la página de visualización.
 
     function Lee_Nivel_Tanque() {
-        var xhr = new XMLHttpRequest();
-        xhr.onreadystatechange = function() {
+        var leeEstadoTanque = new XMLHttpRequest();
+        leeEstadoTanque.onreadystatechange = function() {
             if(this.readyState == 4 && this.status == 200)
             {
                 var volTanqueWeb = JSON.parse(this.responseText);
@@ -128,15 +164,16 @@ function ejecutarScripts() {
             }
             else
             {
-                console.log("Contenido no cargado");
+                console.log("Contenido no cargado en Lee_Nivel_Tanque()");
             }
         };
-        xhr.open("HTTP_GET", "/data-tanque", true);
-        xhr.send();
+        leeEstadoTanque.open("HTTP_GET", "/data-tanque", true);
+        leeEstadoTanque.send();
         console.log("Solicitada actualización del tanque.");
     };
 
     // Funciones para enviar la hora y la fecha a la ventana
+
     function Fecha_Hora() {
         let hoyFecha = new Date();
         let hoyHora = hoyFecha.toLocaleTimeString();
@@ -154,24 +191,82 @@ function ejecutarScripts() {
         console.log(fechaCompleta + '->' + hoyHora);
     };
 
-    window.onload = function() {
+    const contenidoDiv = document.querySelector(".contenido");
+    const botonControlElementos = contenidoDiv.querySelectorAll(".boton-control");
+    botonControlElementos.forEach(elemento => {
+        elemento.addEventListener("click", function(event) {
+            const elementoPresionado = event.target.id;
+            console.log(`Botón de control presionado: ${elementoPresionado}`);
+            const dirBotonControl = ["/apagar", "/encender", "/auto", "/manual"];
+            var solBotonControl = new XMLHttpRequest();
+            switch(elementoPresionado)
+            {
+                case "boton-control-1":
+                {
+                    solBotonControl.open("HTTP_GET", `${dirBotonControl[0]}`, true);
+                    console.log(`Botón presionado: ${dirBotonControl[0]}`);
+                }
+                break;
+                case "boton-control-2":
+                {
+                    solBotonControl.open("HTTP_GET", `${dirBotonControl[1]}`, true);
+                    console.log(`Botón presionado: ${dirBotonControl[1]}`);
+                }
+                break;
+                case "boton-control-3":
+                {
+                    solBotonControl.open("HTTP_GET", `${dirBotonControl[2]}`, true);
+                    console.log(`Botón presionado: ${dirBotonControl[2]}`);
+                }
+                break;
+                case "boton-control-4":
+                {
+                    solBotonControl.open("HTTP_GET", `${dirBotonControl[3]}`, true);
+                    console.log(`Botón presionado: ${dirBotonControl[3]}`);
+                }
+                break;
+                default:
+                {
+                    console.warn("El botón presionado no está listado.");
+                }
+                break;
+            };
+            solBotonControl.send();
+            Actualiza_Estado();
+        });
+    });
+
+    window.onload = function() {        
         let intervaloVolumen;
         let intervaloFecha;
-        intervaloFecha = setInterval(Fecha_Hora, 1000);
-        if((window.location.pathname === "/index") ||
-            (window.location.pathname === "/apagar") ||
-            (window.location.pathname === "/encender") ||
-            (window.location.pathname === "/auto") ||
-            (window.location.pathname === "/manual"))
+        //intervaloFecha = setInterval(Fecha_Hora, 1000);
+        if((window.location.pathname === "/index"))
         {
-            intervaloVolumen = setInterval(Lee_Nivel_Tanque, 20000);
+                console.log("Se configura la lectura del nivel del tanque.");
+                intervaloVolumen = setInterval(Lee_Nivel_Tanque, 20000);
         }
         else
         {
+            console.log("Se cancela el intervalo y se reinicia la bandera de carga de la página.");
             clearInterval(intervaloVolumen);
             intervaloVolumen = null;
+            paginaCargada = null;
         }
-    }
+    };
+
+    /*var datoEstado = document.getElementsByClassName('boton-control');
+    datoEstado.addEventListener("click", function(event) {
+        event.preventDefault();
+        console.log("Botón de control presionado");
+        console.log("Comportamiento por defecto prevenido al presionar botón de control.");
+        Actualiza_Estado();
+        console.log("Se ha llamado a Actualiza_Estado()");
+        let clickadas = 1; 
+        console.log("Evento 'event': ");
+        console.log(event.target);
+        let solHref = event.target.href;
+        console.log("href del botón: " + solHref);
+    });*/
 
     /* Funciones para mostrar la fecha y la hora en todas las
        ventanas. */

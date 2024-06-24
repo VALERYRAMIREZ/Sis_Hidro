@@ -62,6 +62,8 @@
 
     extern Preferences memoriaEstado;
 
+    // Variables relativas al estado del sistema.
+
     extern const uint8_t ledPinSistemaApagado;   //Led que indica si el sistema está apagado.
     extern const uint8_t ledPinSistemaEncendido; //Led que indica si el sistema está encendido.
     extern String ledEstado;

@@ -73,3 +73,19 @@ StreamString Json_Sensor_Volumen(float profundidad, float altura, bool J)
         return nivel["colAgua"];
     }
 };
+
+void Actual_Estado()
+{
+if(!digitalRead(ledPinSistemaApagado) && digitalRead(ledPinSistemaEncendido)){
+      ledEstado = "ENCENDIDO";
+    }
+    else if(digitalRead(ledPinSistemaApagado) && !digitalRead(ledPinSistemaEncendido)){
+      ledEstado = "APAGADO";
+    }
+    if(ledEstado == "ENCENDIDO" && digitalRead(ledModoSistema)){
+      modoEstado = "AUTO";
+    }
+    else if(ledEstado == "ENCENDIDO" && !digitalRead(ledModoSistema)){
+      modoEstado = "MANUAL";
+    }
+};

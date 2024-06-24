@@ -67,6 +67,9 @@
 
     Preferences memoriaEstado;
 
+    // Variables relativas al estado del sistema.
+
+    DynamicJsonDocument sistemaEstado(50);
     const uint8_t ledPinSistemaApagado = 2;   //Led que indica si el sistema está apagado.
     const uint8_t ledPinSistemaEncendido = 4; //Led que indica si el sistema está encendido.
     String ledEstado = "APAGADO";

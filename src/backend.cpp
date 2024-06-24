@@ -6,7 +6,7 @@
 #include "SPIFFS.h"
 #include "backend.h"
 #include "debuguear.h"
-#include "varSistema.h"
+#include <varSistema.h>
 #include "sensores.h"
 
     
@@ -22,6 +22,8 @@ extern estadoSistema sistema;
 extern EEPROMClass eeprom;
 extern wifiConfig wifi_usuario_leida;
 extern ESP32Time rtc;
+
+extern DynamicJsonDocument sistemaEstado;
 
 String Procesador(const String& var){//Función que chequea si el sistema está encendido y envía el estado.
   Serial.print("La variable recibida es: ");
@@ -189,14 +191,25 @@ void Define_Backend(bool tipoWeb)
   server.on("/apagar", HTTP_GET, [](AsyncWebServerRequest *request){
     digitalWrite(ledPinSistemaEncendido,LOW);
     digitalWrite(ledPinSistemaApagado,HIGH);
-    request->send(SPIFFS, "/index.html", String(), false, Procesador);
+    Actual_Estado();
+    Serial.println(ledEstado);
+    Serial.println(modoEstado);
+    request->redirect("/data-estado");
+    //request->send(SPIFFS, "/index.html", String(), false, Procesador);
+    Serial.println("Solicitada /apagar");
     
   });
 
   server.on("/encender", HTTP_GET,[](AsyncWebServerRequest *request){
     digitalWrite(ledPinSistemaApagado,LOW);
     digitalWrite(ledPinSistemaEncendido,HIGH);
-    request->send(SPIFFS,"/index.html",String(),false,Procesador);
+    cuentaAcceso = true;
+    Actual_Estado();
+    Serial.println(ledEstado);
+    Serial.println(modoEstado);
+    request->redirect("/data-estado");
+    //request->send(SPIFFS,"/index.html", String(), false, Procesador);
+    Serial.println("Solicitada /encender");
   });
 
   //Manejo de las imágenes y logos.
@@ -263,7 +276,12 @@ void Define_Backend(bool tipoWeb)
       digitalWrite(ledModoSistema,HIGH);
       modoSistema = true;
     }
-    request->send(SPIFFS, "/index.html", String(), false,Procesador); 
+    Actual_Estado();
+    Serial.println(ledEstado);
+    Serial.println(modoEstado);
+    request->redirect("/data-estado");
+    //request->send(SPIFFS, "/index.html", String(), false,Procesador); 
+    Serial.println("Solicitada /auto");
   });
 
   server.on("/manual", HTTP_GET,[](AsyncWebServerRequest *request){
@@ -271,8 +289,12 @@ void Define_Backend(bool tipoWeb)
       digitalWrite(ledModoSistema,LOW);
       modoSistema = false;
     }
-    request->send(SPIFFS,"/index.html", String(), false, Procesador);
-        
+    Actual_Estado();
+    Serial.println(ledEstado);
+    Serial.println(modoEstado);
+    request->redirect("/data-estado");
+    //request->send(SPIFFS,"/index.html", String(), false, Procesador);
+    Serial.println("Solicitada /manual");
   });
 
   //Manejo de la página principal del sistema
@@ -294,10 +316,26 @@ server.on("/data-tanque", HTTP_GET, [](AsyncWebServerRequest *request){
     //String json = Json_Sensor_Nivel(true);
     String json = Json_Sensor_Volumen(sistema.nTanque.toFloat(), alturaTanque, true);
     Serial.println(json);
-    ultimaPaginaCargada = "/data-tanque";
     cuentaAcceso = true;
     request->send(200, "application/json", json);
     json = String();
+});
+
+server.on("/data-estado", HTTP_GET, [](AsyncWebServerRequest *request){
+    if(!request->authenticate(usuarioHTTP, claveHTTP) && !cuentaAcceso) {
+      return request->requestAuthentication("Ingreso al Sistema");
+    };
+    Serial.println("Enviando la data de estado.");
+    sistemaEstado["estado-sistema"] = ledEstado;
+    sistemaEstado["modo-sistema"] = modoSistema;
+    String json = "";
+    serializeJsonPretty(sistemaEstado, json);
+    Serial.println(json);
+    ultimaPaginaCargada = "/data-estado";
+    cuentaAcceso = true;
+    request->send(200, "application/json", json);
+    json = String();
+    Serial.println("Enviada la data de estado.");
 });
   //Manejo de la página de configuración.
 
