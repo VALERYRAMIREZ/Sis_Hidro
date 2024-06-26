@@ -14,6 +14,12 @@
             }
         </script>
         <div class="encabezado">
+            <div id="reloj">
+                <p id="la-fecha">Fecha</p>
+            </div>
+            <div id="horaA">
+                <p id="la-hora">Hora</p>
+            </div>            
             <header>
                 <div class="caja-logo-empresa">
                     <img class="logo-empresa" src="logoE">
@@ -81,18 +87,6 @@
                                 <input type="date" id="fecha" name="fecha" value="2023-01-01" required>
                                 <input type="time" id="hora-actual" name="hora-actual" value="12:00" required>
                             </div>
-                            <script>
-                                let fechaActual = new Date();
-                                setInterval(() => {
-                                    document.getElementById("fecha").valueAsDate = fechaActual;
-                                    fechaActual = new Date();
-                                }, 3600000);
-                                let horaActual = new Date().toLocaleTimeString();
-                                setInterval(() => {
-                                document.getElementById("hora-actual").value = horaActual;
-                                horaActual = new Date().toLocaleTimeString().replace(/:.+$/, "");
-                                }, 1000);
-                            </script>
                         </li>
                         <li>
                             <div class="lunes-div-hab">

@@ -176,7 +176,8 @@ function ejecutarScripts() {
 
     function Fecha_Hora() {
         let hoyFecha = new Date();
-        let hoyHora = hoyFecha.toLocaleTimeString();
+        let opcionesHora = {hour: "2-digit", minute: "2-digit", second: "2-digit"};
+        let hoyHora = hoyFecha.toLocaleTimeString([], opcionesHora);
         let dia = hoyFecha.getDate();
         let mes = hoyFecha.getMonth() + 1;
         let anio = hoyFecha.getFullYear();
@@ -189,57 +190,70 @@ function ejecutarScripts() {
         document.getElementById("la-fecha").innerHTML = fechaCompleta;
         document.getElementById("la-hora").innerHTML = hoyHora;
         console.log(fechaCompleta + '->' + hoyHora);
+        if(window.location.pathname == "/config")
+        {
+            document.getElementById("fecha").value = `${anio}-${mes}-${dia}`;
+            document.getElementById("hora-actual").value = hoyHora;
+        }
     };
 
-    const contenidoDiv = document.querySelector(".contenido");
-    const botonControlElementos = contenidoDiv.querySelectorAll(".boton-control");
-    botonControlElementos.forEach(elemento => {
-        elemento.addEventListener("click", function(event) {
-            const elementoPresionado = event.target.id;
-            console.log(`Botón de control presionado: ${elementoPresionado}`);
-            const dirBotonControl = ["/apagar", "/encender", "/auto", "/manual"];
-            var solBotonControl = new XMLHttpRequest();
-            switch(elementoPresionado)
-            {
-                case "boton-control-1":
+    // Actualización de estado del sistema en la página /index.
+
+    if(document.querySelector(".contenido"))
+    {
+        const contenidoDiv = document.querySelector(".contenido");
+        const botonControlElementos = contenidoDiv.querySelectorAll(".boton-control");
+        botonControlElementos.forEach(elemento => {
+            elemento.addEventListener("click", function(event) {
+                const elementoPresionado = event.target.id;
+                console.log(`Botón de control presionado: ${elementoPresionado}`);
+                const dirBotonControl = ["/apagar", "/encender", "/auto", "/manual"];
+                var solBotonControl = new XMLHttpRequest();
+                switch(elementoPresionado)
                 {
-                    solBotonControl.open("HTTP_GET", `${dirBotonControl[0]}`, true);
-                    console.log(`Botón presionado: ${dirBotonControl[0]}`);
-                }
-                break;
-                case "boton-control-2":
-                {
-                    solBotonControl.open("HTTP_GET", `${dirBotonControl[1]}`, true);
-                    console.log(`Botón presionado: ${dirBotonControl[1]}`);
-                }
-                break;
-                case "boton-control-3":
-                {
-                    solBotonControl.open("HTTP_GET", `${dirBotonControl[2]}`, true);
-                    console.log(`Botón presionado: ${dirBotonControl[2]}`);
-                }
-                break;
-                case "boton-control-4":
-                {
-                    solBotonControl.open("HTTP_GET", `${dirBotonControl[3]}`, true);
-                    console.log(`Botón presionado: ${dirBotonControl[3]}`);
-                }
-                break;
-                default:
-                {
-                    console.warn("El botón presionado no está listado.");
-                }
-                break;
-            };
-            solBotonControl.send();
-            Actualiza_Estado();
+                    case "boton-control-1":
+                    {
+                        solBotonControl.open("HTTP_GET", `${dirBotonControl[0]}`, true);
+                        console.log(`Botón presionado: ${dirBotonControl[0]}`);
+                    }
+                    break;
+                    case "boton-control-2":
+                    {
+                        solBotonControl.open("HTTP_GET", `${dirBotonControl[1]}`, true);
+                        console.log(`Botón presionado: ${dirBotonControl[1]}`);
+                    }
+                    break;
+                    case "boton-control-3":
+                    {
+                        solBotonControl.open("HTTP_GET", `${dirBotonControl[2]}`, true);
+                        console.log(`Botón presionado: ${dirBotonControl[2]}`);
+                    }
+                    break;
+                    case "boton-control-4":
+                    {
+                        solBotonControl.open("HTTP_GET", `${dirBotonControl[3]}`, true);
+                        console.log(`Botón presionado: ${dirBotonControl[3]}`);
+                    }
+                    break;
+                    default:
+                    {
+                        console.warn("El botón presionado no está listado.");
+                    }
+                    break;
+                };
+                solBotonControl.send();
+                Actualiza_Estado();
+            });
         });
-    });
+    
+    }
+    
+    // Procesos a realizar una vez se ha cargado una página web.
 
     window.onload = function() {        
         let intervaloVolumen;
         let intervaloFecha;
-        //intervaloFecha = setInterval(Fecha_Hora, 1000);
+        intervaloFecha = setInterval(Fecha_Hora, 1000);
         if((window.location.pathname === "/index"))
         {
                 console.log("Se configura la lectura del nivel del tanque.");
@@ -253,62 +267,3 @@ function ejecutarScripts() {
             paginaCargada = null;
         }
     };
-
-    /*var datoEstado = document.getElementsByClassName('boton-control');
-    datoEstado.addEventListener("click", function(event) {
-        event.preventDefault();
-        console.log("Botón de control presionado");
-        console.log("Comportamiento por defecto prevenido al presionar botón de control.");
-        Actualiza_Estado();
-        console.log("Se ha llamado a Actualiza_Estado()");
-        let clickadas = 1; 
-        console.log("Evento 'event': ");
-        console.log(event.target);
-        let solHref = event.target.href;
-        console.log("href del botón: " + solHref);
-    });*/
-
-    /* Funciones para mostrar la fecha y la hora en todas las
-       ventanas. */
-    /*window.onload = function() {
-       setInterval(() => {
-            let hoyFecha = new Date();
-            let hoyHora = hoyFecha.toLocaleTimeString();
-            let dia = hoyFecha.getDate();
-            let mes = hoyFecha.getMonth() + 1;
-            let anio = hoyFecha.getFullYear();
-            let diaSemana = hoyFecha.getDay();
-            dia = ('0' + dia).slice(-2);
-            mes = ('0' + mes).slice(-2);
-            let semana = ['DOMINGO', 'LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES', 'SÁBADO'];
-            let muestraSemana = semana[diaSemana];
-            let fechaCompleta = `${muestraSemana}-${dia}-${mes}-${anio}`;
-            document.getElementById("la-fecha").innerHTML = fechaCompleta;
-            document.getElementById("la-hora").innerHTML = hoyHora;
-            console.log(fechaCompleta + '->' + hoyHora);
-       }, 1000);
-    };*/
-/*function Aplica_Estado_Inicial() {
-    if(localStorage.getItem("primeraCarga") === null) {
-        console.log("Clases del body: " + document.body.classList);
-        let claseBody = document.body.classList= "tema-claro";
-        let textoBoton = document.getElementById("temVis").innerHTML = "Oscuro";
-        localStorage.setItem("primeraCarga", "true");
-        localStorage.setItem("tema", claseBody);
-        localStorage.setItem("textoTema", textoBoton);
-        console.log("Primera carga hecha");
-    }
-    else if((localStorage.getItem("primeraCarga") === "true") && !(localStorage.tema === undefined)) {
-        document.body.className = localStorage.getItem("tema");
-        document.getElementById("temVis").innerHTML = localStorage.getItem("textoTema");
-        console.log("Ya no es la primera carga");
-    }
-    console.log("primeraCarga: " + localStorage.getItem("primeraCarga"));
-    console.log("tema: " + localStorage.getItem("tema"));
-    console.log("texto: " + localStorage.getItem("textoTema"));
-    /*if(!(localStorage.tema === undefined)) {
-        document.body.className = localStorage.getItem("tema");
-        document.getElementById("temVis").innerHTML = localStorage.getItem("textoTema");
-    }
-    return;
-}*/
