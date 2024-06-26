@@ -3,6 +3,21 @@
 //localStorage.clear();
 //Aplica_Estado_Inicial();
 
+// Funciones para cargar el tema de la página antes de que se renderice.
+
+function Carga_Tema()
+{
+    if(!(localStorage.getItem("tema") == null)) {
+        document.body.classList = localStorage.getItem("tema");
+    }
+    if(!(localStorage.getItem("textoTema") == null)) {
+        document.getElementById("temVis").innerHTML = localStorage.getItem("textoTema");
+    }
+};
+
+Carga_Tema();
+
+
 if(document.getElementById("btnC1") != null) {
     var inicialBotonBg = window.getComputedStyle(document.getElementById("btnC1")).backgroundColor;
 };
@@ -33,6 +48,7 @@ estados.addEventListener("click", function() {
     console.log(localStorage.getItem("textoTema"));
 });
 
+
 var bloqueado = document.getElementById("bloquearSistema");
 bloqueado.addEventListener("click", function() {
     var sHTTP = new XMLHttpRequest();
@@ -40,10 +56,6 @@ bloqueado.addEventListener("click", function() {
     sHTTP.send();
     setTimeout(function(){window.open("autenticar.html", "_self");}, 1000);    
 });
-
-function resPantalla() {
-    return window.innerWidth;
-};
 
 /*----------------Funcionamiento de los cambios de estilo-------------------*/
 /*------------------en los botones de control del sistema-------------------*/
@@ -92,27 +104,6 @@ if(document.getElementById("forma") != null) {              // Si encuentra la f
         envioForma.send(config);*/
     });
 };
-
-function setBackgroundPositionY(y) {
-    return `background-position: 0px ${y}%;`;
-};
-
-/*Funciones para leer el nivel del tanque.*/
-
-function ejecutarScripts() {
-    // Ejecutar scripts específicos aquí
-    // Por ejemplo, ejecutar el script del tema:
-    let tema = localStorage.getItem("tema");
-    if (tema) {
-      document.body.classList = tema;
-    }
-    // Ejecutar el script del texto del botón:
-    let textoTema = localStorage.getItem("textoTema");
-    if (textoTema) {
-      document.getElementById("temVis").innerHTML = textoTema;
-    }
-    // ... Ejecutar otros scripts necesarios
-  };
 
   // Funciones para actualizar el estado del sistema en la ventana /index.
   
@@ -199,7 +190,7 @@ function ejecutarScripts() {
 
     // Actualización de estado del sistema en la página /index.
 
-    if(document.querySelector(".contenido"))
+    function Botones_Estado_Sistema()
     {
         const contenidoDiv = document.querySelector(".contenido");
         const botonControlElementos = contenidoDiv.querySelectorAll(".boton-control");
@@ -245,11 +236,9 @@ function ejecutarScripts() {
                 Actualiza_Estado();
             });
         });
-    
-    }
+    };
     
     // Procesos a realizar una vez se ha cargado una página web.
-
     window.onload = function() {        
         let intervaloVolumen;
         let intervaloFecha;
@@ -258,12 +247,12 @@ function ejecutarScripts() {
         {
                 console.log("Se configura la lectura del nivel del tanque.");
                 intervaloVolumen = setInterval(Lee_Nivel_Tanque, 20000);
+                Botones_Estado_Sistema();
         }
         else
         {
             console.log("Se cancela el intervalo y se reinicia la bandera de carga de la página.");
             clearInterval(intervaloVolumen);
             intervaloVolumen = null;
-            paginaCargada = null;
         }
     };

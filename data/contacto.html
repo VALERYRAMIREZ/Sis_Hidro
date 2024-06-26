@@ -9,11 +9,6 @@
         <noscript>Debe habilitar Javascript para ver el sitio completo</noscript>
     </head>
     <body class="tema-claro">
-        <script>
-            if(!(localStorage.getItem("tema") == null)) {
-                document.body.classList = localStorage.tema;
-            }
-        </script>
         <div class="encabezado">
             <div id="reloj">
                 <p id="la-fecha">Fecha</p>
@@ -30,11 +25,6 @@
                 </div>
                 <div class="cambia-tema">
                     <button class="tema-visual" id="temVis">Oscuro</button>
-                    <script>
-                        if(!(localStorage.getItem("textoTema") == null)) {
-                        document.getElementById("temVis").innerHTML = localStorage.getItem("textoTema");
-                    }
-                    </script>
                 </div>
             </header>
         </div>
