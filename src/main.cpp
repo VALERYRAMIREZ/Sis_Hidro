@@ -12,7 +12,7 @@
 #include "almacen.h"
 #include "mWifi.h"
 #include <actualOTA.h>
-#include "sensores.h"
+#include "elexternos.h"
 //#include "varSistema.h"
 
 extern AsyncElegantOtaClass OTA;
@@ -34,15 +34,6 @@ AsyncWebServer server(80);
 //del sistema.
 
 DynamicJsonDocument docJson(512);
-
-// Función para controlar la bomba a encender
-void Bomba(bool encendido) {
-
-}
-
-void handle_NoEncontrado() {
-  
-}
 
 //Variable para controlar el temporizador.
 extern hw_timer_t *tempo;
@@ -77,8 +68,9 @@ void setup() {
   pinMode(pinInt, INPUT);
 
   //Inicia_EEPROM();
-  eeprom.begin(sizeof(struct wifiConfig));
+  eeprom.begin(sizeof(struct wifiConfig) + sizeof(struct estadoSistema));
   eeprom.get(0, wifi_usuario);
+  eeprom.get(sizeof(struct estadoSistema) + 1, sistema);
 
   //Adición de redes a las que se puede conectar el dispositivo.
   wifiMulti.addAP("ABACANTVWIFI8440","85047373038805");
@@ -95,15 +87,17 @@ void setup() {
 
   //Lectura de los estados iniciales del sistema.
   memoriaEstado.getBool("SisEncender",ledEstado);
-  memoriaEstado.getBool("bombaActiva",bombaActiva);
+  //memoriaEstado.getBool("bombaActiva",bombaActiva);
 
 
   //Configuración de las salidas del sistema.
   pinMode(ledPinSistemaApagado,OUTPUT);
   pinMode(ledPinSistemaEncendido,OUTPUT);
   pinMode(ledModoSistema,OUTPUT);
+
   pinMode(bombaUno,OUTPUT);
   pinMode(bombaDos,OUTPUT);
+  pinMode(bombaTres,OUTPUT);
 
   //Inicialización SPIFFS.
   Inicia_SPIFFS();
@@ -162,6 +156,49 @@ void loop()
     haTemporizado = false;
   }
   
+  // Procesamiento de activación de bombas en secuencia si
+  // el sistema está trabajando en automático.
+  if(sistema.reloj && modoSistema)
+  {
+    if(!sistema.bombaActiva && Compara_RTC(rtc.getTimeDate(true).c_str(), semana))
+    {
+      bombaPin = Activa_Bomba(3);
+      digitalWrite(Activa_Bomba(3), true);
+      sistema.bombaActiva = true;
+      eeprom.put(sizeof(struct estadoSistema) + 1, sistema);
+      eeprom.commit();
+    }
+    else
+    {
+      digitalWrite(bombaPin, false);
+      sistema.bombaActiva = false;
+      eeprom.put(sizeof(struct estadoSistema) + 1, sistema);
+      eeprom.commit();
+    }
+  }
+  else if((ledEstado == "ENCENDIDO") && !modoSistema)
+  {
+    /*  Debe tomar en cuenta solo si se presiona el tanque para que se encienda
+        el sistema. */
+        switch(sistema.bombaActiva)
+        {
+          case false:
+          {
+            digitalWrite(bombaPin, false);
+            eeprom.put(sizeof(struct estadoSistema) + 1, sistema);
+            eeprom.commit();   
+          }
+          break;
+          case true:
+          {
+            bombaPin = Activa_Bomba(3);
+            digitalWrite(Activa_Bomba(3), true);
+            eeprom.put(sizeof(struct estadoSistema) + 1, sistema);
+            eeprom.commit();            
+          }
+          break;
+        };
+  }
   /*if(sistema.reloj && modoSistema)
   {
     //superT && (nivelA >= 255/(volMax/volMin)) &&

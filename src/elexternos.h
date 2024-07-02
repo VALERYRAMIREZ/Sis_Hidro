@@ -1,6 +1,6 @@
 
-#ifndef __SENSORES_H
-#define __SENSORES_H
+#ifndef __ELEXTERNOS_H
+#define __ELEXTERNOS_H
 #include <StreamString.h>
 
 extern const int pinInt;
@@ -14,5 +14,7 @@ StreamString Json_Sensor_Nivel(bool J);
 StreamString Json_Sensor_Volumen(float profundidad, float altura, bool J);
 
 void Actual_Estado();
+
+uint8_t Activa_Bomba(uint8_t cantBombas);
 
 #endif

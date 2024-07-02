@@ -69,18 +69,21 @@
 
     // Variables relativas al estado del sistema.
 
-    DynamicJsonDocument sistemaEstado(50);
+    DynamicJsonDocument sistemaEstado(100);
     const uint8_t ledPinSistemaApagado = 2;   //Led que indica si el sistema está apagado.
     const uint8_t ledPinSistemaEncendido = 4; //Led que indica si el sistema está encendido.
     String ledEstado = "APAGADO";
-    const uint8_t bombaUno = 22;//Salida para controlar la bomba 1.
+    uint8_t numTerm[3] = {16, 17, 18};
+    const uint8_t bombaUno = numTerm[0];//Salida para controlar la bomba 1.
     bool bomba1LED = false;
-    const uint8_t bombaDos = 21;//Salida para controlar la bomba 2.
+    const uint8_t bombaDos = numTerm[1];//Salida para controlar la bomba 2.
     bool bomba2LED = false;
-    bool bombaActiva = false;         //Falso significa bomba 1, verdadero significa bomba 2.
-    bool modoSistema = false;         //modoSistema = false significa sistema en modo manual, modoSistema = true
-    uint8_t ledModoSistema = 23;      //Significa sistema en modo automático cuando ledModoSistema es true. Cuando
-    bool marchaSistemaLED = false;    //marchaSistema = false significa sistema parado, marchaSistema = true significa
+    const uint8_t bombaTres = numTerm[2];//Salida para controlar la bomba 3.
+    bool bomba3LED = false;
+    uint8_t bombaPin = 0;                  // Identifica el pin de la bomba actual a encender.
+    bool modoSistema = false;           //modoSistema = false significa sistema en modo manual, modoSistema = true
+    uint8_t ledModoSistema = 23;        //Significa sistema en modo automático cuando ledModoSistema es true. Cuando
+    bool marchaSistemaLED = false;      //marchaSistema = false significa sistema parado, marchaSistema = true significa
 
     //Declaración de terminales de entrada para el sistema.
 

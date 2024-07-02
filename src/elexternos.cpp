@@ -2,7 +2,8 @@
 #include <ArduinoJson.h>
 #include <varSistema.h>
 #include <cmath>
-#include "sensores.h"
+#include <almacen.h>
+#include "elexternos.h"
 
 //extern DynamicJsonDocument nivel;
 
@@ -89,3 +90,20 @@ if(!digitalRead(ledPinSistemaApagado) && digitalRead(ledPinSistemaEncendido)){
       modoEstado = "MANUAL";
     }
 };
+
+uint8_t Activa_Bomba(uint8_t cantBombas)
+{
+    eeprom.get(sizeof(struct estadoSistema) + 1, sistema);
+    if((sistema.nBomba << 1 ) || (sistema.nBomba >> cantBombas))
+    {
+        sistema.nBomba = 0;
+    }
+    sistema.nBomba++;
+    Serial.print("Se encendió la bomba ");
+    Serial.println(sistema.nBomba);
+    eeprom.put(sizeof(struct estadoSistema) + 1, sistema);
+    eeprom.commit();
+    return numTerm[sistema.nBomba - 1];
+};
+
+// Función para controlar la bomba a encender

@@ -57,6 +57,38 @@ bloqueado.addEventListener("click", function() {
     setTimeout(function(){window.open("autenticar.html", "_self");}, 1000);    
 });
 
+ /* Variable para controlar el encendido de la bomba de agua en modo manual */
+
+ var bombaManual = document.getElementById("tile01");
+ bombaManual.addEventListener("click", function() {
+    var encBombaManual = new XMLHttpRequest();
+    encBombaManual.onreadystatechange = function() {
+        if(this.readyState == 4 && this.status == 200)
+        {
+            console.log("Analizando si la bomba ha sido encendida.");
+            var estadoBomba = JSON.parse(this.responseText);
+            console.table(estadoBomba);
+            if(estadoBomba["Bomba"] == "1")
+            {
+                bombaManual.style.borderWidth = "5px";
+                bombaManual.style.borderStyle = "solid";
+                bombaManual.style.borderColor = "red";
+            }
+            else if(estadoBomba["Bomba"] === "0")
+            {
+                bombaManual.style.borderWidth = "initial";
+                bombaManual.style.borderStyle = "initial";
+                bombaManual.style.borderColor = "initial";
+            }
+            else
+            {
+                console.warn("El estilo a aplicar al indicador de estado de bomba no existe.");
+            }
+        }
+    }
+    encBombaManual.open("GET", "/enc-manual", true);
+    encBombaManual.send();
+});
 /*----------------Funcionamiento de los cambios de estilo-------------------*/
 /*------------------en los botones de control del sistema-------------------*/
 /*--------------------------------de bombeo---------------------------------*/

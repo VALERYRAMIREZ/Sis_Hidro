@@ -7,7 +7,7 @@
 #include "backend.h"
 #include "debuguear.h"
 #include <varSistema.h>
-#include "sensores.h"
+#include "elexternos.h"
 
     
 extern AsyncWebServer server;
@@ -200,7 +200,7 @@ void Define_Backend(bool tipoWeb)
     
   });
 
-  server.on("/encender", HTTP_GET,[](AsyncWebServerRequest *request){
+  server.on("/encender", HTTP_GET, [](AsyncWebServerRequest *request){
     digitalWrite(ledPinSistemaApagado,LOW);
     digitalWrite(ledPinSistemaEncendido,HIGH);
     cuentaAcceso = true;
@@ -210,6 +210,26 @@ void Define_Backend(bool tipoWeb)
     request->redirect("/data-estado");
     //request->send(SPIFFS,"/index.html", String(), false, Procesador);
     Serial.println("Solicitada /encender");
+  });
+
+  server.on("/enc-manual", HTTP_GET, [](AsyncWebServerRequest *request) {
+    if((ledEstado == "ENCENDIDO") && (modoEstado == "MANUAL"))
+    {
+      sistema.bombaActiva = !sistema.bombaActiva;
+    }
+    eeprom.put(sizeof(struct estadoSistema) + 1, sistema);
+    eeprom.commit();
+    Serial.print("bombaActiva en /enc-manual: ");
+    Serial.println(sistema.bombaActiva);
+    sistemaEstado["estado-sistema"] = ledEstado;
+    sistemaEstado["modo-sistema"] = modoSistema;
+    sistemaEstado["Bomba"] = (String) sistema.bombaActiva;
+    String json = "";
+    serializeJsonPretty(sistemaEstado, json);
+    Serial.println(json);
+    ultimaPaginaCargada = "/enc-manual";
+    cuentaAcceso = true;
+    request->send(200, "application/json", json);
   });
 
   //Manejo de las imágenes y logos.
@@ -506,7 +526,8 @@ server.on("/data-estado", HTTP_GET, [](AsyncWebServerRequest *request){
     Serial.println("Configuración recibida.");
     
     rtc.setTime(0, tiempo.minuto, tiempo.hora, tiempo.dia, tiempo.mes, tiempo.anio);
-    sistema.reloj = true;
+    sistema.reloj = true;             // Se activa el reloj del sistema una vez este
+                                      // ha recibido la programación horaria.
   });
   server.addHandler(manejadorJson);
 

@@ -67,14 +67,16 @@
     extern const uint8_t ledPinSistemaApagado;   //Led que indica si el sistema está apagado.
     extern const uint8_t ledPinSistemaEncendido; //Led que indica si el sistema está encendido.
     extern String ledEstado;
-    extern const uint8_t bombaUno;//Salida para controlar la bomba 1.
+    extern uint8_t numTerm[3];
+    extern const uint8_t bombaUno;      //Salida para controlar la bomba 1.
     extern bool bomba1LED;
-    extern const uint8_t bombaDos;//Salida para controlar la bomba 2.
+    extern const uint8_t bombaDos;      //Salida para controlar la bomba 2.
     extern bool bomba2LED;
-    extern bool bombaActiva;         //Falso significa bomba 1, verdadero significa bomba 2.
-    extern bool modoSistema;         //modoSistema = false significa sistema en modo manual, modoSistema = true
+    extern const uint8_t bombaTres;     //Salida para controlar la bomba 3.
+    extern uint8_t bombaPin;            // Identifica el pin de la bomba actual a encender.
+    extern bool modoSistema;            //modoSistema = false significa sistema en modo manual, modoSistema = true
     extern uint8_t ledModoSistema;      //Significa sistema en modo automático cuando ledModoSistema es true. Cuando
-    extern bool marchaSistemaLED;    //marchaSistema = false significa sistema parado, marchaSistema = true significa
+    extern bool marchaSistemaLED;       //marchaSistema = false significa sistema parado, marchaSistema = true significa
 
     //Declaración de terminales de entrada para el sistema.
 
@@ -142,6 +144,8 @@
     typedef struct estadoSistema {
         bool bateria  : 1;
         bool reloj    : 1;
+        bool bombaActiva;
+        uint8_t nBomba; 
         StreamString nTanque;
         StreamString vTanque;
     } estadoSistema;
