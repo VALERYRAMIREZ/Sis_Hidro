@@ -217,7 +217,7 @@ void Define_Backend(bool tipoWeb)
     {
       sistema.bombaActiva = !sistema.bombaActiva;
     }
-    eeprom.put(sizeof(struct estadoSistema) + 1, sistema);
+    eeprom.put(sizeof(struct wifiConfig) + 1, sistema);
     eeprom.commit();
     Serial.print("bombaActiva en /enc-manual: ");
     Serial.println(sistema.bombaActiva);

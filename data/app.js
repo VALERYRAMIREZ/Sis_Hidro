@@ -71,14 +71,16 @@ bloqueado.addEventListener("click", function() {
             if(estadoBomba["Bomba"] == "1")
             {
                 bombaManual.style.borderWidth = "5px";
-                bombaManual.style.borderStyle = "solid";
+                bombaManual.style.borderStyle = "solid dotted";
                 bombaManual.style.borderColor = "red";
+                bombaManual.style.transition = "all 0.4s";
             }
             else if(estadoBomba["Bomba"] === "0")
             {
                 bombaManual.style.borderWidth = "initial";
-                bombaManual.style.borderStyle = "initial";
-                bombaManual.style.borderColor = "initial";
+                bombaManual.style.borderStyle = "solid";
+                bombaManual.style.borderColor = "dark gray";
+                bombaManual.style.transition = "all 0.4s";
             }
             else
             {

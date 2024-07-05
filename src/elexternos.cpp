@@ -49,10 +49,14 @@ StreamString Json_Sensor_Nivel(bool J)
     {
         StreamString nivTanque;
         serializeJsonPretty(nivel, nivTanque);
+        Serial.print("Medición realizada al tanque: ");
+        Serial.println(nivTanque);
         return nivTanque;
     }
     else
     {
+        Serial.print("Medición realizada al tanque: ");
+        Serial.println((StreamString) nivel["colAgua"]);
         return nivel["colAgua"];
     }
 };
@@ -93,7 +97,7 @@ if(!digitalRead(ledPinSistemaApagado) && digitalRead(ledPinSistemaEncendido)){
 
 uint8_t Activa_Bomba(uint8_t cantBombas)
 {
-    eeprom.get(sizeof(struct estadoSistema) + 1, sistema);
+    /*eeprom.get(sizeof(struct wifiConfig) + 1, sistema);
     if((sistema.nBomba << 1 ) || (sistema.nBomba >> cantBombas))
     {
         sistema.nBomba = 0;
@@ -101,9 +105,10 @@ uint8_t Activa_Bomba(uint8_t cantBombas)
     sistema.nBomba++;
     Serial.print("Se encendió la bomba ");
     Serial.println(sistema.nBomba);
-    eeprom.put(sizeof(struct estadoSistema) + 1, sistema);
+    eeprom.put(sizeof(struct wifiConfig) + 1, sistema);
     eeprom.commit();
-    return numTerm[sistema.nBomba - 1];
+    return numTerm[sistema.nBomba - 1];*/
+    return 1;
 };
 
 // Función para controlar la bomba a encender

@@ -68,9 +68,10 @@ void setup() {
   pinMode(pinInt, INPUT);
 
   //Inicia_EEPROM();
-  eeprom.begin(sizeof(struct wifiConfig) + sizeof(struct estadoSistema));
-  eeprom.get(0, wifi_usuario);
-  eeprom.get(sizeof(struct estadoSistema) + 1, sistema);
+  /*eeprom.begin(sizeof(struct wifiConfig) + sizeof(struct estadoSistema));
+  eeprom.get(0, wifi_usuario);*/
+  Inicia_EEPROM();
+  //eeprom.get(sizeof(struct wifiConfig) + 1, sistema);
 
   //Adición de redes a las que se puede conectar el dispositivo.
   wifiMulti.addAP("ABACANTVWIFI8440","85047373038805");
@@ -153,6 +154,7 @@ void loop()
     Serial.print("El volumen del tanque es: ");
     Serial.print(sistema.vTanque);
     Serial.println(" litros.");
+
     haTemporizado = false;
   }
   
@@ -165,27 +167,27 @@ void loop()
       bombaPin = Activa_Bomba(3);
       digitalWrite(Activa_Bomba(3), true);
       sistema.bombaActiva = true;
-      eeprom.put(sizeof(struct estadoSistema) + 1, sistema);
+      eeprom.put(sizeof(struct wifiConfig) + 1, sistema);
       eeprom.commit();
     }
     else
     {
       digitalWrite(bombaPin, false);
       sistema.bombaActiva = false;
-      eeprom.put(sizeof(struct estadoSistema) + 1, sistema);
+      eeprom.put(sizeof(struct wifiConfig) + 1, sistema);
       eeprom.commit();
     }
   }
-  else if((ledEstado == "ENCENDIDO") && !modoSistema)
+  /*else if((ledEstado == "ENCENDIDO") && !modoSistema)
   {
     /*  Debe tomar en cuenta solo si se presiona el tanque para que se encienda
-        el sistema. */
+        el sistema. 
         switch(sistema.bombaActiva)
         {
           case false:
           {
             digitalWrite(bombaPin, false);
-            eeprom.put(sizeof(struct estadoSistema) + 1, sistema);
+            eeprom.put(sizeof(struct wifiConfig) + 1, sistema);
             eeprom.commit();   
           }
           break;
@@ -193,12 +195,12 @@ void loop()
           {
             bombaPin = Activa_Bomba(3);
             digitalWrite(Activa_Bomba(3), true);
-            eeprom.put(sizeof(struct estadoSistema) + 1, sistema);
+            eeprom.put(sizeof(struct wifiConfig) + 1, sistema);
             eeprom.commit();            
           }
           break;
         };
-  }
+  }*/
   /*if(sistema.reloj && modoSistema)
   {
     //superT && (nivelA >= 255/(volMax/volMin)) &&

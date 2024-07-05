@@ -14,8 +14,10 @@ void Inicia_Almacen(void)
 
 void Inicia_EEPROM(void)
 {
-    eeprom.begin(sizeof(struct wifiConfig));
+    //eeprom.begin(sizeof(struct wifiConfig));
+    eeprom.begin(sizeof(struct wifiConfig) + sizeof(struct estadoSistema));
     eeprom.get(0, wifi_usuario);
+    eeprom.get(sizeof(struct wifiConfig) + 1, sistema);
     return;
 }
 
