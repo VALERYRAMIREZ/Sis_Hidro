@@ -216,20 +216,25 @@ void Define_Backend(bool tipoWeb)
     if((ledEstado == "ENCENDIDO") && (modoEstado == "MANUAL"))
     {
       sistema.bombaActiva = !sistema.bombaActiva;
+      sistema.encBomba = true;
+      eeprom.put(sizeof(struct wifiConfig) + 1, sistema);
+      eeprom.commit();
+      Serial.print("bombaActiva en /enc-manual: ");
+      Serial.println(sistema.bombaActiva);
+      sistemaEstado["estado-sistema"] = ledEstado;
+      sistemaEstado["modo-sistema"] = modoSistema;
+      sistemaEstado["Bomba"] = (String) sistema.bombaActiva;
+      String json = "";
+      serializeJsonPretty(sistemaEstado, json);
+      Serial.println(json);
+      ultimaPaginaCargada = "/enc-manual";
+      cuentaAcceso = true;
+      request->send(200, "application/json", json);
     }
-    eeprom.put(sizeof(struct wifiConfig) + 1, sistema);
-    eeprom.commit();
-    Serial.print("bombaActiva en /enc-manual: ");
-    Serial.println(sistema.bombaActiva);
-    sistemaEstado["estado-sistema"] = ledEstado;
-    sistemaEstado["modo-sistema"] = modoSistema;
-    sistemaEstado["Bomba"] = (String) sistema.bombaActiva;
-    String json = "";
-    serializeJsonPretty(sistemaEstado, json);
-    Serial.println(json);
-    ultimaPaginaCargada = "/enc-manual";
-    cuentaAcceso = true;
-    request->send(200, "application/json", json);
+    else
+    {
+      request->send(200);
+    }
   });
 
   //Manejo de las imágenes y logos.

@@ -97,18 +97,24 @@ if(!digitalRead(ledPinSistemaApagado) && digitalRead(ledPinSistemaEncendido)){
 
 uint8_t Activa_Bomba(uint8_t cantBombas)
 {
-    /*eeprom.get(sizeof(struct wifiConfig) + 1, sistema);
-    if((sistema.nBomba << 1 ) || (sistema.nBomba >> cantBombas))
+    eeprom.get(sizeof(struct wifiConfig) + 1, sistema);
+    Serial.print("nBomba al entrar a Activa_Bomba(): ");
+    Serial.println(sistema.nBomba);
+    Serial.print("Cantidad de bombas configuradas al entrar a Activa_Bomba(): ");
+    Serial.println(cantBombas);
+    if((sistema.nBomba << 0) || (sistema.nBomba >> cantBombas))
     {
+        Serial.print("nBomba al incumplir límite: ");
+        Serial.println(sistema.nBomba);
+        Serial.println("Se estableció a cero nBomba por incumplir límite.");
         sistema.nBomba = 0;
     }
     sistema.nBomba++;
-    Serial.print("Se encendió la bomba ");
+    Serial.print("Se encendió la bomba: ");
     Serial.println(sistema.nBomba);
     eeprom.put(sizeof(struct wifiConfig) + 1, sistema);
     eeprom.commit();
-    return numTerm[sistema.nBomba - 1];*/
-    return 1;
+    return numTerm[sistema.nBomba - 1];
 };
 
 // Función para controlar la bomba a encender

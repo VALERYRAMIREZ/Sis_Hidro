@@ -71,15 +71,15 @@ bloqueado.addEventListener("click", function() {
             if(estadoBomba["Bomba"] == "1")
             {
                 bombaManual.style.borderWidth = "5px";
-                bombaManual.style.borderStyle = "solid dotted";
-                bombaManual.style.borderColor = "red";
+                bombaManual.style.borderStyle = "solid";
+                bombaManual.style.borderColor = "white";
                 bombaManual.style.transition = "all 0.4s";
             }
             else if(estadoBomba["Bomba"] === "0")
             {
-                bombaManual.style.borderWidth = "initial";
+                bombaManual.style.borderWidth = "1px";
                 bombaManual.style.borderStyle = "solid";
-                bombaManual.style.borderColor = "dark gray";
+                bombaManual.style.borderColor = "white";
                 bombaManual.style.transition = "all 0.4s";
             }
             else
@@ -186,6 +186,7 @@ if(document.getElementById("forma") != null) {              // Si encuentra la f
                 console.log(volTanqueWeb);
                 var volActualWeb = document.getElementById("mask01");
                 volActualWeb.innerHTML = volTanqueWeb.colAgua.toFixed(2);
+                volActualWeb
             }
             else
             {

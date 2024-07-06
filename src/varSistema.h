@@ -145,6 +145,7 @@
         bool bateria        : 1;
         bool reloj          : 1;
         bool bombaActiva    : 1;
+        bool encBomba       : 1;
         uint8_t nBomba; 
         StreamString nTanque;
         StreamString vTanque;

@@ -72,6 +72,9 @@ void setup() {
   eeprom.get(0, wifi_usuario);*/
   Inicia_EEPROM();
   //eeprom.get(sizeof(struct wifiConfig) + 1, sistema);
+  sistema.encBomba = true;
+  eeprom.put(sizeof(wifi_usuario) + 1, sistema);
+  eeprom.commit();
 
   //Adición de redes a las que se puede conectar el dispositivo.
   wifiMulti.addAP("ABACANTVWIFI8440","85047373038805");
@@ -178,11 +181,11 @@ void loop()
       eeprom.commit();
     }
   }
-  /*else if((ledEstado == "ENCENDIDO") && !modoSistema)
+  else if((ledEstado == "ENCENDIDO") && !modoSistema)
   {
     /*  Debe tomar en cuenta solo si se presiona el tanque para que se encienda
-        el sistema. 
-        switch(sistema.bombaActiva)
+        el sistema. */
+        switch(sistema.bombaActiva && sistema.encBomba)
         {
           case false:
           {
@@ -193,14 +196,20 @@ void loop()
           break;
           case true:
           {
+            Serial.println("*****Entrando al caso en el que la bomba se enciende en modo manual.*****");
+            //sistema.bombaActiva = false;
+            sistema.encBomba = false;
+            Serial.println("Llamando a Activa_Bomba().");
             bombaPin = Activa_Bomba(3);
+            Serial.println("Activando pin de bomba.");
             digitalWrite(Activa_Bomba(3), true);
             eeprom.put(sizeof(struct wifiConfig) + 1, sistema);
-            eeprom.commit();            
+            eeprom.commit();
+            Serial.println("*****Saliendo de cas en el que la bomca se enciende en modo manual.******");
           }
           break;
         };
-  }*/
+  }
   /*if(sistema.reloj && modoSistema)
   {
     //superT && (nivelA >= 255/(volMax/volMin)) &&
