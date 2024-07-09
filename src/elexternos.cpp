@@ -102,7 +102,7 @@ uint8_t Activa_Bomba(uint8_t cantBombas)
     Serial.println(sistema.nBomba);
     Serial.print("Cantidad de bombas configuradas al entrar a Activa_Bomba(): ");
     Serial.println(cantBombas);
-    if((sistema.nBomba << 0) || (sistema.nBomba >> cantBombas))
+    if((sistema.nBomba < 0) || (sistema.nBomba >= cantBombas))
     {
         Serial.print("nBomba al incumplir límite: ");
         Serial.println(sistema.nBomba);

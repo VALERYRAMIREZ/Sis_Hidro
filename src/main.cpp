@@ -200,7 +200,7 @@ void loop()
             //sistema.bombaActiva = false;
             sistema.encBomba = false;
             Serial.println("Llamando a Activa_Bomba().");
-            bombaPin = Activa_Bomba(3);
+            //bombaPin = Activa_Bomba(3);
             Serial.println("Activando pin de bomba.");
             digitalWrite(Activa_Bomba(3), true);
             eeprom.put(sizeof(struct wifiConfig) + 1, sistema);
