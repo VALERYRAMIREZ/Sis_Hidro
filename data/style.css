@@ -53,6 +53,18 @@ h3 {
   margin-top: 1%;
 }
 
+.menuEncabezdo .titulo_2 h1 {
+  background: linear-gradient(to left, var(--grad-uno-color), var(--grad-dos-color));
+  margin-top: 0;
+}
+
+.menuEncabezdo {
+position: fixed;
+z-index: 100;
+width: 100vw;
+margin: 0;
+}
+
 .encabezado header {
   display: flex;
   align-items: center;
@@ -65,7 +77,7 @@ h3 {
 .encabezado .caja-logo-empresa {
   display: flex;
   align-items: center;
-  width: 25vw;
+  width: 15vw;
   height: auto;
   margin-left: 1%;
 }
@@ -159,6 +171,45 @@ h3 {
 .menu nav ul li a:hover {
   transition: var(--tran-04);
 }
+
+.menu nav ul li #config_submenu_config {
+  display: hidden;
+  position: absolute;
+  top: 100%;
+  transform: translateY(-30%);
+  opacity: 0;  
+  background: linear-gradient(to left, var(--grad-uno-color), var(--grad-dos-color));
+  max-width: 180px;
+}
+
+.menu nav ul li:hover > #config_submenu_config {
+  display: block;
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.config_divs {
+  display: flex;
+  justify-content: center;
+  padding-top: 30vh;
+}
+
+#config_submenu_config {
+  display: fixed;
+  align-content: center;
+  width: auto;
+  height: auto;
+  color: var(--primary-color-light);
+  border-radius: 5%;
+  background: linear-gradient(to left, var(--grad-uno-color), var(--grad-dos-color));
+  border-radius: 3%;
+  padding: 0;
+}
+
+ #tipo_tanque,
+ #titulo_tiempo {
+  padding-top: 30vh;
+ }
 
 /*---------Estilo del cuerpo de control---------*/
 /*------------------del sistema-----------------*/
