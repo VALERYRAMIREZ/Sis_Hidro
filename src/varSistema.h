@@ -147,6 +147,7 @@
         bool bombaActiva    : 1;
         bool encBomba       : 1;
         uint8_t nBomba; 
+        uint32_t interMed;
         StreamString nTanque;
         StreamString vTanque;
     } estadoSistema;

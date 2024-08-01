@@ -53,6 +53,7 @@
     DynamicJsonDocument nivel(50);
     hw_timer_t *tempo = NULL;
     volatile bool haTemporizado = false;
+    uint32_t cuentaTempo = 0;
     
     /*****Variables a utilizar en la interrupción*****/
     /***************sensor de nivel.******************/

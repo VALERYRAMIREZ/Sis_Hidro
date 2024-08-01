@@ -41,10 +41,13 @@ float Calcular_Volumen(uint8_t tanque, float profundidad, float altura)
 
 StreamString Json_Sensor_Nivel(bool J)
 {
+    Serial.println("Entrando a la funcion de medicion de nivel del tanque");
     digitalWrite(pinGatillo, HIGH);
     delayMicroseconds(10);
     digitalWrite(pinGatillo, LOW);
+    Serial.println((pulseIn(pinInt, HIGH)*0.00034/2));
     nivel["colAgua"] = (pulseIn(pinInt, HIGH)*0.00034/2);
+    Serial.println((StreamString) nivel["colAgua"]);
     if(J)
     {
         StreamString nivTanque;

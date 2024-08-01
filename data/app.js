@@ -59,8 +59,10 @@ bloqueado.addEventListener("click", function() {
 
  /* Variable para controlar el encendido de la bomba de agua en modo manual */
 
- var bombaManual = document.getElementById("tile01");
- bombaManual.addEventListener("click", function() {
+ if(document.getElementById("tile01") != null)
+{
+    var bombaManual = document.getElementById("tile01");
+    bombaManual.addEventListener("click", function() {
     var encBombaManual = new XMLHttpRequest();
     encBombaManual.onreadystatechange = function() {
         if(this.readyState == 4 && this.status == 200)
@@ -91,6 +93,7 @@ bloqueado.addEventListener("click", function() {
     encBombaManual.open("GET", "/enc-manual", true);
     encBombaManual.send();
 });
+}
 /*----------------Funcionamiento de los cambios de estilo-------------------*/
 /*------------------en los botones de control del sistema-------------------*/
 /*--------------------------------de bombeo---------------------------------*/
@@ -106,35 +109,117 @@ botonControl.forEach(enlace => {
     });
 });*/
 
-if(document.getElementById("forma") != null) {              // Si encuentra la forma con la id igual a "forma",
-    var elementoForma = document.getElementById("forma");   // extrae los valores completos.
-    elementoForma.addEventListener("submit", function(e) {
+if(document.getElementById("forma-tipo-tanque") != null) {
+    var elementoTipoForma = document.getElementById("forma-tipo-tanque");
+    elementoTipoForma.addEventListener("submit", function(e) {
         e.preventDefault();
-        var datosForma = {};
-        var formaDatos = new FormData(elementoForma);
-        for(var [k,v] of formaDatos) {
-            datosForma[k] = v;
+        var datosTipoForma = {};
+        var formaDatosTipo = new FormData(elementoTipoForma);
+        for(var [k,v] of formaDatosTipo) {
+            datosTipoForma[k] = v;
         }
-        console.log(datosForma);
-        var datosJson = JSON.stringify(datosForma)
-        console.log(datosJson);
-        var config = new Blob([datosJson], {type: 'application/json'});
-        fetch("forma-dato", {
+        console.log(datosTipoForma);
+        var datosJsonTipo = JSON.stringify(datosTipoForma)
+        console.log(datosJsonTipo);
+        var configTipo = new Blob([datosJsonTipo], {type: 'application/json'});
+        fetch("forma-tipo-datos", {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: datosJson
+            body: datosJsonTipo 
+        }).then(response => {
+            if(!response.ok) {
+                throw new Error("Respuesta de la red invalida");
+            }
+        }).then(data => {
+            console.log("Datos recibidos del servior", data);
+            alert("Tipp de tanque configurado");
+        }).catch(function maneja_error(error) {
+            console.error("Error: ", error);
+            alert("Ocurrio un error y no se configuro el tipo de tanque");
         });
-        /*fs.writeFile('config.json', datosJson, 'utf-8', (err) => {
+        console.log(configTipo);
+    });
+
+};
+
+if(document.getElementById("forma-intervalos-tanque") != null) {
+    var elementoIntervaloForma = document.getElementById("forma-intervalos-tanque");
+    elementoIntervaloForma.addEventListener("submit", function(e) {
+        e.preventDefault();
+        var datosIntervalosForma = {};
+        var formaDatosIntervalos = new FormData(elementoIntervaloForma);
+        for(var [k,v] of formaDatosIntervalos) {
+            datosIntervalosForma[k] = v;
+        }
+        console.log(datosIntervalosForma);
+        var datosJsonIntervalos = JSON.stringify(datosIntervalosForma)
+        console.log(datosJsonIntervalos);
+        var configIntervalos = new Blob([datosJsonIntervalos], {type: 'application/json'});
+        fetch("forma-intermed-tanque", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: datosJsonIntervalos 
+        }).then(response => {
+            if(!response.ok) {
+                throw new Error("Respuesta de la red invalida");
+            }
+            return response.responseText;
+        }).then(data => {
+            console.log("Datos recibidos del servdor: ", data);
+            alert("Intervalo de medicion configurado");
+        }).catch(function maneja_error(error) {
+            console.error("Error: ", error);
+            alert("Ocurrio un error y no se configuro el intervalo de medicion");
+        });
+        console.log(configIntervalos);
+    });
+};
+
+if(document.getElementById("forma-tiempos-tanque") != null) {              // Si encuentra la forma con la id igual a "forma",
+    var elementoTiempoForma = document.getElementById("forma-tiempos-tanque");   // extrae los valores completos.
+    elementoTiempoForma.addEventListener("submit", function(e) {
+        e.preventDefault();
+        var datosTiemposForma = {};
+        var formaDatosTiempos = new FormData(elementoTiempoForma);
+        for(var [k,v] of formaDatosTiempos) {
+            datosTiemposForma[k] = v;
+        }
+        console.log(datosTiemposForma);
+        var datosJsonTiempos = JSON.stringify(datosTiemposForma)
+        console.log(datosJsonTiempos);
+        var configTiempos = new Blob([datosJsonTiempos], {type: 'application/json'});
+        fetch("forma-tiempos-datos", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: datosJsonTiempos
+        }).then(response => {
+            if(!response.ok) {
+                throw new Error("Respuesta de la red invalida");
+            }
+        }).then(data => {
+            console.log("Datos recibidos del servior", data);
+            alert("Intervalos de funcionamiento configurados");
+        }).catch(function maneja_error(error) {
+            console.error("Error: ", error);
+            alert("Ocurrio un error y no se configurraron los intervalos de funcionamiento");
+        });
+
+        /*fs.writeFile('config.json', datosJsonTiempos, 'utf-8', (err) => {
             if(err) {
                 throw err;
             }
             console.log("Archivo guardado correctamente");
         });*/
-        console.log(config);
+        console.log(configTiempos);
+        alert("Tiempos de funcionamiento del sistema configurados")
         /*var envioForma = new XMLHttpRequest();
-        envioForma.open("POST", "forma-dato", true);
+        envioForma.open("POST", "forma-tiempos-datos", true);
         envioForma.send(config);*/
     });
 };
@@ -163,6 +248,7 @@ if(document.getElementById("forma") != null) {              // Si encuentra la f
                     modoEnc.innerHTML = "<p>Modo Sistema: " + "<strong>" + `${mSistema[0]}` + "</strong>";
                 };
                 console.log("Enviados los componentes a actualizar a la pantalla");
+                alert("Enviados los componentes a actualizar a la pantalla");
             }
             else
             {
@@ -215,7 +301,7 @@ if(document.getElementById("forma") != null) {              // Si encuentra la f
         let fechaCompleta = `${muestraSemana}-${dia}-${mes}-${anio}`;
         document.getElementById("la-fecha").innerHTML = fechaCompleta;
         document.getElementById("la-hora").innerHTML = hoyHora;
-        console.log(fechaCompleta + '->' + hoyHora);
+        //console.log(fechaCompleta + '->' + hoyHora);
         if(window.location.pathname == "/config")
         {
             document.getElementById("fecha").value = `${anio}-${mes}-${dia}`;

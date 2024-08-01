@@ -38,11 +38,17 @@ DynamicJsonDocument docJson(512);
 //Variable para controlar el temporizador.
 extern hw_timer_t *tempo;
 extern volatile bool haTemporizado;
+extern uint32_t cuentaTempo;
 
 //Función para manejar el temporizador.
 void IRAM_ATTR miTemporizador()
 {
-  haTemporizado = true;
+  cuentaTempo++;
+  if((sistema.interMed > 0) && (cuentaTempo >= sistema.interMed))
+  {
+    cuentaTempo = 0;
+    haTemporizado = true;
+  }
 }
 
 //Variable para controlar el estado de la interrupción.

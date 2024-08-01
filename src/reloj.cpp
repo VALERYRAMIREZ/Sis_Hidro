@@ -1,5 +1,8 @@
 #include "reloj.h"
 
+extern void IRAM_ATTR miTemporizador();
+extern hw_timer_t *tempo;
+
 bool Compara_RTC(const char * data, Semana tPrograma) {
   bool comparado = false;
   uint8_t manHoraIniProg = 0, manMinIniProg = 0, manHoraFinProg = 0, manMinFinProg = 0, tarHoraIniProg = 0, tarMinIniProg = 0, tarHoraFinProg = 0, tarMinFinProg = 0;
@@ -164,5 +167,18 @@ bool Compara_RTC(const char * data, Semana tPrograma) {
   Serial.print("Comparado: ");
   Serial.println(comparado);
   return comparado;
+};
+
+void Enciende_Temporizador(uint8_t tiempo)
+{
+  tempo = timerBegin(0, 80, true);
+  timerAttachInterrupt(tempo, &miTemporizador, true);
+  timerAlarmWrite(tempo, 1000000*tiempo, true);
+  timerAlarmEnable(tempo);
+};
+
+void Apaga_Temporizador(void)
+{
+  timerAlarmDisable(tempo);
 }
 

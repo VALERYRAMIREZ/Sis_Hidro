@@ -68,7 +68,8 @@ width: 100vw;
 margin: 0;
 }
 
-.encabezado header {
+.encabezado header,
+.encabezado #encabezado-tiempo {
   display: flex;
   align-items: center;
   background: linear-gradient(to left, var(--grad-uno-color), var(--grad-dos-color));

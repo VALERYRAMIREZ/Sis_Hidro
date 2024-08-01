@@ -10,6 +10,14 @@
     <body class="tema-claro">
         <div class="menuEncabezdo">
             <div class="encabezado">
+                <div id="encabezado-tiempo">
+                    <div id="reloj">
+                        <p id="la-fecha">Fecha</p>
+                    </div>
+                    <div id="horaA">
+                        <p id="la-hora">Hora</p>
+                    </div>
+                </div>
                 <header>
                     <div class="caja-logo-empresa">
                         <img class="logo-empresa" src="logoE">
@@ -32,7 +40,7 @@
                 <nav>
                     <ul>
                         <li>
-                            <a href="/index.html">Controles</a>
+                            <a href="index">Controles</a>
                         </li>
                         <li class="pag_activa">
                             <a href="config">Configuración</a>
@@ -72,7 +80,7 @@
                 <div class="cuerpo_sistema" id="config_div2">
                     <div class="configurar">
                         <div>
-                            <form action="" id="forma_tipo_tanque">
+                            <form action="" id="forma-tipo-tanque">
                                 <ul>
                                     <div>
                                         <div class="param_tanque">
@@ -81,7 +89,7 @@
                                             </div>
                                             <li>
                                                 <div>
-                                                    <label for="forma_tipo_tanque">Forma del tanque <b></b></label>
+                                                    <label for="forma-tipo-tanque">Forma del tanque <b></b></label>
                                                     <select class="forma-tanque" name="selec-tanque">
                                                         <option value="caja">Caja</option>
                                                         <option value="cilindro">Cilindro</option>
@@ -118,7 +126,7 @@
                             </form>
                         </div>
                         <div>
-                            <form action="" id="forma_intervalo_tanque">
+                            <form action="" id="forma-intervalos-tanque">
                                 <ul>
                                     <div class="titulo_2" id="interTanque">
                                         <h2 id="titulo_tiempo">Configuración del Intervalo de actualizacion del nivel del tanque</h2>
@@ -126,7 +134,7 @@
                                     <div>
                                         <li>
                                             <label for="altura">Intervalo (01 - 60)<b> [ min ]</b></label>
-                                            <input type="number" id="inter-tanque" name="inter-tanque" value="1" required>
+                                            <input type="number" id="inter-tanque" name="inter-tanque" value="1" min="1" max="60" required>
                                         </li> 
                                     </div>
                                     <div class="guarda-conf">
@@ -138,7 +146,7 @@
                             </form>
                         </div>
                         <div>
-                            <form action="" id="forma_tiempos_tanque">
+                            <form action="" id="forma-tiempos-tanque">
                                 <ul>
                                     <div class="titulo_2" id="tiemposTanque">
                                         <h2 id="titulo_tiempo">Configuración de fecha y horarios de funcionamiento</h2>

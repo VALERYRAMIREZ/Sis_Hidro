@@ -8,6 +8,7 @@
 #include "debuguear.h"
 #include <varSistema.h>
 #include "elexternos.h"
+#include "reloj.h"
 
     
 extern AsyncWebServer server;
@@ -24,6 +25,8 @@ extern wifiConfig wifi_usuario_leida;
 extern ESP32Time rtc;
 
 extern DynamicJsonDocument sistemaEstado;
+
+extern uint32_t cuentaTempo;
 
 String Procesador(const String& var){//Función que chequea si el sistema está encendido y envía el estado.
   Serial.print("La variable recibida es: ");
@@ -111,6 +114,19 @@ void manejaJson(AsyncWebServerRequest *request, String filename, size_t index, u
 }
 
 // Función para extraer la data enviada desde la página web.
+
+uint8_t Extrae_Data(std::string trama)
+{
+  uint8_t lectura = 0;
+  std::stringstream cadena_leida(trama);
+  Serial.print("La trama es:");
+  Serial.println(trama.c_str());
+  Serial.print("El strignstream es: ");
+  lectura = std::stoi(cadena_leida.str());
+  Serial.println(lectura);
+  Serial.println("Se retorna de Extrae_Data(numero)");
+  return lectura;
+}
 
 uint8_t Extrae_Data(std::string trama, FechaProg* destino,char sep) {
   uint8_t contador = 0;
@@ -444,7 +460,36 @@ server.on("/data-estado", HTTP_GET, [](AsyncWebServerRequest *request){
 
   //Manejo de la data de programación recibida.
 
-  AsyncCallbackJsonWebHandler* manejadorJson = new AsyncCallbackJsonWebHandler("/forma-dato", [](AsyncWebServerRequest *request, JsonVariant &docJson) {
+AsyncCallbackJsonWebHandler* manejadorIntervalosJson = new AsyncCallbackJsonWebHandler("/forma-intermed-tanque", [](AsyncWebServerRequest *request, JsonVariant &docJson) {
+  auto&& jsonObj = docJson.as<JsonObject>();
+  uint8_t intervalo = 0;
+  Serial.print("El intervalo de actualizacion es: ");
+  Serial.println((const char*) jsonObj["inter-tanque"]);
+  intervalo = Extrae_Data(jsonObj["inter-tanque"]);
+  Serial.print("El intervalo de medicion recbido es: ");
+  Serial.println(intervalo);
+  if((intervalo < 1) || (intervalo > 60))
+  {
+    Serial.println("Dato de intervalo de actualizacion incorrecto, no se puede medir el nivel del tanque.");
+  }
+  else
+  {
+    Serial.println("Intervalo de medicion del nivel del tanque entre los limites, e puede realizar la medicion de nivel.");
+    sistema.interMed = 6*intervalo;
+    cuentaTempo = 0;
+    eeprom.put(sizeof(struct wifiConfig) + 1, sistema);
+    eeprom.commit();
+    Serial.print("El intervalo de medicion de nivel del tanque es: ");
+    Serial.println(sistema.interMed);
+    Serial.println("Encendiendo temporizador");
+    Serial.print("El intervalo de medicion de nivel del tanque es: ");
+    Serial.println(sistema.interMed);
+    request->send(200);
+  }
+});
+server.addHandler(manejadorIntervalosJson);
+
+  AsyncCallbackJsonWebHandler* manejadorTiemposJson = new AsyncCallbackJsonWebHandler("/forma-tiempos-datos", [](AsyncWebServerRequest *request, JsonVariant &docJson) {
     auto&& jsonObj = docJson.as<JsonObject>();
     Serial.print("La fecha actual es :");
     Serial.println((const char *) jsonObj["fecha"]);
@@ -534,7 +579,7 @@ server.on("/data-estado", HTTP_GET, [](AsyncWebServerRequest *request){
     sistema.reloj = true;             // Se activa el reloj del sistema una vez este
                                       // ha recibido la programación horaria.
   });
-  server.addHandler(manejadorJson);
+  server.addHandler(manejadorTiemposJson);
 
   //Manejo de la página "No encontrado".
 

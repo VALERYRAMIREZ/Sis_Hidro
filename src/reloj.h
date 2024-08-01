@@ -7,4 +7,8 @@
 
 bool Compara_RTC(const char * data, Semana tPrograma);
 
+void Enciende_Temporizador(uint8_t tiempo);
+
+void Apaga_Temporizador(void);
+
 #endif
