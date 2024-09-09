@@ -354,7 +354,7 @@ server.on("/data-tanque", HTTP_GET, [](AsyncWebServerRequest *request){
   if(!request->authenticate(usuarioHTTP, claveHTTP) && !cuentaAcceso) {
       return request->requestAuthentication("Ingreso al Sistema");
     };
-    //String json = Json_Sensor_Nivel(true);
+    //String json = Json_Sensor_Nivel_AJ(true);
     String json = Json_Sensor_Volumen(sistema.nTanque.toFloat(), alturaTanque, true);
     Serial.println(json);
     cuentaAcceso = true;
@@ -460,6 +460,28 @@ server.on("/data-estado", HTTP_GET, [](AsyncWebServerRequest *request){
 
   //Manejo de la data de programación recibida.
 
+AsyncCallbackJsonWebHandler* manejadorTanquesJson = new AsyncCallbackJsonWebHandler("/forma-numero-bomba", [](AsyncWebServerRequest *request, JsonVariant &docJson) {
+  auto&& jsonObj = docJson.as<JsonObject>();
+  uint8_t tanques = 0;
+  Serial.print("La cantidad de bombas a usar es: ");
+  tanques = Extrae_Data(jsonObj["numero-tanque"]);
+  //Serial.println((const char*) jsonObj["numero-tanque"]);
+  Serial.println(tanques);
+  if((tanques < 1) || (tanques > 3))
+  {
+    Serial.println("Dato de cantidad de tanques incorrecto, no se puede establecer la cantidad de tanques.");
+  }
+  else
+  {
+    Serial.println("Cantidad de tanques establecida correctamente");
+    sistema.nBomba = tanques;
+    eeprom.put(sizeof(struct wifiConfig) + 1, sistema);
+    eeprom.commit();
+    request->send(200);
+  }
+});
+server.addHandler(manejadorTanquesJson);
+
 AsyncCallbackJsonWebHandler* manejadorIntervalosJson = new AsyncCallbackJsonWebHandler("/forma-intermed-tanque", [](AsyncWebServerRequest *request, JsonVariant &docJson) {
   auto&& jsonObj = docJson.as<JsonObject>();
   uint8_t intervalo = 0;
@@ -479,9 +501,6 @@ AsyncCallbackJsonWebHandler* manejadorIntervalosJson = new AsyncCallbackJsonWebH
     cuentaTempo = 0;
     eeprom.put(sizeof(struct wifiConfig) + 1, sistema);
     eeprom.commit();
-    Serial.print("El intervalo de medicion de nivel del tanque es: ");
-    Serial.println(sistema.interMed);
-    Serial.println("Encendiendo temporizador");
     Serial.print("El intervalo de medicion de nivel del tanque es: ");
     Serial.println(sistema.interMed);
     request->send(200);

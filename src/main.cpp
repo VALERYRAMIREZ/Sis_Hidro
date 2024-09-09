@@ -154,7 +154,8 @@ void loop()
   //que hará el programa cuando se active el temporizador.
   if(haTemporizado)
   {
-    sistema.nTanque = Json_Sensor_Nivel(false);
+    //sistema.nTanque = Json_Sensor_Nivel_AJ(false);
+    sistema.nTanque = Json_Sensor_Nivel_AJ(false);
     Serial.print("El nivel del líquido se encuentra a ");
     Serial.print(sistema.nTanque);
     Serial.println(" m de profundidad.");
@@ -163,7 +164,8 @@ void loop()
     Serial.print("El volumen del tanque es: ");
     Serial.print(sistema.vTanque);
     Serial.println(" litros.");
-
+    eeprom.put(sizeof(wifi_usuario) + 1, sistema);
+    eeprom.commit();
     haTemporizado = false;
   }
   

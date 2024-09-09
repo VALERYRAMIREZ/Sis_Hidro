@@ -1,3 +1,4 @@
+#include <sstream>
 #include <Arduino.h>
 #include <ArduinoJson.h>
 #include <varSistema.h>
@@ -39,7 +40,7 @@ float Calcular_Volumen(uint8_t tanque, float profundidad, float altura)
     return volumen;
 };
 
-StreamString Json_Sensor_Nivel(bool J)
+StreamString Json_Sensor_Nivel_AJ(bool J)
 {
     Serial.println("Entrando a la funcion de medicion de nivel del tanque.");
     digitalWrite(pinGatillo, HIGH);
@@ -47,6 +48,37 @@ StreamString Json_Sensor_Nivel(bool J)
     digitalWrite(pinGatillo, LOW);
     Serial.println("Se realizara la mediicion del nivel para ser almacenada en el JSON.");
     nivel["colAgua"] = pulseIn(pinInt, HIGH)*0.00034/2;
+    if(J)
+    {
+        StreamString nivTanque;
+        serializeJsonPretty(nivel, nivTanque);
+        Serial.print("Medición realizada al tanque: ");
+        Serial.println(nivTanque);
+        return nivTanque;
+    }
+    else
+    {
+        Serial.print("Medición realizada al tanque: ");
+        Serial.println((StreamString) nivel["colAgua"]);
+        return nivel["colAgua"];
+    }
+};
+
+StreamString Json_Sensor_Nivel_HC_3(bool J)
+{
+    Serial.println("Entrando a la funcion de medicion de nivel del tanque.");
+    pinMode(pinGatillo, OUTPUT);
+    digitalWrite(pinGatillo, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(pinGatillo, LOW);
+    pinMode(pinGatillo, INPUT_PULLUP);
+    Serial.println("Se realizara la mediicion del nivel para ser almacenada en el JSON.");
+    //nivel["colAgua"] = pulseIn(pinGatillo, HIGH)*0.00034/2;
+    //nivel["colAgua"] = (pulseIn(pinGatillo, HIGH)/1000)*34.32/2;
+    nivel["colAgua"] = (pulseIn(pinGatillo, HIGH)/29)/2;
+    //microseconds / 29 / 2;
+    //((float(pulsos/1000.0))*34.32)/2
+    pinMode(pinGatillo, OUTPUT);
     if(J)
     {
         StreamString nivTanque;
@@ -97,9 +129,12 @@ if(!digitalRead(ledPinSistemaApagado) && digitalRead(ledPinSistemaEncendido)){
     }
 };
 
+// Función para controlar la bomba a encender
+
 uint8_t Activa_Bomba(uint8_t cantBombas)
 {
-    eeprom.get(sizeof(struct wifiConfig) + 1, sistema);
+    eeprom.get(sizeof(struct wifiConfig) + 1, sistema); //Revisar, creo que no es la estructura correcta en el
+                                                        // segundo argumento.
     Serial.print("nBomba al entrar a Activa_Bomba(): ");
     Serial.println(sistema.nBomba);
     Serial.print("Cantidad de bombas configuradas al entrar a Activa_Bomba(): ");
@@ -119,4 +154,15 @@ uint8_t Activa_Bomba(uint8_t cantBombas)
     return numTerm[sistema.nBomba - 1];
 };
 
-// Función para controlar la bomba a encender
+// Funcion para detectar si el tanque esta entre los niveles permitidos
+
+bool Permite_Bombeo(uint32_t nDiaMin)
+{
+    /*eeprom.get(sizeof(struct wifiConfig) + 1, sistema);
+    std::string volTanque = sistema.vTanque;
+    if(std::stoi(sistema.vTanque.str()) <= nDiaMin)
+    {
+        return false;
+    }*/
+    return true;
+};

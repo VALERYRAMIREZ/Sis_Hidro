@@ -179,6 +179,40 @@ if(document.getElementById("forma-intervalos-tanque") != null) {
     });
 };
 
+if(document.getElementById("forma-numero-tanque") != null) {
+    var tanqueNumeroForma = document.getElementById("forma-numero-tanque");
+    tanqueNumeroForma.addEventListener("submit", function(e) {
+        e.preventDefault();
+        var datosTanqueNumeroForma = {};
+        var formaTanqueNumeroTipo = new FormData(tanqueNumeroForma);
+        for(var [k,v] of formaTanqueNumeroTipo) {
+            datosTanqueNumeroForma[k] = v;
+        }
+        console.log(datosTanqueNumeroForma);
+        var datosJsonNumeroTanque = JSON.stringify(datosTanqueNumeroForma)
+        console.log(datosJsonNumeroTanque);
+        var configTipo = new Blob([datosJsonNumeroTanque], {type: 'application/json'});
+        fetch("forma-numero-bomba", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: datosJsonNumeroTanque
+        }).then(response => {
+            if(!response.ok) {
+                throw new Error("Respuesta de la red invalida");
+            }
+        }).then(data => {
+            console.log("Datos recibidos del servior", data);
+            alert("Número de bombas configurado");
+        }).catch(function maneja_error(error) {
+            console.error("Error: ", error);
+            alert("Ocurrio un error y no se configuro el tipo de tanque");
+        });
+        console.log(configTipo);
+    });
+};
+
 if(document.getElementById("forma-tiempos-tanque") != null) {              // Si encuentra la forma con la id igual a "forma",
     var elementoTiempoForma = document.getElementById("forma-tiempos-tanque");   // extrae los valores completos.
     elementoTiempoForma.addEventListener("submit", function(e) {
