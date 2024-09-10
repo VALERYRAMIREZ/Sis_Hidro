@@ -180,6 +180,7 @@ void loop()
       sistema.bombaActiva = true;
       eeprom.put(sizeof(struct wifiConfig) + 1, sistema);
       eeprom.commit();
+      Actual_Bomba_Auto();
     }
     else
     {

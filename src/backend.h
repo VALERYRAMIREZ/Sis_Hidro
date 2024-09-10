@@ -21,4 +21,6 @@ void notFound(AsyncWebServerRequest *request);
 
 void Define_Backend(bool tipoWeb);
 
+void Actual_Bomba_Auto(void);
+
 #endif

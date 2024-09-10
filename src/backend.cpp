@@ -458,6 +458,21 @@ server.on("/data-estado", HTTP_GET, [](AsyncWebServerRequest *request){
     };
   });
 
+  //Actualizacion de pagina cuando se active una variable en el programa del ESP32.
+
+void Actual_Bomba_Auto(void);
+{
+  String json = "{";
+  json += "\"bomba-auto\":";
+  json += sistema.bombaActiva;
+  json += ",";
+  json += "}";
+  ultimaPaginaCargada = "/config.html";
+  Serial.println("Actualizando estado de la bomba en modo automatico.");
+  AsyncWebServerRequest *request;
+  request->send(200, "application/json", json);
+}
+
   //Manejo de la data de programación recibida.
 
 AsyncCallbackJsonWebHandler* manejadorTanquesJson = new AsyncCallbackJsonWebHandler("/forma-numero-bomba", [](AsyncWebServerRequest *request, JsonVariant &docJson) {
